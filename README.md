@@ -30,8 +30,7 @@ Artisans often face:
 **Frontend:** HTML, CSS, JavaScript
 **Backend:** Node.js, Express.js
 **Database:** SQL
-**AI/ML:** Python, Computer Vision & NLP
-**Deployment:** Cloud / PWA
+**AI/ML:** Python
 
 ## 🚀 Current Status
 
