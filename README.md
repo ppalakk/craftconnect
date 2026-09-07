@@ -21,7 +21,10 @@ Artisans often face:
 
 * 🤖 AI-powered smart product cataloging
 * 🎯 Market & buyer recommendations
+* 🎯regional language / voice input
+* 🎯 offline/low-connectivity indicator
 * 💰 AI-assisted price estimation
+* 📊authenticity/GI-tag verification
 * 📈 Demand & trend insights
 * 📊 Artisan business dashboard
 
