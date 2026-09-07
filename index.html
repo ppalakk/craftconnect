@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftConnect - AI Artisan Platform</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="app">
+    <header>
+        <div class="brand">
+            <div class="logo">🌿</div>
+            <h2>Craft<span>Connect</span></h2>
+        </div>
+        
+        <div class="notification">🔔
+            <button class="login-btn" onclick="location.href='login.html'">Login</button>
+        </div>
+    </header>
+  <!-- ================= HOME ================= -->
+  <section class="screen active" id="home">
+     <div class="welcome">
+            <h1>Good Morning, Sita 👋</h1>
+            <p>Let's grow your craft business today.</p>
+        </div>
+        <div class="stats">
+          <div class="stat-card">
+                <div class="stat-icon">🧺</div>
+                <h3>12</h3>
+                <p>Total Products</p>
+            </div>
+        <div class="stat-card">
+                <div class="stat-icon">🏪</div>
+                <h3>5</h3>
+                <p>Market Opportunities</p>
+            </div>
+          <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <h3>2</h3>
+                <p>Pending Orders</p>
+            </div>
+        <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <h3>18%</h3>
+                <p>Demand Growth</p>
+            </div>
+ </div>
+    <div class="section-title">
+            <h2>Quick Actions</h2>
+        </div>
+        <div class="actions">
+            <div class="action" onclick="showScreen('products')">
+                <div class="action-icon">➕</div>
+                <h4>Add Product</h4>
+                <p>Create AI catalog</p>
+            </div>
+     <div class="action" onclick="showScreen('products')">
+                <div class="action-icon">📚</div>
+                <h4>My Catalog</h4>
+                <p>View products</p>
+            </div>
+
+            <div class="action" onclick="showScreen('markets')">
+                <div class="action-icon">🎯</div>
+                <h4>Market Leads</h4>
+                <p>Find opportunities</p>
+            </div>
+
+            <div class="action" onclick="showScreen('insights')">
+                <div class="action-icon">📊</div>
+                <h4>Insights</h4>
+                <p>View market trends</p>
+            </div>
+
+        </div>
+
+
+        <div class="section-title">
+            <h2>Latest Opportunity</h2>
+        </div>
+
+        <div class="market-card">
+
+            <img class="market-image"
+                 src="image.png">
+     <div class="market-info">
+                <h3>Handicraft Exhibition</h3>
+                <p>New Delhi • 120 km</p>
+                <span class="match">92% Match</span>
+            </div>
+        </div>
+    </section>
+    <!-- ================= PRODUCTS ================= -->
+    <section class="screen" id="products">
+        <div class="section-title">
+            <h2>Smart Catalog</h2>
+            <span class="ai-badge">AI Powered</span>
+        </div>
+        <div class="upload-box">
+            <div class="upload-icon">📸</div>
+            <h3>Upload Product Image</h3>
+            <p>
+                Let AI identify your product and create
+                a professional catalog.
+            </p>
+            <label for="productImage" class="btn">
+                Upload Image
+            </label>
+            <input type="file"
+                   id="productImage"
+                   accept="image/*"
+                   onchange="analyzeProduct(event)">
+        </div>
+        <div class="loading" id="loading">
+            <div class="loader"></div>
+            <p style="margin-top:12px;">
+                AI is analyzing your product...
+            </p>
+        </div>
+        <div id="catalogResult" style="display:none;">
+            <div class="section-title">
+                <h2>AI Generated Catalog</h2>
+            </div>
+            <div class="product-card">
+                <img id="previewImage"
+                     class="product-img"
+                     src="">
+                <div class="product-content">
+                    <span class="ai-badge">
+                        ✓ AI Processed
+                    </span>
+                    <h3 style="margin-top:10px;">
+                        Handwoven Bamboo Basket
+                    </h3>
+                    <p>
+                        Beautifully handcrafted bamboo basket
+                        suitable for home storage and decoration.
+                        Eco-friendly and created by skilled artisans.
+                    </p>
+                    <span class="tag">#Handmade</span>
+                    <span class="tag">#Bamboo</span>
+                    <span class="tag">#EcoFriendly</span>
+                    <span class="tag">#HomeDecor</span>
+                    <button class="btn"
+                            onclick="showPrice()">
+                        Generate Price Recommendation
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="priceResult" style="display:none;">
+            <div class="price-box">
+                <p>AI Recommended Price Range</p>
+                <div class="price">
+                    ₹450 – ₹600
+                </div>
+                <p>
+                    Based on product attributes,
+                    market data and demand signals.
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- ================= MARKETS ================= -->
+    <section class="screen" id="markets">
+        <div class="section-title">
+            <h2>Market Recommendations</h2>
+        </div>
+        <div class="market-card">
+            <img class="market-image"
+                 src="https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=200&q=80">
+            <div class="market-info">
+               <h3>Delhi Handicraft Market</h3>
+                <p>
+                    Handicrafts & Handloom
+                </p>
+                <p>
+                    📍 New Delhi • 120 km
+                </p>
+                <span class="match">
+                    94% Suitable
+                </span>
+            </div>
+        </div>
+        <div class="market-card">
+
+            <img class="market-image"
+                 src="https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=200&q=80">
+            <div class="market-info">
+                <h3>Online Marketplace</h3>
+      <p>
+                    Handmade & Home Decor
+                </p>
+                <p>
+                    🌐 Online
+                </p>
+                <span class="match">
+                    89% Suitable
+                </span>
+            </div>
+        </div>
+        <div class="market-card">
+            <img class="market-image"
+                 src="https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=200&q=80">
+            <div class="market-info">
+                <h3>Government Handicraft Expo</h3>
+                <p>
+                    Artisan Exhibition
+                </p>
+                <p>
+                    📍 Bhopal • Upcoming
+                </p>
+                <span class="match">
+                    86% Suitable
+                </span>
+            </div>
+        </div>
+    </section>
+    <!-- ================= INSIGHTS ================= -->
+    <section class="screen" id="insights">
+
+        <div class="section-title">
+            <h2>Market Insights</h2>
+            <span class="ai-badge">AI Insights</span>
+        </div>
+        <div class="trend-card">
+            <div class="trend-row">
+                <span>🧺 Bamboo Baskets</span>
+                <span class="up">↑ 18%</span>
+            </div>
+            <div class="progress">
+                <div style="width:90%"></div>
+            </div>
+            <p style="font-size:11px;color:#777;margin-top:8px;">
+                High demand
+            </p>
+        </div>
+        <div class="trend-card">
+       <div class="trend-row">
+                <span>🏺 Terracotta Products</span>
+                <span class="up">↑ 10%</span>
+            </div>
+            <div class="progress">
+                <div style="width:70%"></div>
+            </div>
+            <p style="font-size:11px;color:#777;margin-top:8px;">
+                Growing demand
+            </p>
+        </div>
+        <div class="trend-card">
+            <div class="trend-row">
+                <span>🧵 Handloom Textiles</span>
+                <span class="up">↑ 5%</span>
+            </div>
+ <div class="progress">
+                <div style="width:55%"></div>
+            </div>
+            <p style="font-size:11px;color:#777;margin-top:8px;">
+                Stable demand
+            </p>
+
+        </div>
+      <div class="price-box">
+        <p>AI Market Recommendation</p>
+        <h3 style="margin-top:10px;">
+                Focus on Bamboo & Eco-friendly Products
+            </h3>
+            <p style="margin-top:8px;">
+                Demand for sustainable home decor is
+                showing strong growth.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================= PROFILE ================= -->
+    <section class="screen" id="profile">
+ <div class="profile">
+     <img class="avatar"
+                 src="sitadevi.png">
+      <h2>Sita Devi</h2>
+      <p>Handicraft Artisan</p>
+            <p>📍 Jaipur, Rajasthan</p>
+        </div>
+        <div class="profile-stats">
+        <div class="profile-stat">
+                <strong>12</strong>
+                <span>Products</span>
+            </div>
+
+            <div class="profile-stat">
+                <strong>5</strong>
+                <span>Orders</span>
+            </div>
+
+            <div class="profile-stat">
+                <strong>8</strong>
+                <span>Leads</span>
+            </div>
+
+        </div>
+
+        <div class="section-title">
+            <h2>Recent Activity</h2>
+        </div>
+
+        <div class="trend-card">
+            ✅ New market opportunity found
+            <p style="font-size:11px;color:#777;margin-top:5px;">
+                2 hours ago
+            </p>
+        </div>
+
+        <div class="trend-card">
+            📈 Product received 3 new views
+            <p style="font-size:11px;color:#777;margin-top:5px;">
+                5 hours ago
+            </p>
+        </div>
+
+        <div class="trend-card">
+            💰 Price recommendation updated
+            <p style="font-size:11px;color:#777;margin-top:5px;">
+                Yesterday
+            </p>
+        </div>
+
+    </section>
+ <!-- ================= NAVIGATION ================= -->
+    <nav class="bottom-nav">
+     <div class="nav-item active"
+             onclick="showScreen('home')">
+      <span>⌂</span>
+            Home
+   </div>
+ <div class="nav-item"
+             onclick="showScreen('products')">
+ <span>🛍️</span>
+            Product
+        </div>
+   <div class="nav-item"
+             onclick="showScreen('markets')">
+       <span>🏪</span>
+            Markets
+        </div>
+     <div class="nav-item"
+             onclick="showScreen('profile')">
+            <span>👤</span>
+            Profile
+        </div>
+    </nav>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
