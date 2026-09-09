@@ -1,0 +1,25 @@
+{
+  "demand_score": 82,
+  "demand_level": "High",
+  "peak_seasons": [
+    "Diwali & Navratri Festive Season",
+    "Winter Wedding Season",
+    "New Year & Year-End Celebrations"
+  ],
+  "high_demand_periods": [
+    "September to November (Festive Surge)",
+    "December to February (Weddings & Gifting)"
+  ],
+  "low_demand_periods": [
+    "April to July (Summer Lull)"
+  ],
+  "demand_drivers": [
+    "Diwali home lighting decor and traditional festive gifting",
+    "Dhanteras custom favoring the purchase of metallic goods",
+    "High demand for return gifts during weddings and Griha Pravesh (housewarming) ceremonies",
+    "Cultural resonance and auspicious value of the traditional peacock motif",
+    "Strong appeal of antique gold finish metal decor on e-commerce craft platforms"
+  ],
+  "inventory_recommendation": "Artisans should begin raw material sourcing in May–June and ramp up production to peak inventory levels by August to capture early festive and corporate gifting orders ahead of Diwali. Maintain moderate stock levels through January for the winter wedding trade, then scale down production between April and July to avoid excessive holding costs.",
+  "trend_summary": "Based on an AI-estimated market analysis, this product shows strong demand driven by its dual function as functional lighting and decorative giftware. The peacock motif paired with a metallic finish creates high seasonal spikes during Diwali and the winter wedding season, with steady baseline sales driven by housewarming and home styling trends."
+}

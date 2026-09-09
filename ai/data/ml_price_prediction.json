@@ -1,0 +1,10 @@
+{
+  "product_name": "Ornate Peacock Metal Tealight Holder",
+  "predicted_price_range": "Mid-range",
+  "confidence": 0.538,
+  "class_probabilities": {
+    "Budget": 0.2305,
+    "Mid-range": 0.538,
+    "Premium": 0.2316
+  }
+}

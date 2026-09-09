@@ -1,0 +1,102 @@
+{
+  "product_catalog": {
+    "product_name": "Ornate Peacock Metal Tealight Holder",
+    "category": "Home Decor",
+    "craft_type": "Metal Crafting & Engraving",
+    "material": "Likely brass or metal alloy with glass insert",
+    "description": "An elegant peacock-shaped candle holder featuring detailed feather carving and a fully fanned tail. Finished in an antique gold tone with contrasting dark undertones, this piece includes a central clear glass holder designed to display a tealight candle, bringing warm illumination and regal charm to any space.",
+    "visual_features": [
+      "Peacock motif with a large, fan-spread tail fan",
+      "Intricate embossed and carved feather texture across body and tail",
+      "Antique gold/brass metallic finish with dark patina detailing",
+      "Central recess holding a clear glass tealight cup with a lit candle",
+      "Stable flat base suitable for tabletop placement"
+    ],
+    "tags": [
+      "peacock candle holder",
+      "tealight holder",
+      "metal home decor",
+      "table centerpiece",
+      "festive decor",
+      "diya holder",
+      "brass finish decor",
+      "artisanal gift"
+    ],
+    "target_market": [
+      "Home Decor Enthusiasts",
+      "Festive & Holiday Shoppers",
+      "Cultural & Traditional Craft Collectors",
+      "Gift Buyers for Housewarmings & Weddings"
+    ]
+  },
+  "price_recommendation": {
+    "suggested_price_min": 499,
+    "suggested_price_max": 1199,
+    "recommended_price": 799,
+    "currency": "INR",
+    "reasoning": "The item is an intricate decorative metal craft product featuring hand-carved detailing and a glass insert. Since the material is likely a metal alloy rather than solid brass, pricing should remain accessible for online and offline Indian retail channels. A minimum price of ₹499 covers basic material, artisan wages, and minimal overhead. A maximum of ₹1,199 reflects a premium, gift-ready presentation during festive seasons. The recommended price of ₹799 strikes a fair balance between supporting artisan livelihoods and staying competitive against similar home decor offerings.",
+    "pricing_factors": [
+      "Material composition (likely sheet metal or alloy with antique gold finish rather than heavy solid brass)",
+      "Level of artisan effort involved in the detailed feather carving and engraving",
+      "Inclusion of a custom glass insert for the tealight",
+      "High market demand for peacock-themed decorative items and festive gifting in India",
+      "Fair trade margin to ensure equitable compensation for marginalized artisans"
+    ]
+  },
+  "market_recommendation": {
+    "primary_market": "Festive & Ethnic Home Decor Market in Urban India (Tier-1 and Metro Cities)",
+    "recommended_markets": [
+      "Corporate & Festive Bulk Gifting Market",
+      "Boutique Handicraft & Lifestyle Retail Stores",
+      "Curated E-Commerce & Artisanal Online Platforms",
+      "Wedding & Event Decor Procurement Segment",
+      "Heritage & Luxury Hospitality Decor Sector"
+    ],
+    "target_buyers": [
+      "Urban homeowners seeking traditional or fusion festive tabletop decor",
+      "Corporate procurement teams purchasing bulk festive gifts for employees and clients",
+      "Wedding planners and event decorators looking for ethnic table centerpieces",
+      "Interior designers specializing in traditional Indian or vintage decor styles",
+      "Boutique store curators looking for authentic metal handicraft items"
+    ],
+    "selling_channels": [
+      "Handicraft e-commerce marketplaces (e.g., Etsy India, Jaypore, Craftsvilla, Amazon Karigar)",
+      "Festive pop-up exhibitions and handicraft fairs (e.g., Dilli Haat, Saras Mela)",
+      "B2B wholesale supply to corporate gifting aggregators",
+      "Social commerce platforms (Instagram Store, WhatsApp Business catalog)",
+      "Consignment sales through local boutique home decor stores"
+    ],
+    "reasoning": "The peacock motif is a timeless Indian symbol representing grace, beauty, and auspiciousness, making it highly desirable during festive seasons like Diwali, Navratri, and weddings. Metal casting with an antique brass finish gives the product a premium, handcrafted heritage appeal, while the functional glass tealight insert offers modern utility and safety. This combination of traditional art, utility, and affordable luxury makes it ideal for urban home decor, gifting, and hospitality spaces.",
+    "market_opportunities": [
+      "Create bundled festive hampers combining the holder with eco-friendly handmade scented tealight candles",
+      "Offer bulk customization and set options (e.g., pair of peacock holders) tailored for wedding return gifts",
+      "Target pre-festive B2B corporate gifting catalogs 2–3 months prior to Diwali for volume orders",
+      "Collaborate with fair-trade export platforms to tap into the Indian diaspora market in North America and Europe"
+    ]
+  },
+  "demand_and_trends": {
+    "demand_score": 82,
+    "demand_level": "High",
+    "peak_seasons": [
+      "Diwali & Navratri Festive Season",
+      "Winter Wedding Season",
+      "New Year & Year-End Celebrations"
+    ],
+    "high_demand_periods": [
+      "September to November (Festive Surge)",
+      "December to February (Weddings & Gifting)"
+    ],
+    "low_demand_periods": [
+      "April to July (Summer Lull)"
+    ],
+    "demand_drivers": [
+      "Diwali home lighting decor and traditional festive gifting",
+      "Dhanteras custom favoring the purchase of metallic goods",
+      "High demand for return gifts during weddings and Griha Pravesh (housewarming) ceremonies",
+      "Cultural resonance and auspicious value of the traditional peacock motif",
+      "Strong appeal of antique gold finish metal decor on e-commerce craft platforms"
+    ],
+    "inventory_recommendation": "Artisans should begin raw material sourcing in May–June and ramp up production to peak inventory levels by August to capture early festive and corporate gifting orders ahead of Diwali. Maintain moderate stock levels through January for the winter wedding trade, then scale down production between April and July to avoid excessive holding costs.",
+    "trend_summary": "Based on an AI-estimated market analysis, this product shows strong demand driven by its dual function as functional lighting and decorative giftware. The peacock motif paired with a metallic finish creates high seasonal spikes during Diwali and the winter wedding season, with steady baseline sales driven by housewarming and home styling trends."
+  }
+}

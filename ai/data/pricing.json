@@ -1,0 +1,14 @@
+{
+  "suggested_price_min": 499,
+  "suggested_price_max": 1199,
+  "recommended_price": 799,
+  "currency": "INR",
+  "reasoning": "The item is an intricate decorative metal craft product featuring hand-carved detailing and a glass insert. Since the material is likely a metal alloy rather than solid brass, pricing should remain accessible for online and offline Indian retail channels. A minimum price of ₹499 covers basic material, artisan wages, and minimal overhead. A maximum of ₹1,199 reflects a premium, gift-ready presentation during festive seasons. The recommended price of ₹799 strikes a fair balance between supporting artisan livelihoods and staying competitive against similar home decor offerings.",
+  "pricing_factors": [
+    "Material composition (likely sheet metal or alloy with antique gold finish rather than heavy solid brass)",
+    "Level of artisan effort involved in the detailed feather carving and engraving",
+    "Inclusion of a custom glass insert for the tealight",
+    "High market demand for peacock-themed decorative items and festive gifting in India",
+    "Fair trade margin to ensure equitable compensation for marginalized artisans"
+  ]
+}
