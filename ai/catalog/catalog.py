@@ -9,18 +9,22 @@ from pydantic import BaseModel
 
 
 # ==========================================
-# 1. PRODUCT CATALOG SCHEMA
+# 1. PRODUCT CATALOG SCHEMA (HANDICRAFT REDESIGN)
 # ==========================================
 
 class ProductCatalog(BaseModel):
     product_name: str
-    category: str
+    craft_category: str
     craft_type: str
-    material: str
+    primary_material: str
+    crafting_time: str
+    size_complexity: str
+    artisan_region: str
+    utility_type: str
+    target_market: list[str]
     description: str
     visual_features: list[str]
     tags: list[str]
-    target_market: list[str]
 
 
 # ==========================================
@@ -55,6 +59,10 @@ client = genai.Client(api_key=api_key)
 
 image_path = Path(__file__).parent / "product.jpg"
 
+if not image_path.exists():
+    # Fallback to sitadevi.png if product.jpg doesn't exist
+    image_path = PROJECT_ROOT / "sitadevi.png"
+
 with open(image_path, "rb") as f:
     image_bytes = f.read()
 
@@ -62,29 +70,32 @@ image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
 
 # ==========================================
-# 6. AI PROMPT
+# 6. AI PROMPT WITH STRICT UNKNOWN FALLBACKS
 # ==========================================
 
 prompt = """
 You are the AI catalog assistant for CraftConnect.
+CraftConnect helps marginalized Indian artisans digitally catalog and sell their handcrafted products.
 
-CraftConnect helps marginalized artisans digitally
-catalog and sell their handcrafted products.
+Analyze the provided product image carefully and generate structured catalog fields:
 
-Analyze the provided product image carefully.
+Required JSON fields:
+1. product_name: Descriptive title of the product.
+2. craft_category: Primary craft sector (e.g., "Pottery & Terracotta", "Bamboo & Cane", "Handloom Textiles", "Metalwork & Brassware", "Woodcraft", "Folk Painting & Tribal Art").
+3. craft_type: Specific craft technique (e.g., "Dhokra Casting", "Clay Pottery", "Madhubani Painting", "Block Printing", "Basketry", "Wood Carving").
+4. primary_material: Dominant raw material visible (e.g., "Terracotta Clay", "Bamboo", "Pure Brass", "Sheesham Wood", "Cotton Handloom"). If uncertain, set to "Unknown".
+5. crafting_time: Estimated craft labor category ("< 5 Hours", "1-3 Days", "4-7 Days", "> 1 Week", or "Unknown"). Set to "Unknown" if not determinable.
+6. size_complexity: Product scale/complexity ("Small/Miniature", "Medium/Standard", "Large/Display", "Intricate Multi-piece Set").
+7. artisan_region: Traditional origin or state if known from visual style. Set to "Unknown" if region cannot be visually confirmed. NEVER invent an artisan region or GI tag.
+8. utility_type: Main purpose ("Home Decor / Exhibition", "Kitchenware / Utility", "Festive & Ritual", "Wearable Fashion").
+9. target_market: List of target buyer segments.
+10. description: Rich e-commerce product description.
+11. visual_features: List of notable visual features.
+12. tags: Relevant search tags starting with #.
 
-Create a product catalog using ONLY information that
-can reasonably be inferred from the image.
-
-Important rules:
-
-- Do not invent exact material if it cannot be identified.
-- If the material is uncertain, say "Likely metal" or similar.
-- Do not claim that something is handmade unless there
-  is visual evidence suggesting it.
-- Keep the description suitable for an e-commerce catalog.
-- Generate useful tags for searching the product.
-- Identify realistic target markets.
+CRITICAL RULES:
+- If a field (like artisan_region, crafting_time, or primary_material) cannot reliably be confirmed from the image alone, set its value to "Unknown".
+- NEVER invent a specific artisan region, GI origin, crafting time, or exact material.
 """
 
 
@@ -107,7 +118,6 @@ interaction = client.interactions.create(
         }
     ],
 
-    # Force Gemini to return JSON
     response_format={
         "type": "text",
         "mime_type": "application/json",

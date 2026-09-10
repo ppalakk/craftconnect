@@ -115,14 +115,17 @@ def calculate_inr_price_range(category: str, craft_type: str, material: str, pri
 
 class ProductCatalog(BaseModel):
     product_name: str
-    category: str
+    craft_category: str
     craft_type: str
-    material: str
+    primary_material: str
+    crafting_time: str
+    size_complexity: str
+    artisan_region: str
+    utility_type: str
+    target_market: List[str]
     description: str
     visual_features: List[str]
     tags: List[str]
-    target_market: List[str]
-
 
 class PricePredictionRequest(BaseModel):
     product_name: str
@@ -204,15 +207,28 @@ an AI platform helping marginalized Indian artisans sell their products.
 Analyze the uploaded product image carefully.
 
 Generate a structured product catalog containing:
-1. Product name
-2. Product category
-3. Craft type
-4. Likely material
-5. Detailed product description
-6. Important visual features
-7. Useful product tags (start each with #)
-8. Suitable target markets
 
+1. Product name
+2. Craft category
+3. Craft type
+4. Primary material
+5. Crafting time
+6. Size complexity
+7. Artisan region
+8. Utility type
+9. Suitable target market
+10. Detailed product description
+11. Important visual features
+12. Useful product tags (start each with #)
+
+IMPORTANT:
+- Only infer information reasonably supported by the image.
+- Do not invent an exact crafting time if it cannot be inferred.
+- If information is unavailable, return "Unknown".
+- Do not invent artisan region from the image.
+- Do not claim an exact material if it cannot be visually confirmed.
+- Keep craft category and craft type relevant to Indian handicrafts.
+- Make the description useful for an e-commerce catalog.
 IMPORTANT:
 - Only infer information that is reasonably supported by the image.
 - Do not claim an exact material if it cannot be visually confirmed.
@@ -243,15 +259,16 @@ IMPORTANT:
         if price_model:
             try:
                 price_input = pd.DataFrame([{
-                    "product_name": catalog.product_name,
-                    "primary_category": catalog.category,
-                    "secondary_category": catalog.craft_type,
-                    "tertiary_category": catalog.material,
-                    "product_type": catalog.category,
-                    "target_demographic": ", ".join(catalog.target_market),
-                    "seasonal_relevance": "Festive",
-                    "purchase_frequency": "Occasionally"
-                }])
+    "product_name": catalog.product_name,
+    "craft_category": catalog.craft_category,
+    "craft_type": catalog.craft_type,
+    "primary_material": catalog.primary_material,
+    "crafting_time": catalog.crafting_time,
+    "size_complexity": catalog.size_complexity,
+    "artisan_region": catalog.artisan_region,
+    "utility_type": catalog.utility_type,
+    "target_demographic": ", ".join(catalog.target_market)
+}])
                 price_tier = price_model.predict(price_input)[0]
                 probs = price_model.predict_proba(price_input)[0]
                 confidence = float(probs.max())
@@ -260,8 +277,11 @@ IMPORTANT:
 
         # Compute numerical price details
         price_details = calculate_inr_price_range(
-            catalog.category, catalog.craft_type, catalog.material, price_tier
-        )
+    catalog.craft_category,
+    catalog.craft_type,
+    catalog.primary_material,
+    price_tier
+)
 
         # Market Linkage Top Matches
         market_matches = [
@@ -304,7 +324,7 @@ IMPORTANT:
                 "recommended_price_inr": price_details["recommended_inr"],
                 "price_display": price_details["price_string"],
                 "confidence_score": round(confidence, 4),
-                "reasoning": f"Based on ML Random Forest pricing model ({price_tier} classification) evaluated against craft material '{catalog.material}' and traditional market standards."
+                "reasoning": f"Based on ML Random Forest pricing model ({price_tier} classification) evaluated against craft material '{catalog.primary_material}' and traditional market standards."
             },
             "market_linkages": market_matches,
             "demand_insight": {
@@ -328,15 +348,16 @@ def predict_price(req: PricePredictionRequest):
 
     try:
         input_data = pd.DataFrame([{
-            "product_name": req.product_name,
-            "primary_category": req.primary_category,
-            "secondary_category": req.secondary_category,
-            "tertiary_category": req.tertiary_category,
-            "product_type": req.primary_category,
-            "target_demographic": req.target_demographic,
-            "seasonal_relevance": "Festive",
-            "purchase_frequency": "Occasionally"
-        }])
+    "product_name": req.product_name,
+    "craft_category": req.primary_category,
+    "craft_type": req.secondary_category,
+    "primary_material": req.tertiary_category,
+    "crafting_time": "Unknown",
+    "size_complexity": "Unknown",
+    "artisan_region": "Unknown",
+    "utility_type": "Unknown",
+    "target_demographic": req.target_demographic
+}])
 
         prediction = price_model.predict(input_data)[0]
         probs = price_model.predict_proba(input_data)[0]
