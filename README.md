@@ -32,16 +32,8 @@ Artisans often face:
 
 **Frontend:** HTML, CSS, JavaScript
 **Backend:** Node.js, Express.js
-**Database:** SQL
+**Database:** MongoDB
 **AI/ML:** Python
 
-## 🚀 Current Status
-
-Frontend **UI/UX prototype** completed.
-Backend, AI services, database, and real market-data integration are under development.
-
-## 🏆 Smart India Hackathon
-
-Developed as a prototype for **Smart India Hackathon (SIH)** to bridge the gap between **traditional craftsmanship and modern digital markets**.
 
 > **Create. Catalog. Connect. Grow.**
