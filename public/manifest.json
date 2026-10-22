@@ -1,0 +1,16 @@
+{
+  "name": "CraftConnect",
+  "short_name": "CraftConnect",
+  "description": "Offline-first AI artisan platform",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#fffdf9",
+  "theme_color": "#17665a",
+  "icons": [
+    {
+      "src": "/images/sitadevi.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

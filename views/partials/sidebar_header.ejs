@@ -1,0 +1,130 @@
+<!-- Sidebar Component -->
+<div id="appSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo-icon">🌿</div>
+            <div class="sidebar-brand-text">
+                <h3>CraftConnect</h3>
+                <span style="font-size: 10.5px; font-weight: 600; color: #E2A962; letter-spacing: 0.3px; display: block; margin-top: 2px;">Empowering Artisans</span>
+            </div>
+        </div>
+        <button id="closeSidebar" class="sidebar-close-btn" aria-label="Close menu">&times;</button>
+    </div>
+    <div class="sidebar-body">
+        <ul class="sidebar-menu">
+            <li><button type="button" class="sidebar-nav-btn active" data-screen="home"><span
+                        class="sidebar-nav-icon">⌂</span> <span data-i18n="nav_home">Home</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="catalog"><span
+                        class="sidebar-nav-icon">📦</span> <span data-i18n="nav_catalog">Catalog</span></button>
+            </li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="products"><span
+                        class="sidebar-nav-icon">⛶</span> <span data-i18n="nav_scan">AI Scan</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="markets"><span
+                        class="sidebar-nav-icon">🏛️</span> <span data-i18n="nav_markets">Markets</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="orders"><span
+                        class="sidebar-nav-icon">📦</span> <span data-i18n="nav_orders">Pending Orders</span> <span
+                        class="sidebar-nav-badge" id="sidebarOrdersBadge">2</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="insights"><span
+                        class="sidebar-nav-icon">📊</span> <span data-i18n="nav_insights_sidebar">Demand
+                        Insights</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="profile"><span
+                        class="sidebar-nav-icon">👤</span> <span
+                        data-i18n="nav_profile_sidebar">Profile</span></button></li>
+        </ul>
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-section-label" data-i18n="sidebar_grow">GROW &amp; SOURCE</p>
+        <ul class="sidebar-menu">
+            <li><button type="button" class="sidebar-nav-btn" data-screen="materials"><span
+                        class="sidebar-nav-icon">🌾</span> <span data-i18n="nav_materials">Raw
+                        Materials</span></button></li>
+            <li><button type="button" class="sidebar-nav-btn" data-screen="schemes"><span
+                        class="sidebar-nav-icon">🏛️</span> <span data-i18n="nav_schemes">Govt
+                        Schemes</span></button></li>
+            <li><a href="/logout" class="sidebar-nav-btn sidebar-logout-link" style="color: #FCA5A5; text-decoration: none;">
+                <span class="sidebar-nav-icon">🚪</span>
+                <span>Sign Out</span>
+            </a></li>
+        </ul>
+        <div class="sidebar-growth-box">
+            <div class="sidebar-growth-icon">🌿</div>
+            <div>
+                <strong>Your Growth<br>Our Support</strong>
+                <p>Get AI insights, market links and government schemes to scale your craft business.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay background when sidebar is open -->
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+<div class="app">
+    <!-- Top Application Header -->
+    <header class="app-topbar">
+    <div class="brand">
+        <!-- Hamburger (mobile only) -->
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="logo">🌿</div>
+        <h2>Craft<span>Connect</span> <small class="version-tag" data-i18n="app_version">AI v2.0</small></h2>
+    </div>
+    <div class="cc-topbar-search-wrap app-global-search">
+        <span class="cc-topbar-search-icon">🔍</span>
+        <input type="search" id="globalAppSearch" class="cc-topbar-search-input"
+            placeholder="Search products, markets, schemes, or anything..."
+            oninput="handleGlobalAppSearch(this.value)" autocomplete="off">
+    </div>
+    <div class="header-actions">
+        <button type="button" class="notify-bell-btn" id="notifyBellBtn" onclick="toggleNotificationDrawer()"
+            aria-label="Notifications">
+            🔔
+            <span class="notify-count" id="notifyCount">0</span>
+        </button>
+
+        <!-- Language Dropdown -->
+        <div class="language-dropdown-container" id="languageDropdown">
+            <button type="button" id="languageButton" class="language-btn" onclick="toggleLanguageMenu()">
+                🌐 <span id="selectedLanguage">English</span> ▾
+            </button>
+
+            <div class="language-menu" id="languageMenu">
+                <button class="lang-opt" onclick="changeLanguage('en', 'English')">English</button>
+                <button class="lang-opt" onclick="changeLanguage('hi', 'हिन्दी')">हिन्दी</button>
+                <button class="lang-opt" onclick="changeLanguage('mr', 'मराठी')">मराठी</button>
+                <button class="lang-opt" onclick="changeLanguage('gu', 'ગુજરાતી')">ગુજરાતી</button>
+            </div>
+        </div>
+
+        <button type="button" class="cc-user-chip header-user-chip" id="headerUserChip" onclick="showScreen('profile')">
+            <img id="headerUserAvatar" class="cc-user-avatar"
+                src="<%= (typeof currUser !== 'undefined' && currUser && currUser.avatar) ? currUser.avatar : '/images/default_avatar.png' %>"
+                alt="Artisan" onerror="this.src='/images/default_avatar.png'">
+            <div class="cc-user-details">
+                <span class="cc-user-name" id="headerUserName"><%= (typeof currUser !== 'undefined' && currUser) ? currUser.name : '' %></span>
+                <span class="cc-user-role" id="headerUserRole"><%= (typeof currUser !== 'undefined' && currUser) ? ((currUser.role || '').toUpperCase()) : '' %></span>
+            </div>
+        </button>
+
+        <!-- Prominent Logout Button -->
+        <a href="/logout" class="header-logout-btn" id="headerLogoutLink" title="Sign out of CraftConnect">
+            <span>🚪</span>
+            <span>Logout</span>
+        </a>
+    </div>
+</header>
+
+<!-- ================= GUEST MODE ANNOUNCEMENT BANNER ================= -->
+<div id="guestBanner" class="guest-mode-banner" style="<%= (typeof currUser !== 'undefined' && currUser) ? 'display: none;' : '' %>">
+    <div class="guest-banner-left">
+        <span class="guest-banner-icon">👀</span>
+        <div class="guest-banner-info">
+            <strong>Exploring in Guest Mode</strong>
+            <p>You can browse crafts, market leads, and schemes. Sign in or register to unlock AI scan &amp; pricing, order fulfillment, expense tracking, and peer forum.</p>
+        </div>
+    </div>
+    <div class="guest-banner-actions">
+        <a href="/login" class="guest-btn-login">Sign In</a>
+        <a href="/register" class="guest-btn-register">Create Account</a>
+    </div>
+</div>

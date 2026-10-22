@@ -1,0 +1,415 @@
+<!-- ================= HOME ================= -->
+<section class="screen active hub-screen" id="home">
+    <!-- Top Hero Banner Card -->
+    <div class="home-hero-card">
+        <div class="home-hero-copy">
+            <h1>
+                <span id="homeGreetingText">Good Morning</span>,
+                <span id="welcomeName"><%= (typeof currUser !== 'undefined' && currUser) ? (currUser.name.split(' ')[0]) : '' %></span>
+                <span class="home-wave">👋</span>
+            </h1>
+            <p data-i18n="welcome_sub">Your AI Business Assistant is ready to help you grow your artisan sales.</p>
+            <div class="home-hero-pills">
+                <button type="button" class="home-hero-pill" onclick="showScreen('markets')">
+                    <span class="pill-ico tone-green">🏪</span>
+                    <span>Get Market Suggestions</span>
+                </button>
+                <button type="button" class="home-hero-pill" onclick="showScreen('schemes')">
+                    <span class="pill-ico tone-teal">🏛️</span>
+                    <span>Find Govt Schemes</span>
+                </button>
+                <button type="button" class="home-hero-pill" onclick="showScreen('products')">
+                    <span class="pill-ico tone-mint">⛶</span>
+                    <span>Scan with AI</span>
+                </button>
+                <button type="button" class="home-hero-pill" onclick="showScreen('orders')">
+                    <span class="pill-ico tone-sage">📦</span>
+                    <span>Track Orders</span>
+                </button>
+            </div>
+        </div>
+        <div class="home-hero-visual">
+            <div class="home-hero-photo">
+                <img src="/images/hero_pots.jpg"
+                    alt="Handcrafted terracotta pottery in basket"
+                    onerror="this.src='/images/hero_crafts.jpg'">
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Quick Stat Metric Cards -->
+    <div class="stats">
+        <div class="stat-card" onclick="showScreen('catalog')">
+            <div class="stat-icon-wrap tone-green">🛍️</div>
+            <h3 id="statProducts">4</h3>
+            <p data-i18n="stat_products">Total Products</p>
+            <span class="stat-delta up" id="statProductsDelta">↑ 12% this month</span>
+        </div>
+        <div class="stat-card" onclick="showScreen('markets')">
+            <div class="stat-icon-wrap tone-peach">🛒</div>
+            <h3 id="statMarkets">5</h3>
+            <p data-i18n="stat_markets">Market Leads</p>
+            <span class="stat-delta up" id="statMarketsDelta">↑ 8% this month</span>
+        </div>
+        <div class="stat-card stat-card--clickable" onclick="showScreen('orders')" id="pendingOrdersCard"
+            title="View pending orders breakdown">
+            <div class="stat-icon-wrap tone-lilac">⏱</div>
+            <h3 id="statOrders">2</h3>
+            <p data-i18n="stat_orders">Pending Orders</p>
+            <span class="stat-delta warn" id="statOrdersDelta">→ 1 new</span>
+        </div>
+        <div class="stat-card" onclick="showScreen('insights')">
+            <div class="stat-icon-wrap tone-mint">📈</div>
+            <h3 id="statGrowth">+18%</h3>
+            <p data-i18n="stat_growth">Demand Growth</p>
+            <span class="stat-delta up">↑ 5% this month</span>
+        </div>
+    </div>
+
+    <!-- Multi-lingual Voice Assistant Banner with 3D Robot Mascot -->
+    <div class="ai-banner home-voice-banner" onclick="openVoiceModal()" role="button" tabindex="0">
+        <div class="ai-banner-icon-mascot">
+            <img src="/images/robot_mascot.jpg" alt="Voice AI Assistant" class="robot-mascot-img" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ai-banner-icon',innerText:'🤖'}))">
+        </div>
+        <div class="ai-banner-text">
+            <h4 data-i18n="voice_banner_title">Multi-lingual Voice Assistant <span class="ai-new-pill">New</span></h4>
+            <p data-i18n="voice_banner_sub">Speak in Hindi, Marathi, Gujarati or English for instant pricing &amp; market advice.</p>
+        </div>
+        <div class="voice-wave" aria-hidden="true">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+            <span class="bar bar-4"></span>
+            <span class="bar bar-5"></span>
+            <span class="bar bar-6"></span>
+        </div>
+        <button type="button" class="ai-talk-btn" onclick="event.stopPropagation(); openVoiceModal();">🎤 Talk to AI</button>
+    </div>
+
+    <!-- Quick Actions Header & 6-Card Grid -->
+    <div class="section-title">
+        <h2 data-i18n="quick_actions_title">⚡ Quick Actions</h2>
+        <button type="button" class="section-link" onclick="showScreen('catalog')">View All →</button>
+    </div>
+    <div class="actions">
+        <div class="action" onclick="showScreen('catalog')">
+            <div class="action-icon ico-orange">📦</div>
+            <div class="action-copy">
+                <h4 data-i18n="action_catalog_title">My Catalog</h4>
+                <p data-i18n="action_catalog_desc">View &amp; manage your crafts</p>
+            </div>
+            <span class="action-chevron">›</span>
+        </div>
+        <div class="action" onclick="showScreen('products')">
+            <div class="action-icon ico-slate">📷</div>
+            <div class="action-copy">
+                <h4 data-i18n="action_scan_title">AI Scan &amp; Price</h4>
+                <p data-i18n="action_scan_desc">Photo to catalog &amp; pricing</p>
+            </div>
+            <span class="action-chevron">›</span>
+        </div>
+        <div class="action" onclick="showScreen('markets')">
+            <div class="action-icon ico-magenta">🎯</div>
+            <div class="action-copy">
+                <h4 data-i18n="action_markets_title">Market Linkage</h4>
+                <p data-i18n="action_markets_desc">Find buyers &amp; melas near you</p>
+            </div>
+            <span class="action-chevron">›</span>
+        </div>
+        <div class="action" onclick="showScreen('materials')">
+            <div class="action-icon ico-leaf">🌿</div>
+            <div class="action-copy">
+                <h4 data-i18n="nav_materials">Raw Materials</h4>
+                <p data-i18n="materials_sub_short">Source raw materials</p>
+            </div>
+            <span class="action-chevron">›</span>
+        </div>
+        <div class="action" onclick="showScreen('schemes')">
+            <div class="action-icon ico-teal">🏛️</div>
+            <div class="action-copy">
+                <h4 data-i18n="nav_schemes">Govt Schemes</h4>
+                <p>Access schemes &amp; support</p>
+            </div>
+            <span class="action-chevron">›</span>
+        </div>
+        <div class="action" onclick="showScreen('orders')">
+            <div class="action-icon ico-violet">🚚</div>
+            <div class="action-copy">
+                <h4 data-i18n="nav_orders">Pending Orders</h4>
+                <p>View &amp; manage orders</p>
+            </div>
+            <span class="action-badge" id="homeOrdersActionBadge">2</span>
+            <span class="action-chevron">›</span>
+        </div>
+    </div>
+
+    <!-- Government Initiatives Hub Banner -->
+    <div class="home-schemes-teaser" onclick="showScreen('schemes')">
+        <div class="home-schemes-teaser-left">
+            <div class="teaser-icon-wrap">🏛️</div>
+            <div>
+                <span class="home-schemes-kicker">Government Initiatives Hub <em id="homeSchemeCount" class="badge-scheme-count">6 Schemes Available</em></span>
+                <h3>Access verified government schemes, collateral-free loans, subsidies and more — all in one place.</h3>
+            </div>
+        </div>
+        <div class="home-schemes-teaser-right">
+            <button type="button" class="home-schemes-cta">Explore Schemes →</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ARTISAN PRODUCT CATALOG ================= -->
+<section class="screen hub-screen" id="catalog">
+    <div class="catalog-hero-bar">
+        <div>
+            <div class="section-badge-pill" data-i18n="catalog_badge">🌿 AI Verified Crafts</div>
+            <h2 data-i18n="catalog_title" class="catalog-page-title">Artisan Product Catalog</h2>
+            <p class="catalog-page-sub" data-i18n="catalog_sub">Manage, showcase and export your AI-cataloged craft products.</p>
+        </div>
+        <button class="add-product-btn" onclick="showScreen('products')">
+            <span>+ Add Craft with AI</span>
+        </button>
+    </div>
+
+    <!-- Catalog Metrics Summary -->
+    <div class="catalog-metrics">
+        <div class="cat-metric-card">
+            <span class="cat-metric-label" data-i18n="catalog_total_items">Total Items</span>
+            <span class="cat-metric-val" id="catalogCount">4</span>
+        </div>
+        <div class="cat-metric-card">
+            <span class="cat-metric-label" data-i18n="catalog_est_value">Catalog Value</span>
+            <span class="cat-metric-val" id="catalogTotalValue">₹3,000</span>
+        </div>
+        <div class="cat-metric-card">
+            <span class="cat-metric-label" data-i18n="catalog_market_ready">Market Ready</span>
+            <span class="cat-metric-val" id="catalogReadyCount">100%</span>
+        </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="catalog-actions-bar">
+        <div class="catalog-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="catalogSearchInput" placeholder="Search craft products, materials, tags..." data-i18n-placeholder="search_placeholder" oninput="searchCatalog(event)">
+        </div>
+        <div class="catalog-sort-wrap">
+            <select id="catalogSortSelect" class="catalog-sort-select" onchange="setCatalogSort(this.value)">
+                <option value="default">Sort: Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Category Filter Chips -->
+    <div class="filter-chips" id="categoryFilters">
+        <button class="filter-chip active" onclick="filterCatalog('all', this)" data-i18n="filter_all">All Crafts</button>
+        <button class="filter-chip" onclick="filterCatalog('bamboo', this)" data-i18n="filter_bamboo">Bamboo & Wood</button>
+        <button class="filter-chip" onclick="filterCatalog('terracotta', this)" data-i18n="filter_clay">Terracotta & Clay</button>
+        <button class="filter-chip" onclick="filterCatalog('textile', this)" data-i18n="filter_textile">Textiles</button>
+        <button class="filter-chip" onclick="filterCatalog('decor', this)" data-i18n="filter_decor">Decor & Gifts</button>
+    </div>
+
+    <!-- Catalog Cards Grid -->
+    <div class="catalog-grid" id="catalogGrid">
+        <!-- Dynamically rendered by renderCatalog() in main.js -->
+    </div>
+
+    <!-- Empty State Container -->
+    <div id="catalogEmpty" class="catalog-empty" style="display:none;">
+        <div class="empty-icon">📦</div>
+        <h4 data-i18n="empty_catalog_title">No craft products found</h4>
+        <p data-i18n="empty_catalog_sub">Upload a new craft photo to automatically add it to your catalog.</p>
+        <button class="mini-btn" onclick="showScreen('products')" data-i18n="btn_upload_now">📸 Scan & Add Craft →</button>
+    </div>
+</section>
+
+<!-- ================= PRODUCTS / SMART AI SCANNER ================= -->
+<section class="screen hub-screen" id="products">
+    <div class="section-title">
+        <div>
+            <h2 data-i18n="scan_title">Smart AI Cataloging &amp; Pricing</h2>
+            <br>
+            <p class="screen-sub" data-i18n="upload_craft_sub">AI analyzes craft image, classifies materials, builds e-commerce catalog &amp; recommends fair benchmark price.</p>
+        </div>
+        <span class="ai-badge" data-i18n="scan_badge">✨ Gemini Vision AI + ML Pricing</span>
+    </div>
+
+    <!-- Upload Box with camera & file picker -->
+
+<div class="upload-box" id="uploadArea">
+    <div class="upload-icon">📸</div>
+
+    <h3 data-i18n="upload_craft_photo">
+        Let's See Your Beautiful Craft!
+    </h3>
+
+    <p>
+        Take a new photo or choose one from your gallery
+        to create your product listing.
+    </p>
+
+    <div class="upload-btn-row">
+
+        <!-- Take a new photo -->
+        <label for="takePhoto" class="btn btn-primary-upload">
+            📷 Take a Photo
+        </label>
+
+        <input
+            type="file"
+            id="takePhoto"
+            accept="image/*"
+            capture="environment"
+            onchange="analyzeProduct(event)"
+           hidden
+        >
+
+        <!-- Upload an existing photo -->
+        <label for="productImage" class="btn btn-secondary-upload">
+            🖼️ Upload image
+        </label>
+
+        <input
+            type="file"
+            id="productImage"
+            accept="image/*"
+            onchange="analyzeProduct(event)"
+            hidden
+        >
+    </div>
+
+    <div class="upload-hints">
+        <span>✓ Clear, well-lit photos work best</span>
+        <span>✓ Keep your craft fully visible</span>
+        <span>✓ We'll help identify its materials and style</span>
+    </div>
+</div>
+
+
+
+    <!-- Loading Animation Spinner -->
+    <div class="loading" id="loading" style="display:none;">
+        <div class="loader"></div>
+        <p style="margin-top:14px; font-weight:700; color:#0e5a4e;" data-i18n="loading_ai">
+            ⚡ Gemini Vision AI &amp; Random Forest ML analyzing your product...
+        </p>
+        <p style="font-size:12.5px; color:#5b736e; margin-top:4px;" data-i18n="loading_sub">
+            Extracting craft techniques, material composition, buyer profiles &amp; optimal INR price
+        </p>
+    </div>
+
+    <!-- Live AI Analysis & Pricing Result -->
+    <div id="catalogResult" style="display:none;">
+        <!-- Added to Catalog Notification Banner -->
+        <div class="catalog-add-success" id="catalogAddNotice" style="display: none;">
+            <div class="notice-icon">✅</div>
+            <div class="notice-text">
+                <strong data-i18n="btn_saved_toast">Product successfully added to your catalog!</strong>
+                <p data-i18n="catalog_sub">Available under your digital artisan showcase.</p>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">
+            <h2 data-i18n="res_catalog_title">AI Generated Catalog Entry</h2>
+            <span class="ai-badge gold" data-i18n="res_badge_live">✨ Production Live</span>
+        </div>
+
+        <div class="product-card">
+            <img id="previewImage" class="product-img" src="" alt="Product Catalog Preview">
+            <div class="product-content">
+                <div class="meta-row">
+                    <span class="category-chip" id="resCategory">Handicraft</span>
+                    <span class="craft-chip" id="resCraft">Traditional Craft</span>
+                </div>
+
+                <h3 style="margin-top:10px; font-size: 20px;" id="resTitle">Handwoven Bamboo Basket</h3>
+                <p id="resDescription">Beautifully handcrafted product description generated by Gemini AI.</p>
+                
+                <div class="feature-box">
+                    <strong data-i18n="res_key_features">✨ Key Visual Features:</strong>
+                    <ul id="resFeatures"></ul>
+                </div>
+
+                <div class="tags-container" id="resTags">
+                    <span class="tag">#Handmade</span>
+                </div>
+
+                <div class="target-market-box">
+                    <strong data-i18n="res_target_buyers">🎯 Target Buyers:</strong> <span id="resTargetMarket">Home Decor, Eco-friendly shoppers</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ML PRICE RECOMMENDATION CARD -->
+        <div class="price-recommendation-card" id="priceResult">
+            <div class="price-header">
+                <div>
+                    <span class="price-title" data-i18n="res_price_title">AI &amp; ML Recommended Fair Price</span>
+                    <p class="price-sub" data-i18n="res_price_sub">Benchmarked against 1,200+ Indian handicraft artisan transactions</p>
+                </div>
+                <span class="tier-badge" id="resTier">Mid-range</span>
+            </div>
+
+            <div class="price-val-container">
+                <div class="price-display" id="resPriceRange">₹650 – ₹1,050</div>
+                <div class="rec-price-tag">
+                    <span data-i18n="res_optimal_price">Optimal Selling Price:</span> <strong id="resRecPrice">₹850</strong>
+                </div>
+            </div>
+
+            <div class="confidence-container">
+                <div class="confidence-label">
+                    <span data-i18n="res_conf_score">ML Confidence Score</span>
+                    <strong id="resConfidence">88%</strong>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="resConfidenceFill" style="width: 88%;"></div>
+                </div>
+            </div>
+
+            <p class="price-reasoning" id="resReasoning">
+                Evaluated by Random Forest ML model using handicraft material complexity, labor estimation, and live market benchmarks.
+            </p>
+        </div>
+
+        <!-- Editable Adjustment Form Before Saving -->
+        <div class="catalog-edit-card">
+            <h4>✏️ Review &amp; Customize Catalog Listing</h4>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label for="editTitle">Product Title</label>
+                    <input type="text" id="editTitle" class="form-input" placeholder="Product Title">
+                </div>
+                <div class="form-group">
+                    <label for="editPrice">Selling Price (₹)</label>
+                    <input type="number" id="editPrice" class="form-input" placeholder="850">
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label for="editCategory">Category</label>
+                    <select id="editCategory" class="form-input">
+                        <option value="bamboo">Bamboo & Wood</option>
+                        <option value="terracotta">Terracotta & Clay</option>
+                        <option value="textile">Textiles & Weaving</option>
+                        <option value="decor">Decor & Gifts</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <input type="text" id="editDescription" class="form-input" placeholder="Artisan handcrafted description">
+                </div>
+            </div>
+            <div class="catalog-save-btns">
+                <button type="button" class="btn btn-save-catalog" onclick="confirmSaveProduct()">
+                    <span>💾 Save to Product Catalog</span>
+                </button>
+                <button type="button" class="btn btn-view-catalog-link" onclick="showScreen('catalog')">
+                    <span data-i18n="btn_view_in_catalog">📦 View Catalog →</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

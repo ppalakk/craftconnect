@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftConnect - AI Artisan Platform</title>
+    <link rel="manifest" href="/public/manifest.json">
+    <meta name="theme-color" content="#17665a">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/sidebar.css">
+    <link rel="stylesheet" href="/public/css/market-discovery.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Server-rendered User Session Injection -->
+    <script>
+        window.CC_USER = <%- JSON.stringify(typeof currUser !== 'undefined' && currUser ? currUser : (typeof user !== 'undefined' && user ? user : null)) %>;
+    </script>
+</head>
+<body>
+    <% if ((typeof success !== 'undefined' && success && success.length) || (typeof error !== 'undefined' && error && error.length)) { %>
+    <div class="flash-toast-wrapper" style="position: fixed; top: 70px; right: 20px; z-index: 9999; max-width: 440px; width: calc(100% - 40px); display: flex; flex-direction: column; gap: 8px;">
+        <% if (typeof success !== 'undefined' && success && success.length) { %>
+        <div style="background: #e8f5e9; border: 1px solid #81c784; color: #1b5e20; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); font-size: 13.5px; font-weight: 500;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>✅</span>
+                <span><%= Array.isArray(success) ? success[0] : success %></span>
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #1b5e20; line-height: 1;">✕</button>
+        </div>
+        <% } %>
+        <% if (typeof error !== 'undefined' && error && error.length) { %>
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); font-size: 13.5px; font-weight: 500;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span>⚠️</span>
+                <span><%= Array.isArray(error) ? error[0] : error %></span>
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #991b1b; line-height: 1;">✕</button>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+
+    <!-- 1. Navigation & Header Shell (Sidebar, Overlay, Brand Header, Guest Banner) -->
+    <%- include('partials/sidebar_header') %>
+
+    <!-- 2. Core Workspace Screens (Home, Catalog, AI Scan & Price) -->
+    <%- include('partials/workspace_screens') %>
+
+    <!-- 3. Market Leads, Demand Insights & Orders Fulfillment -->
+    <%- include('partials/market_order_screens') %>
+
+    <!-- 4. Growth, Sourcing, Schemes Hub & Finance Profit/Loss Tracker -->
+    <%- include('partials/growth_finance_screens') %>
+
+    <!-- 5. Profile Showcase, Photo Upload Dialog, Bottom Nav & App Modals -->
+    <%- include('partials/profile_and_modals') %>
+
+    </div> <!-- Close .app container opened in sidebar_header.ejs -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/api/session.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="/public/js/main.js"></script>
+    <script src="/public/js/translation.js"></script>
+    <script src="/public/js/app-modules.js"></script>
+    <script src="/public/js/pendingorder.js"></script>
+    <script src="/public/js/sidebar.js"></script>
+    <script src="/public/js/profile.js"></script>
+    <script src="/public/js/market-discovery.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/public/sw.js").catch(function () { });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!-- ================= RAW MATERIALS ================= -->
+<section class="screen" id="materials">
+    <div class="section-title">
+        <h2 data-i18n="materials_title">Raw Material Marketplace</h2>
+        <span class="ai-badge" data-i18n="materials_badge">Co-op sourcing</span>
+    </div>
+    <p class="screen-sub" data-i18n="materials_sub">Pool cluster orders for wholesale rates, or list surplus
+        materials for nearby
+        artisans.</p>
+    <div class="orders-filter-tabs">
+        <button class="orders-tab active" id="matTabBuy" onclick="switchMaterialMode('buy', this)"
+            data-i18n="materials_tab_buy">🛒 Buying
+            (Co-op)</button>
+        <button class="orders-tab" id="matTabSell" onclick="switchMaterialMode('sell', this)"
+            data-i18n="materials_tab_sell">📦 Selling
+            (Supply)</button>
+    </div>
+    <form id="materialForm" class="material-form" onsubmit="submitMaterialListing(event)">
+        <input type="text" id="matTitle" required placeholder="Material (e.g. Terracotta clay 50kg)">
+        <input type="number" id="matQty" required min="1" placeholder="Quantity">
+        <input type="number" id="matPrice" required min="1" placeholder="Rate ₹">
+        <input type="text" id="matLocation" required placeholder="Cluster / city">
+        <button type="submit" class="btn" id="matSubmitBtn">Join bulk buy</button>
+    </form>
+    <div id="materialList" class="market-list-container"></div>
+</section>
+
+<!-- ================= GOVT SCHEMES ================= -->
+<section class="screen hub-screen" id="schemes">
+    <div class="schemes-hero-card">
+        <div class="schemes-hero-copy">
+            <span class="home-hero-badge schemes-live-badge"><i></i> Government Support</span>
+            <h2 data-i18n="schemes_title">Government Initiatives Hub</h2>
+            <p class="schemes-subtitle" data-i18n="schemes_subtitle">Discover verified government schemes, collateral-free loans, subsidies and more — all in one place.</p>
+            <div class="home-hero-pills scheme-hero-pills">
+                <button type="button" class="home-hero-pill scheme-hero-pill active" data-type="all" onclick="filterSchemeType('all', this)">
+                    <span class="pill-ico tone-teal">🏛️</span>
+                    <span>Schemes &amp; Subsidies</span>
+                </button>
+                <button type="button" class="home-hero-pill scheme-hero-pill" data-type="credit" onclick="filterSchemeType('credit', this)">
+                    <span class="pill-ico tone-green">₹</span>
+                    <span>Loans &amp; Credit</span>
+                </button>
+                <button type="button" class="home-hero-pill scheme-hero-pill" data-type="skill" onclick="filterSchemeType('skill', this)">
+                    <span class="pill-ico tone-sage">🎓</span>
+                    <span>Training &amp; Skill Development</span>
+                </button>
+                <button type="button" class="home-hero-pill scheme-hero-pill" data-type="identity" onclick="filterSchemeType('identity', this)">
+                    <span class="pill-ico tone-lilac">🪪</span>
+                    <span>Identity &amp; Certification</span>
+                </button>
+            </div>
+        </div>
+        <div class="home-hero-visual">
+            <div class="home-hero-photo">
+                <img src="/images/store_craft_bazaar.jpg"
+                    alt="Hand-painted artisan pottery"
+                    onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'home-hero-photo-fallback',innerText:'🏺'}))">
+            </div>
+        </div>
+    </div>
+
+    <div class="scheme-filter-card">
+        <div class="scheme-filter-header">
+            <div class="scheme-filter-title">
+                <div class="filter-header-icon">🔎</div>
+                <div>
+                    <h3>Find the Right Scheme</h3>
+                    <p>Use filters to discover schemes that match your craft, business type and needs.</p>
+                </div>
+            </div>
+            <button type="button" class="scheme-reset-btn" id="schemeResetBtn" onclick="resetSchemeFilters()">
+                ↺ <span data-i18n="schemes_reset_btn">Reset Filters</span>
+            </button>
+        </div>
+
+        <form class="scheme-elig-form scheme-filter-form" id="schemeFilterForm" onsubmit="checkSchemeEligibility(event)">
+            <div class="scheme-form-grid scheme-form-grid-3">
+                <div class="scheme-form-group">
+                    <label for="schemeCraft">Craft / Trade Category</label>
+                    <div class="scheme-select-wrapper">
+                        <select id="schemeCraft" onchange="applySchemeFilters()">
+                            <option value="all">All Craft Categories</option>
+                            <option value="handicraft">Handicrafts, Cane &amp; Bamboo</option>
+                            <option value="textile">Textiles &amp; Handloom Weaving</option>
+                            <option value="pottery">Pottery, Terracotta &amp; Clay Work</option>
+                            <option value="woodwork">Wood Carving, Furniture &amp; Wooden Toys</option>
+                            <option value="metalwork">Metalwork, Bell Metal &amp; Dhokra</option>
+                            <option value="jewellery">Traditional Jewellery &amp; Goldsmithing</option>
+                            <option value="leather">Leather Craft &amp; Traditional Footwear</option>
+                            <option value="stone">Stone Carving &amp; Sculpture</option>
+                            <option value="painting">Traditional Painting &amp; Folk Art</option>
+                            <option value="embroidery">Hand Embroidery &amp; Needlework</option>
+                            <option value="paper">Paper Craft &amp; Papier-mâché</option>
+                            <option value="other">Other Traditional Crafts</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="scheme-form-group">
+                    <label for="schemeTurnover">Financial Year</label>
+                    <div class="scheme-select-wrapper">
+                        <select id="schemeTurnover" onchange="applySchemeFilters()">
+                            <option value="all">All Years</option>
+                            <option value="term">2023 — 2028</option>
+                            <option value="ongoing">Ongoing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="scheme-form-group">
+                    <label for="schemeTypeSelect">Scheme Type</label>
+                    <div class="scheme-select-wrapper">
+                        <select id="schemeTypeSelect" onchange="filterSchemeType(this.value)">
+                            <option value="all">All Types</option>
+                            <option value="credit">Loans &amp; Working Capital</option>
+                            <option value="toolkit">Tools &amp; Machinery</option>
+                            <option value="skill">Skill Development</option>
+                            <option value="market">Market Support</option>
+                            <option value="identity">Identity &amp; Certification</option>
+                            <option value="subsidy">Subsidy</option>
+                            <option value="cluster">Cluster Development</option>
+                            <option value="craft">Craft &amp; Trade</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scheme-form-bottom">
+                <button type="submit" class="scheme-btn-check" id="schemeCheckBtn">
+                    ✓ <span data-i18n="schemes_check_btn">Check Eligibility</span>
+                </button>
+                <div class="scheme-type-chips" id="schemeTypeChips">
+                    <button type="button" class="scheme-chip" data-type="credit"
+                        onclick="filterSchemeType('credit', this)">Loans &amp; Working Capital</button>
+                    <button type="button" class="scheme-chip" data-type="toolkit"
+                        onclick="filterSchemeType('toolkit', this)">Tools &amp; Machinery</button>
+                    <button type="button" class="scheme-chip" data-type="skill"
+                        onclick="filterSchemeType('skill', this)">Skill Development</button>
+                    <button type="button" class="scheme-chip" data-type="market"
+                        onclick="filterSchemeType('market', this)">Market Support</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="scheme-results-summary" id="schemeResultsSummary">
+            <div class="summary-left">
+                <span class="summary-icon">💡</span>
+                <span id="schemeSummaryText">Pro Tip — Select your craft category and trade type to get the most relevant schemes for you.</span>
+            </div>
+            <div class="summary-stats" id="schemeSummaryStats"></div>
+        </div>
+    </div>
+
+    <div class="section-title schemes-available-head">
+        <h2>🏛️ Available Government Schemes</h2>
+        <span class="schemes-count-badge" id="schemeCountBadge">6 Schemes Available</span>
+    </div>
+    <p class="screen-sub" style="margin-top:-8px;">Explore verified schemes tailored for artisans and craft businesses.</p>
+
+    <div id="schemeResults" class="scheme-grid"></div>
+    <div id="schemeEmpty" class="catalog-empty" style="display:none;">
+        <div class="empty-icon">🏛️</div>
+        <h4>No matching schemes</h4>
+        <p>Try another craft category, scheme type, or keyword.</p>
+        <button class="mini-btn" type="button" onclick="resetSchemeFilters()">Reset Filters</button>
+    </div>
+
+    <div class="scheme-disclaimer-card">
+        <div class="disclaimer-icon-wrap">🏛️</div>
+        <div class="disclaimer-text">
+            <strong>Official Notice &amp; Verification Advisory:</strong> CraftConnect displays verified
+            information compiled from official Government of India portals. Preliminary eligibility matching is
+            advisory based on stated criteria. Official sanction, loan disbursement, toolkit issuance, and
+            artisan ID cards are subject to formal application and biometric/document verification by respective
+            nodal ministries and partner banks.
+        </div>
+    </div>
+</section>
+
+<!-- ================= PEER FORUM ================= -->
+<section class="screen" id="forum">
+    <div class="section-title">
+        <h2 data-i18n="forum_title">Artisan Peer Forum</h2>
+        <span class="ai-badge" data-i18n="forum_badge">State-to-state</span>
+    </div>
+    <p class="screen-sub" data-i18n="forum_sub">Share design tips or outsource overflow orders during capacity
+        crunches.</p>
+    <form class="forum-compose" onsubmit="postForumMessage(event)">
+        <select id="forumTag">
+            <option value="tip">Design tip</option>
+            <option value="outsource">Outsource overflow</option>
+            <option value="help">Ask for help</option>
+        </select>
+        <textarea id="forumBody" required rows="3"
+            placeholder="Write a message for fellow artisans..."></textarea>
+        <button type="submit" class="btn">Post to community</button>
+    </form>
+    <div id="forumFeed" class="forum-feed"></div>
+</section>
+
+<!-- ================= FINANCE: PROFIT & LOSS TRACKER ================= -->
+<section class="screen" id="finance">
+    <div class="section-title"
+        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+        <div>
+            <h2 data-i18n="finance_title">Profit &amp; Loss Tracker</h2>
+            <span class="ai-badge" data-i18n="finance_badge">Artisan Financial Ledger</span>
+        </div>
+        <button type="button" class="mini-btn" onclick="openExpenseModal()"
+            style="font-size: 11.5px; padding: 6px 12px; border-radius: 10px; background: #0F5147; color: white; cursor: pointer; border: none; font-weight: 600;"
+            data-i18n="finance_btn_expense">
+            ➕ Record Expense
+        </button>
+    </div>
+
+    <div class="finance-container">
+        <!-- 1. Filters: Time Period & Business/Product Scope -->
+        <div class="finance-filter-bar">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <span
+                    style="font-size: 11px; font-weight: 700; color: #5a7571; text-transform: uppercase; letter-spacing: 0.5px;">Time
+                    Period Filter</span>
+                <div class="finance-period-tabs" id="financePeriodTabs">
+                    <button type="button" class="finance-tab active"
+                        onclick="setFinancePeriod('weekly', this)">Weekly</button>
+                    <button type="button" class="finance-tab"
+                        onclick="setFinancePeriod('monthly', this)">Monthly</button>
+                    <button type="button" class="finance-tab"
+                        onclick="setFinancePeriod('yearly', this)">Yearly</button>
+                    <button type="button" class="finance-tab" onclick="setFinancePeriod('custom', this)">Custom
+                        Range</button>
+                </div>
+            </div>
+
+            <!-- Custom Date Range Row -->
+            <div id="financeCustomDateRow" class="finance-custom-date-box" style="display: none;">
+                <span style="font-size: 12px; font-weight: 600; color: #173f39;">Date Range:</span>
+                <input type="date" id="financeDateStart" class="finance-date-input" aria-label="Start Date">
+                <span style="font-size: 12px; color: #5a7571;">to</span>
+                <input type="date" id="financeDateEnd" class="finance-date-input" aria-label="End Date">
+                <button type="button" class="mini-btn" onclick="applyCustomDateRange()"
+                    style="padding: 5px 10px; font-size: 11px;">Apply Range</button>
+            </div>
+
+            <!-- Business / Product Scope -->
+            <div class="finance-scope-selector">
+                <label for="financeProductFilter"
+                    style="font-size: 12px; font-weight: 700; color: #173f39; white-space: nowrap;">Scope:</label>
+                <select id="financeProductFilter" class="finance-select"
+                    onchange="onFinanceProductChange(this.value)">
+                    <option value="all">🏢 Entire Business (Consolidated Performance)</option>
+                </select>
+                <span id="financeScopeBadge" class="finance-scope-chip">Consolidated Business</span>
+            </div>
+        </div>
+
+        <!-- Comparison / Active Period Info Strip -->
+        <div class="finance-period-info-strip" id="financePeriodInfo">
+            <span id="financeCurrentRangeText">📅 Period: Sep 26 – Oct 2, 2026</span>
+            <span id="financeCompareRangeText" style="color: #888;">vs. Preceding 7 days (Sep 19 – Sep 25,
+                2026)</span>
+        </div>
+
+        <!-- 2. Dynamic Financial Summary Cards (3 Cards) -->
+        <div class="finance-metrics-grid" id="financeSummaryCards">
+            <!-- Injected dynamically -->
+        </div>
+
+        <!-- 3. Revenue vs Expenses Chart Card -->
+        <div class="finance-chart-card">
+            <div class="finance-chart-head">
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; color: #0F5147; margin: 0;">📊 Financial
+                        Trajectory: Revenue vs. Expenses</h3>
+                    <p id="financeChartSubtitle" style="font-size: 11.5px; color: #5a7571; margin-top: 2px;">
+                        Daily breakdown across selected period</p>
+                </div>
+                <div class="finance-chart-legend">
+                    <span style="color: #0F5147;"><span class="chart-dot"
+                            style="background: #0F5147;"></span>Revenue</span>
+                    <span style="color: #D97E1E;"><span class="chart-dot"
+                            style="background: #E99436;"></span>Expenses</span>
+                    <span style="color: #10b981;"><span class="chart-dot"
+                            style="background: #10b981;"></span>Net Profit</span>
+                </div>
+            </div>
+            <div id="financeChartContainer" style="width: 100%; min-height: 220px; position: relative;">
+                <!-- SVG Chart injected dynamically -->
+            </div>
+        </div>
+
+        <!-- 4. Product Profitability Table Card -->
+        <div class="finance-table-card">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; color: #0F5147; margin: 0;">📦 Product
+                        Profitability Breakdown</h3>
+                    <p style="font-size: 11.5px; color: #5a7571; margin-top: 2px;">Click any product row to
+                        filter and inspect detailed unit economics</p>
+                </div>
+                <div id="tableActiveFilterIndicator" style="display: none; align-items: center; gap: 6px;">
+                    <span id="activeFilterName" class="finance-scope-chip"
+                        style="background: #fdf4e7; color: #b45309; border-color: #fed7aa;"></span>
+                    <button type="button" class="mini-btn" onclick="resetFinanceProductFilter()"
+                        style="padding: 3px 8px; font-size: 10px; background: #666;">Clear Filter</button>
+                </div>
+            </div>
+            <div class="finance-table-wrapper">
+                <table class="finance-table" id="productProfitTable">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th style="text-align: center;">Units Sold</th>
+                            <th style="text-align: right;">Revenue</th>
+                            <th style="text-align: right;">Material Cost</th>
+                            <th style="text-align: right;">Other Expenses</th>
+                            <th style="text-align: right;">Total Expenses</th>
+                            <th style="text-align: right;">Net Profit</th>
+                            <th style="text-align: right;">Profit Margin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productProfitTableBody">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="productTableEmptyState" class="finance-empty-notice" style="display: none;">
+                <span>📭</span>
+                <p>No completed sales recorded for this period.</p>
+                <small style="color: #888;">Switch to Monthly / Yearly or check your dispatched orders.</small>
+            </div>
+            <div id="costEstimateDisclaimer"
+                style="font-size: 11px; color: #7c7468; margin-top: 10px; font-style: italic; border-top: 1px dashed #E7EEEA; padding-top: 8px;">
+                ℹ️ Note: Material costs marked <em>(est.)</em> are calculated from catalog baseline when manual
+                raw-material expense receipts are not logged.
+            </div>
+        </div>
+
+        <!-- 5. Business Expenses Management Section -->
+        <div class="finance-table-card">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; color: #0F5147; margin: 0;">🧾 Business
+                        Expenses Log</h3>
+                    <p style="font-size: 11.5px; color: #5a7571; margin-top: 2px;">Recorded raw materials,
+                        labour, packaging, logistics &amp; operational fees</p>
+                </div>
+                <button type="button" class="mini-btn" onclick="openExpenseModal()"
+                    style="font-size: 11px; padding: 5px 10px;">
+                    ➕ Add Expense
+                </button>
+            </div>
+            <div class="finance-table-wrapper">
+                <table class="finance-table" id="expensesLogTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Assigned Scope</th>
+                            <th style="text-align: right;">Amount</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesLogTableBody">
+                        <!-- Dynamic Expense Rows -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="expensesEmptyState" class="finance-empty-notice" style="display: none;">
+                <span>🧾</span>
+                <p>No business expenses recorded for this period.</p>
+                <button type="button" class="mini-btn" onclick="openExpenseModal()"
+                    style="margin-top: 6px; padding: 5px 12px; font-size: 11px;">+ Record New Expense</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= EXPENSE ADD / EDIT MODAL ================= -->
+<div class="modal-overlay" id="expenseModal" onclick="handleExpenseModalBackdrop(event)">
+    <div class="modal-content" style="max-width: 460px;">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span class="ai-icon">🧾</span>
+                <div>
+                    <h3 id="expenseModalTitle">Record Business Expense</h3>
+                    <p style="font-size: 12px; color: #5a7571; margin-top: 2px;">Track workshop costs for
+                        accurate profit calculation</p>
+                </div>
+            </div>
+            <button type="button" class="close-btn" onclick="closeExpenseModal()">✕</button>
+        </div>
+
+        <form id="expenseForm" onsubmit="handleExpenseFormSubmit(event)"
+            style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px;">
+            <input type="hidden" id="expenseEditId" value="">
+
+            <div>
+                <label for="expenseCategory"
+                    style="font-size: 12px; font-weight: 700; color: #173f39; display: block; margin-bottom: 4px;">Expense
+                    Category *</label>
+                <select id="expenseCategory" required
+                    style="width: 100%; padding: 9px 12px; border: 1px solid #d7e6e1; border-radius: 10px; font-size: 13px; background: white;">
+                    <option value="raw_materials">🪵 Raw Materials &amp; Supplies</option>
+                    <option value="labour">👥 Artisan Labour &amp; Wages</option>
+                    <option value="packaging">📦 Packaging Materials &amp; Boxes</option>
+                    <option value="shipping">🚚 Shipping, Logistics &amp; Courier</option>
+                    <option value="platform_fees">🏷️ Platform &amp; Stall Fees</option>
+                    <option value="tools_maintenance">🔧 Tools, Kiln &amp; Maintenance</option>
+                    <option value="other">📑 Other Operational Expenses</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label for="expenseAmount"
+                        style="font-size: 12px; font-weight: 700; color: #173f39; display: block; margin-bottom: 4px;">Amount
+                        (₹) *</label>
+                    <input type="number" id="expenseAmount" min="1" step="any" required placeholder="e.g. 850"
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d7e6e1; border-radius: 10px; font-size: 13px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label for="expenseDate"
+                        style="font-size: 12px; font-weight: 700; color: #173f39; display: block; margin-bottom: 4px;">Date
+                        *</label>
+                    <input type="date" id="expenseDate" required
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d7e6e1; border-radius: 10px; font-size: 13px; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <div>
+                <label for="expenseRelatedProduct"
+                    style="font-size: 12px; font-weight: 700; color: #173f39; display: block; margin-bottom: 4px;">Related
+                    Catalog Product (Optional)</label>
+                <select id="expenseRelatedProduct"
+                    style="width: 100%; padding: 9px 12px; border: 1px solid #d7e6e1; border-radius: 10px; font-size: 13px; background: white;">
+                    <option value="all">🏢 General Business (Consolidated / All Products)</option>
+                </select>
+                <small style="font-size: 11px; color: #5a7571; display: block; margin-top: 4px;">Assign to a
+                    specific product or keep as general business overhead.</small>
+            </div>
+
+            <div>
+                <label for="expenseDescription"
+                    style="font-size: 12px; font-weight: 700; color: #173f39; display: block; margin-bottom: 4px;">Description
+                    / Memo *</label>
+                <input type="text" id="expenseDescription" required
+                    placeholder="e.g. 50kg Assam seasoned bamboo poles"
+                    style="width: 100%; padding: 9px 12px; border: 1px solid #d7e6e1; border-radius: 10px; font-size: 13px; box-sizing: border-box;">
+            </div>
+
+            <div id="expenseFormError"
+                style="display: none; font-size: 12px; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 8px 12px; border-radius: 8px;">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end;">
+                <button type="button" class="mini-btn" onclick="closeExpenseModal()"
+                    style="background: #f4f6f3; color: #5a7571; border: 1px solid #d7e6e1; padding: 8px 16px; font-size: 12px;">Cancel</button>
+                <button type="submit" class="mini-btn" id="expenseSubmitBtn"
+                    style="padding: 8px 18px; font-size: 12px; background: #0F5147;">💾 Save Expense</button>
+            </div>
+        </form>
+    </div>
+</div>

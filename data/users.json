@@ -1,0 +1,58 @@
+[
+  {
+    "id": "usr_1790788468698",
+    "name": "Sita Devi",
+    "email": "sita@artisan.com",
+    "phone": "9876543210",
+    "craft": "handicraft",
+    "state": "Rajasthan",
+    "role": "artisan",
+    "password": "$2b$10$gm3qsy.DFC0YIN7zkeDdz.yBcbqipZMbv2bMebJLPbcAvRETr2LCe",
+    "createdAt": "2026-09-30T17:14:28.813Z"
+  },
+  {
+    "id": "usr_1791563850847",
+    "name": "Rajesh Patel",
+    "email": "rajesh@supplier.com",
+    "phone": "9876543211",
+    "craft": "raw_materials",
+    "state": "Gujarat",
+    "role": "supplier",
+    "password": "$2b$10$RLmLLYzMaoGOy.AjQw4rf.R6ytJkYjYnY42awGSwNj5pBv6wlmreq",
+    "createdAt": "2026-10-09T16:37:30.909Z"
+  },
+  {
+    "id": "usr_1791563850912",
+    "name": "Priya Sharma",
+    "email": "priya@buyer.com",
+    "phone": "9876543212",
+    "craft": "curator",
+    "state": "Delhi",
+    "role": "buyer",
+    "password": "$2b$10$wOwvYpxnF69xhMVE6TrVLuzhkPbyfwpaFDFkHrxRzFc1LZCl/Dzs6",
+    "createdAt": "2026-10-09T16:37:30.969Z"
+  },
+  {
+    "id": "usr_1791564071241",
+    "name": "Gopal Das",
+    "email": "gopal@artisan.in",
+    "phone": "9811223344",
+    "craft": "woodwork",
+    "state": "Rajasthan",
+    "role": "artisan",
+    "password": "$2b$10$Kl7OFpRaWRs0JGBNZPygGel/CosaoQrXTbHyiR2Jb.84a2FsXqIsi",
+    "createdAt": "2026-10-09T16:41:11.299Z"
+  },
+  {
+    "id": "usr_1792344920761",
+    "name": "hari",
+    "email": "hari@gmail.com",
+    "phone": "1234567890",
+    "craft": "handicraft",
+    "state": "mp",
+    "role": "artisan",
+    "password": "$2b$10$U4jVYAHczOUNmjq2t8/mqua4mrsjurT8NtRmgpqXSsIa4qYK5cYlm",
+    "createdAt": "2026-10-18T17:35:20.869Z",
+    "avatar": null
+  }
+]

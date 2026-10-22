@@ -1,0 +1,92 @@
+[
+  {
+    "id": "exp_001",
+    "category": "raw_materials",
+    "amount": 1400,
+    "date": "2026-10-01",
+    "relatedProduct": "prod_bamboo_basket",
+    "description": "30 seasoned Assam bamboo poles & natural resin polish",
+    "createdAt": "2026-10-01T10:00:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_002",
+    "category": "packaging",
+    "amount": 450,
+    "date": "2026-09-29",
+    "relatedProduct": "all",
+    "description": "Corrugated shipping boxes & biodegradable bubble wrap (50 pcs)",
+    "createdAt": "2026-09-29T14:30:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_003",
+    "category": "labour",
+    "amount": 800,
+    "date": "2026-09-27",
+    "relatedProduct": "prod_wood_coasters",
+    "description": "Artisan filigree cutwork wage for 10 coaster sets",
+    "createdAt": "2026-09-27T17:00:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_004",
+    "category": "shipping",
+    "amount": 320,
+    "date": "2026-09-26",
+    "relatedProduct": "all",
+    "description": "India Post Speed Post dispatch for Delhi & Pune buyer shipments",
+    "createdAt": "2026-09-26T11:15:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_005",
+    "category": "raw_materials",
+    "amount": 650,
+    "date": "2026-09-22",
+    "relatedProduct": "prod_terracotta_diya",
+    "description": "50kg filtered riverbed clay & organic terracotta pigments",
+    "createdAt": "2026-09-22T09:40:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_006",
+    "category": "platform_fees",
+    "amount": 280,
+    "date": "2026-09-18",
+    "relatedProduct": "all",
+    "description": "ONDC network storefront listing & payment transaction charges",
+    "createdAt": "2026-09-18T16:20:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_007",
+    "category": "raw_materials",
+    "amount": 1800,
+    "date": "2026-09-10",
+    "relatedProduct": "prod_indigo_stole",
+    "description": "Natural vegetable indigo extract & 100% Chanderi handloom fabric rolls",
+    "createdAt": "2026-09-10T12:00:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_008",
+    "category": "tools_maintenance",
+    "amount": 500,
+    "date": "2026-08-20",
+    "relatedProduct": "all",
+    "description": "Carving chisel sharpening & pottery wheel maintenance servicing",
+    "createdAt": "2026-08-20T15:30:00.000Z",
+    "userId": "usr_1790788468698"
+  },
+  {
+    "id": "exp_009",
+    "category": "raw_materials",
+    "amount": 1200,
+    "date": "2025-10-10",
+    "relatedProduct": "prod_bamboo_basket",
+    "description": "Bulk Assam cane stock purchase for winter festive orders",
+    "createdAt": "2025-10-10T10:00:00.000Z",
+    "userId": "usr_1790788468698"
+  }
+]

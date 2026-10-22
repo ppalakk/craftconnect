@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markets & Discovery - CraftConnect</title>
+  <meta name="description" content="Find local craft markets, online selling platforms, and upcoming artisan fairs near you. CraftConnect smart market linkage for Indian artisans.">
+  <link rel="manifest" href="/public/manifest.json">
+  <meta name="theme-color" content="#04332D">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="/public/css/style.css">
+  <link rel="stylesheet" href="/public/css/sidebar.css">
+  <link rel="stylesheet" href="/public/css/market-discovery.css">
+  <script>
+    window.CC_USER = <%- JSON.stringify(typeof user !== 'undefined' && user ? user : null) %>;
+  </script>
+</head>
+<body style="margin: 0; padding: 0; background-color: #F8FAF9; font-family: 'Outfit', 'Inter', sans-serif;">
+
+  <div class="cc-app-layout">
+    <!-- Backdrop overlay for mobile drawer -->
+    <div id="ccSidebarBackdrop" class="cc-sidebar-backdrop" onclick="toggleCcSidebar(false)"></div>
+
+    <!-- ================= LEFT PERSISTENT SIDEBAR ================= -->
+    <aside class="cc-sidebar" id="appSidebar">
+      <!-- Brand Header -->
+      <div class="cc-sidebar-brand">
+        <div class="cc-brand-logo">
+          <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 3C9.71573 3 3 9.71573 3 18C3 26.2843 9.71573 33 18 33C26.2843 33 33 26.2843 33 18C33 9.71573 26.2843 3 18 3Z" fill="#0C453C"/>
+            <path d="M11 25C13.5 19 18 13 25 10C24 18 19 23.5 13 25L11 25Z" fill="#84CC16"/>
+            <path d="M14 23C16.5 19.5 20.5 15.5 24.5 13.5C23.5 18 19.5 21.5 15 23L14 23Z" fill="#A3E635"/>
+            <path d="M12 25C14.5 24 19 20 22 15" stroke="#04332D" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="flex:1;">
+          <h1 class="cc-brand-title">CraftConnect</h1>
+          <span class="cc-brand-subtitle">Empowering Artisans</span>
+        </div>
+        <button type="button" class="cc-sidebar-close-btn" onclick="toggleCcSidebar(false)" title="Close menu" aria-label="Close menu">&times;</button>
+      </div>
+
+      <!-- Navigation Menu -->
+      <ul class="cc-sidebar-nav">
+        <li>
+          <a href="/dashboard#home" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </span>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="/catalog" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
+            </span>
+            <span>Catalog</span>
+          </a>
+        </li>
+        <li>
+          <a href="/ai-scan" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </span>
+            <span>AI Scan</span>
+          </a>
+        </li>
+        <li>
+          <a href="/markets" class="cc-nav-item active">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path><path d="M2 7h20"></path></svg>
+            </span>
+            <span>Markets</span>
+            <span class="cc-nav-dot"></span>
+          </a>
+        </li>
+        <li>
+          <a href="/dashboard#orders" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>
+            </span>
+            <span>Pending Orders</span>
+            <span class="cc-nav-badge-orange">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="/dashboard#insights" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
+            </span>
+            <span>Demand Insights</span>
+          </a>
+        </li>
+        <li>
+          <a href="/dashboard#profile" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </span>
+            <span>Profile</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section: GROW & SOURCE -->
+      <p class="cc-sidebar-section-title">Grow &amp; Source</p>
+      <ul class="cc-sidebar-nav">
+        <li>
+          <a href="/dashboard#materials" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10c0-4.42-3-8-8-9.5"></path><path d="M8.5 8.5C9 12 12 15 15.5 15.5"></path></svg>
+            </span>
+            <span>Raw Materials</span>
+          </a>
+        </li>
+        <li>
+          <a href="/dashboard#schemes" class="cc-nav-item">
+            <span class="cc-nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path><path d="M9 10h6"></path><path d="M9 14h6"></path><path d="M9 18h6"></path></svg>
+            </span>
+            <span>Govt Schemes</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Footer Actions -->
+      <div class="cc-sidebar-footer-group">
+        <a href="/logout" class="cc-logout-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+          <span>Logout</span>
+        </a>
+
+        <div class="cc-sidebar-mini-card">
+          <div style="font-size: 20px;">🌿</div>
+          <div class="cc-mini-card-text">
+            <strong>CraftConnect</strong>
+            <span>Connecting Artisans • Growing Markets</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN CONTENT WRAPPER ================= -->
+    <div class="cc-main-container">
+      <!-- Top Header Bar -->
+      <header class="cc-topbar">
+        <!-- Mobile Hamburger -->
+        <button type="button" class="cc-mobile-menu-btn" onclick="toggleCcSidebar(true)" title="Open Menu" aria-label="Open Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <!-- Search Input -->
+        <div class="cc-topbar-search-wrap">
+          <span class="cc-topbar-search-icon">🔍</span>
+          <input type="text" class="cc-topbar-search-input" placeholder="Search markets, exhibitions, products, or locations..." id="globalMarketSearch" oninput="handleGlobalSearch(this.value)">
+        </div>
+
+        <!-- Right Action Items -->
+        <div class="cc-topbar-actions">
+          <!-- Notification Bell -->
+          <button type="button" class="cc-topbar-bell-btn" title="Notifications" onclick="showNotifications()">
+            🔔
+            <span class="cc-bell-dot"></span>
+          </button>
+
+          <!-- Language Selector -->
+          <div class="cc-lang-pill" onclick="cycleLang()">
+            <span>🌐</span>
+            <span id="langLabel">English</span>
+            <span style="font-size: 10px; color: #64748B;">▾</span>
+          </div>
+
+          <!-- User Profile -->
+          <div class="cc-user-chip" onclick="location.href='/dashboard#profile'">
+            <% if (typeof user !== 'undefined' && user && user.avatar) { %>
+              <img src="<%= user.avatar %>" alt="User Avatar" class="cc-user-avatar" onerror="this.src='/images/default_avatar.png'">
+            <% } else if (typeof user !== 'undefined' && user && user.name) { %>
+              <div class="cc-user-avatar" style="background:#0F5147; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; border-radius:50%; width:36px; height:36px; flex-shrink:0;">
+                <%= user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) %>
+              </div>
+            <% } else { %>
+              <img src="/images/default_avatar.png" alt="Guest" class="cc-user-avatar">
+            <% } %>
+            <div class="cc-user-details">
+              <span class="cc-user-name"><%= (typeof user !== 'undefined' && user && user.name) ? user.name : 'Guest Artisan' %></span>
+              <span class="cc-user-role"><%= (typeof user !== 'undefined' && user && user.role) ? user.role.toUpperCase() : 'ARTISAN' %></span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="cc-content-view">
+        <!-- ================= 1. HERO BANNER: SMART MARKET LINKAGE ================= -->
+        <section class="cc-hero-card">
+          <div class="cc-hero-left">
+            <div class="cc-hero-badge">
+              <span>📍</span>
+              <span>Smart Market Linkage</span>
+            </div>
+            <h2 class="cc-hero-title">
+              Find the Right Markets
+              <span class="highlight-orange">for Your Crafts</span>
+            </h2>
+            <p class="cc-hero-desc">
+              Get local market suggestions based on your location, and connect with trusted online platforms like Amazon, Flipkart, Meesho, Myntra &amp; more.
+            </p>
+            <div class="cc-hero-pills-row">
+              <button type="button" class="cc-hero-pill-btn" onclick="selectTab('local', document.querySelector('[data-tab=local]'))">
+                <span>🏪</span>
+                <span>Local Markets</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="selectTab('online', document.querySelector('[data-tab=online]'))">
+                <span>🛒</span>
+                <span>Online Platforms</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="selectTab('fairs', document.querySelector('[data-tab=fairs]'))">
+                <span>🎪</span>
+                <span>Fairs & Expos</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="selectTab('all', document.querySelector('[data-tab=all]'))">
+                <span>📈</span>
+                <span>View All</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="cc-hero-right">
+            <div class="cc-hero-doodle-wrap">
+              <span>Your Craft</span>
+              <span>Our Support</span>
+              <div class="cc-hero-doodle-arrow">♡ ➔</div>
+            </div>
+            <div class="cc-hero-photo-wrap">
+              <img src="/images/hero_crafts.jpg" alt="Traditional Indian Crafts" class="cc-hero-photo" onerror="this.src='https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=900&q=80'">
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. LOCATION & SEARCH BAR CARD ================= -->
+        <div class="cc-loc-search-card">
+          <div class="cc-loc-info-group">
+            <div class="cc-loc-pin-icon">📍</div>
+            <div>
+              <span class="cc-loc-label">Your Current Location</span>
+              <div class="cc-loc-value-row">
+                <span class="cc-loc-name" id="currentLocationName">Bhopal, Madhya Pradesh</span>
+                <button type="button" class="cc-loc-change-link" onclick="openCityModal()" title="Change city">
+                  <span>🔄</span>
+                  <span>Change</span>
+                </button>
+                <button type="button" class="cc-loc-gps-btn" id="btnUseGps" onclick="requestGpsLocation()" title="Use live GPS coordinates">
+                  <span>📡</span>
+                  <span id="gpsBtnText">Use GPS</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="cc-loc-search-box">
+            <span style="color: #94A3B8;">🔍</span>
+            <input type="text" placeholder="Search markets, platforms or product types..." id="marketKeywordInput" oninput="filterAllContent()">
+            <button type="button" class="cc-loc-filter-slider-btn" title="Filter Options" onclick="toggleFilterDrawer()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="21" y2="21"></line><line x1="4" x2="20" y1="14" y2="14"></line><line x1="4" x2="20" y1="7" y2="7"></line><circle cx="8" cy="21" r="2"></circle><circle cx="16" cy="14" r="2"></circle><circle cx="10" cy="7" r="2"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= 3. FILTER TABS & DISTANCE DROPDOWN ================= -->
+        <div class="cc-filter-tabs-bar">
+          <div class="cc-tab-pills-group">
+            <button type="button" class="cc-tab-pill active" data-tab="all" onclick="selectTab('all', this)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+              <span>All Markets</span>
+            </button>
+            <button type="button" class="cc-tab-pill" data-tab="local" onclick="selectTab('local', this)">
+              <span>🏪</span>
+              <span>Local Markets</span>
+            </button>
+            <button type="button" class="cc-tab-pill" data-tab="online" onclick="selectTab('online', this)">
+              <span>🛒</span>
+              <span>Online Platforms</span>
+            </button>
+            <button type="button" class="cc-tab-pill" data-tab="fairs" onclick="selectTab('fairs', this)">
+              <span>🎪</span>
+              <span>Fairs &amp; Exhibitions</span>
+            </button>
+          </div>
+
+          <div class="cc-distance-dropdown-wrap">
+            <select id="radiusSelect" class="cc-radius-select" onchange="updateRadius(this.value)">
+              <option value="10">📍 Within 10 km</option>
+              <option value="25" selected>📍 Within 25 km</option>
+              <option value="50">📍 Within 50 km</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ================= 4. MIDDLE TWO-COLUMN GRID: STORES & MAP ================= -->
+        <div class="cc-middle-grid" id="localSection">
+          <!-- Left Column: Local Stores Near You -->
+          <div class="cc-stores-column" id="localStoresSection">
+            <div class="cc-section-header-row">
+              <div class="cc-section-title-wrap">
+                <h3><span>📍</span> Local Stores Near You</h3>
+                <p>Handpicked stores and boutiques in your area that sell handmade and craft products.</p>
+              </div>
+              <span class="cc-results-count" id="localResultsCount">6 stores found</span>
+            </div>
+
+            <!-- Stores Grid -->
+            <div class="cc-stores-grid" id="storesContainer">
+              <!-- Cards rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Map Card -->
+          <div class="cc-map-column">
+            <div class="cc-map-header">
+              <div class="cc-map-loc-info">
+                <strong>📍 Your Location</strong>
+                <span id="mapLocLabel">Bhopal, Madhya Pradesh</span>
+              </div>
+              <a href="https://www.google.com/maps/search/craft+stores+near+Bhopal+Madhya+Pradesh" target="_blank" rel="noopener noreferrer" class="cc-map-view-large">
+                View Larger Map →
+              </a>
+            </div>
+
+            <!-- Map Viewport -->
+            <div class="cc-map-wrapper">
+              <div id="bhopalArtisanMap"></div>
+
+              <!-- Overlay Controls -->
+              <div class="cc-map-controls-overlay">
+                <button type="button" class="cc-map-btn" onclick="zoomMap(1)" title="Zoom In">+</button>
+                <button type="button" class="cc-map-btn" onclick="zoomMap(-1)" title="Zoom Out">−</button>
+                <button type="button" class="cc-map-btn" onclick="recenterMap()" title="Center My Location">🎯</button>
+              </div>
+            </div>
+
+            <!-- Map Legend Strip -->
+            <div class="cc-map-legend-strip">
+              <div class="cc-legend-item">
+                <span class="cc-legend-dot dot-blue"></span>
+                <span>You</span>
+              </div>
+              <div class="cc-legend-item">
+                <span class="cc-legend-dot dot-green"></span>
+                <span>Local Store</span>
+              </div>
+              <div class="cc-legend-item">
+                <span class="cc-legend-dot dot-orange"></span>
+                <span>Fair / Expo</span>
+              </div>
+              <div class="cc-legend-item">
+                <span class="cc-legend-dot dot-pink"></span>
+                <span>Fulfillment Hub</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 5. ONLINE PLATFORMS (INLINE SECTION) ================= -->
+        <section class="cc-online-section" id="onlineSection">
+          <div class="cc-section-header-row">
+            <div class="cc-section-title-wrap">
+              <h3><span>🛒</span> Verified Online Platforms</h3>
+              <p>Reach millions of buyers through verified e-commerce artisan programs with subsidized fees.</p>
+            </div>
+            <span class="cc-results-count" id="onlineResultsCount">5 platforms</span>
+          </div>
+
+          <div class="cc-online-grid" id="onlinePlatformsContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ================= 6. UPCOMING FAIRS & EXHIBITIONS ================= -->
+        <section class="cc-fairs-section" id="fairsSection">
+          <div class="cc-section-header-row">
+            <div class="cc-section-title-wrap">
+              <h3><span>🎪</span> Upcoming Fairs &amp; Exhibitions</h3>
+              <p>Government-verified craft fairs, bazaars and cultural festivals with direct application links.</p>
+            </div>
+            <span class="cc-results-count" id="fairsResultsCount">5 events</span>
+          </div>
+
+          <div class="cc-fairs-grid" id="fairsContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ================= 7. NO RESULTS STATE ================= -->
+        <div class="cc-no-results" id="noResultsState" style="display:none;">
+          <div class="cc-no-results-inner">
+            <span class="cc-no-results-icon">🔍</span>
+            <h3>No results found</h3>
+            <p>Try adjusting your search keywords or expanding the radius filter.</p>
+            <button type="button" class="cc-btn-reset-filters" onclick="resetAllFilters()">Reset All Filters</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= FLOATING ACTION BUTTON (ASK AI) ================= -->
+  <button type="button" class="cc-ask-ai-fab" onclick="triggerAskAI()">
+    <span>✨</span>
+    <span>Ask AI</span>
+  </button>
+
+  <!-- ================= NOTIFICATION PANEL ================= -->
+  <div id="notifPanel" class="cc-notif-panel" style="display:none;">
+    <div class="cc-notif-card">
+      <div class="cc-notif-header">
+        <h4>🔔 Notifications</h4>
+        <button type="button" onclick="document.getElementById('notifPanel').style.display='none'">✕</button>
+      </div>
+      <div class="cc-notif-body">
+        <div class="cc-notif-item cc-notif-new">
+          <span class="cc-notif-dot"></span>
+          <div>
+            <strong>SARAS Mela application closing in 7 days</strong>
+            <p>Apply for a stall at Bhopal Haat before the deadline.</p>
+            <span class="cc-notif-time">2 hours ago</span>
+          </div>
+        </div>
+        <div class="cc-notif-item cc-notif-new">
+          <span class="cc-notif-dot"></span>
+          <div>
+            <strong>2 new pending orders</strong>
+            <p>Terracotta set order from Mumbai and Handloom order from Delhi.</p>
+            <span class="cc-notif-time">5 hours ago</span>
+          </div>
+        </div>
+        <div class="cc-notif-item">
+          <div>
+            <strong>Amazon Karigar onboarding approved</strong>
+            <p>Your seller profile is now live on Amazon Karigar.</p>
+            <span class="cc-notif-time">1 day ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= STORE DETAIL MODAL ================= -->
+  <div id="storeDetailModal" class="market-modal-overlay" style="display:none;">
+    <div class="market-modal-card" style="max-width: 520px;">
+      <button type="button" class="market-modal-close" onclick="closeStoreModal()">✕</button>
+      <div id="storeDetailContent"></div>
+    </div>
+  </div>
+
+  <!-- ================= CITY / LOCATION SELECTOR MODAL ================= -->
+  <div id="cityPickerModal" class="market-modal-overlay" style="display:none;">
+    <div class="market-modal-card" style="max-width: 480px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:17px; font-weight:700; color:#0F172A; margin:0; display:flex; align-items:center; gap:8px;">
+          <span>📍</span> Select Your Location
+        </h3>
+        <button type="button" class="market-modal-close" onclick="closeCityModal()">✕</button>
+      </div>
+      <p style="font-size:13px; color:#64748B; margin:0 0 14px; line-height:1.45;">
+        Search any city or district in India to dynamically center the market map and find stores closest to you.
+      </p>
+
+      <div style="display:flex; gap:8px; margin-bottom:14px;">
+        <input type="text" id="citySearchInput" placeholder="Enter city name (e.g. Jaipur, Varanasi, Delhi)..." style="flex:1; padding:10px 14px; border:1px solid #CBD5E1; border-radius:10px; font-size:13.5px; outline:none;" onkeyup="if(event.key==='Enter')applySearchedCity()">
+        <button type="button" onclick="applySearchedCity()" style="background:#075C55; color:white; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;">Set</button>
+      </div>
+
+      <button type="button" onclick="closeCityModal(); requestGpsLocation();" style="width:100%; background:#E8F5E9; color:#166534; border:1px solid #BBF7D0; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
+        <span>📡</span> Detect My Live GPS Location
+      </button>
+
+      <div style="font-size:11.5px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
+        Major Craft Clusters
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Bhopal', 'Madhya Pradesh', 23.2599, 77.4126)">🏛️ Bhopal, MP</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Jaipur', 'Rajasthan', 26.9124, 75.7873)">🏺 Jaipur, RJ</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Varanasi', 'Uttar Pradesh', 25.3176, 82.9739)">🧵 Varanasi, UP</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Delhi', 'Delhi NCR', 28.6139, 77.2090)">🎪 Delhi NCR</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Udaipur', 'Rajasthan', 24.5854, 73.7125)">🎨 Udaipur, RJ</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Kolkata', 'West Bengal', 22.5726, 88.3639)">🪵 Kolkata, WB</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Madurai', 'Tamil Nadu', 9.9252, 78.1198)">🪔 Madurai, TN</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Surat', 'Gujarat', 21.1702, 72.8311)">✨ Surat, GJ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PLATFORM ONBOARDING GUIDE MODAL ================= -->
+  <div id="platformGuideModal" class="market-modal-overlay" style="display:none;">
+    <div class="market-modal-card" style="max-width: 520px;">
+      <button type="button" class="market-modal-close" onclick="closePlatformGuideModal()">✕</button>
+      <div id="platformGuideContent"></div>
+    </div>
+  </div>
+
+  <!-- Leaflet Library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Interactive Controller Script -->
+  <script>
+    // ==================== HA日內 SINE DISTANCE UTILITY ====================
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.round(R * c * 10) / 10;
+    }
+
+    // ==================== DATA LAYER ====================
+    // Initial center defaults: adapt to user state if present, otherwise Bhopal
+    let currentCenter = [23.2599, 77.4126];
+    let currentCity = "Bhopal";
+    let currentStateName = "Madhya Pradesh";
+
+    if (window.CC_USER && window.CC_USER.state) {
+      const st = window.CC_USER.state.toLowerCase();
+      if (st.includes("rajasthan")) {
+        currentCenter = [26.9124, 75.7873];
+        currentCity = "Jaipur";
+        currentStateName = "Rajasthan";
+      } else if (st.includes("delhi")) {
+        currentCenter = [28.6139, 77.2090];
+        currentCity = "Delhi";
+        currentStateName = "Delhi NCR";
+      } else if (st.includes("gujarat")) {
+        currentCenter = [21.1702, 72.8311];
+        currentCity = "Surat";
+        currentStateName = "Gujarat";
+      } else if (st.includes("uttar pradesh")) {
+        currentCenter = [25.3176, 82.9739];
+        currentCity = "Varanasi";
+        currentStateName = "Uttar Pradesh";
+      }
+    }
+
+    let currentRadius = 25;
+    let currentTab = 'all';
+    let mapInstance = null;
+    let mapMarkers = [];
+    let radiusCircle = null;
+    let userMarker = null;
+
+    // Curated Craft Stores across major clusters
+    const allStores = [
+      {
+        id: 'ls1', name: 'Craft Bazaar', type: 'local',
+        tags: ['Handicrafts', 'Home Decor', 'Textiles'],
+        address: 'MP Nagar, Zone-1, Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '10:00 AM – 9:00 PM', phone: '+91 755 4012345',
+        rating: 4.5, reviews: 124,
+        lat: 23.2350, lng: 77.4320,
+        description: 'Bhopal\'s flagship craft retail store featuring handmade bamboo, terracotta, and textile products from regional clusters.',
+        image: '/images/hero_crafts.jpg'
+      },
+      {
+        id: 'ls2', name: 'The Artisan Hub', type: 'local',
+        tags: ['Woodwork', 'Paintings', 'Handmade Gifts'],
+        address: 'Ashoka Garden, Near Pul Bogda, Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '10:00 AM – 8:00 PM', phone: '+91 755 2675891',
+        rating: 4.3, reviews: 86,
+        lat: 23.2512, lng: 77.4421,
+        description: 'Curated artisan showroom showcasing handcrafted wooden furniture, folk Gond paintings, and sustainable gift items.',
+        image: '/images/artisan.png'
+      },
+      {
+        id: 'ls3', name: 'Mitti & More Terracotta', type: 'local',
+        tags: ['Pottery', 'Clayware', 'Home Decor'],
+        address: 'Bazar Chowk, Old Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '11:00 AM – 8:30 PM', phone: '+91 755 2734567',
+        rating: 4.2, reviews: 67,
+        lat: 23.2420, lng: 77.4180,
+        description: 'Traditional pottery and terracotta craft store near Bhopal\'s historic bazaar, supporting 40+ village potters.',
+        image: '/images/hero_crafts.jpg'
+      },
+      {
+        id: 'ls4', name: 'Mrignayani State Emporium', type: 'local',
+        tags: ['Handloom', 'Chanderi Silk', 'Maheshwari'],
+        address: 'New Market, TT Nagar, Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '10:30 AM – 7:30 PM', phone: '+91 755 2553456',
+        rating: 4.6, reviews: 210,
+        lat: 23.2380, lng: 77.4050,
+        description: 'Official MP State Handloom Emporium — premier retail outlet for authentic Chanderi, Maheshwari, and Bagh print textiles.',
+        image: '/images/artisan.png'
+      },
+      {
+        id: 'ls5', name: 'Kala Kendra Dhokra Crafts', type: 'local',
+        tags: ['Metal Work', 'Dhokra Art', 'Bell Metal'],
+        address: 'Bittan Market, Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '10:00 AM – 7:00 PM', phone: '+91 755 2691234',
+        rating: 4.1, reviews: 53,
+        lat: 23.2700, lng: 77.4250,
+        description: 'Specializing in lost-wax Bell Metal Dhokra sculptures and tribal art from indigenous artisan communities.',
+        image: '/images/hero_crafts.jpg'
+      },
+      {
+        id: 'ls6', name: 'Handmade Bharat Bamboo', type: 'local',
+        tags: ['Jute', 'Bamboo', 'Organic Crafts'],
+        address: 'Arera Colony, E-5, Bhopal',
+        city: 'Bhopal', state: 'Madhya Pradesh',
+        hours: '11:00 AM – 8:00 PM', phone: '+91 755 2463210',
+        rating: 4.4, reviews: 91,
+        lat: 23.2200, lng: 77.4400,
+        description: 'Eco-friendly craft store with verified procurement from northeastern bamboo and natural fiber artisan collectives.',
+        image: '/images/artisan.png'
+      },
+      {
+        id: 'ls7', name: 'Rajasthali State Emporium', type: 'local',
+        tags: ['Blue Pottery', 'Block Prints', 'Mojaris'],
+        address: 'MI Road, Near Ajmeri Gate, Jaipur',
+        city: 'Jaipur', state: 'Rajasthan',
+        hours: '10:00 AM – 8:30 PM', phone: '+91 141 2365842',
+        rating: 4.7, reviews: 312,
+        lat: 26.9180, lng: 75.8150,
+        description: 'Government of Rajasthan flagship artisan emporium with certified Blue Pottery, Sanganeri prints, and leather crafts.',
+        image: '/images/hero_crafts.jpg'
+      },
+      {
+        id: 'ls8', name: 'Kripal Kumbh Blue Pottery', type: 'local',
+        tags: ['Blue Pottery', 'Ceramics', 'Hand Painted'],
+        address: 'Bani Park, Shiv Marg, Jaipur',
+        city: 'Jaipur', state: 'Rajasthan',
+        hours: '10:30 AM – 7:30 PM', phone: '+91 141 2201127',
+        rating: 4.8, reviews: 185,
+        lat: 26.9290, lng: 75.7950,
+        description: 'Founded by master craftsman Kripal Singh Shekhawat — renowned world-wide for revitalization of authentic Jaipur Blue Pottery.',
+        image: '/images/artisan.png'
+      },
+      {
+        id: 'ls9', name: 'Banaras Silk Weavers Guild', type: 'local',
+        tags: ['Banarasi Silk', 'Brocade', 'Handloom'],
+        address: 'Godowlia Chowk, Varanasi',
+        city: 'Varanasi', state: 'Uttar Pradesh',
+        hours: '10:00 AM – 9:00 PM', phone: '+91 542 2451290',
+        rating: 4.6, reviews: 240,
+        lat: 25.3100, lng: 83.0080,
+        description: 'Direct artisan collective showroom offering GI-certified Banarasi silk sarees, brocades, and ceremonial textiles.',
+        image: '/images/hero_crafts.jpg'
+      },
+      {
+        id: 'ls10', name: 'Central Cottage Industries Emporium', type: 'local',
+        tags: ['Pan India Crafts', 'Brassware', 'Wood Carving'],
+        address: 'Janpath, Connaught Place, New Delhi',
+        city: 'Delhi', state: 'Delhi NCR',
+        hours: '10:00 AM – 7:00 PM', phone: '+91 11 23320490',
+        rating: 4.6, reviews: 480,
+        lat: 28.6270, lng: 77.2180,
+        description: 'Premier national crafts emporium established under Ministry of Textiles, sourcing from over 10,000 national awardees.',
+        image: '/images/hero_crafts.jpg'
+      }
+    ];
+
+    // Online Platforms Data
+    const onlinePlatforms = [
+      {
+        id: 'op1', name: 'Amazon Karigar', type: 'online',
+        tags: ['Handloom', 'Handicrafts', 'Pottery'],
+        description: 'Dedicated storefront for handloom weavers and Indian artisans with subsidized referral fees.',
+        commission: '8–10% (Subsidized)',
+        badge: 'Govt. Verified', badgeColor: '#059669',
+        benefits: ['Subsidized referral fees', 'Free product photography', 'Pan-India shipping support'],
+        link: 'https://sell.amazon.in/grow-your-business/karigar',
+        icon: '🛍️', sellers: '2.5L+ artisans',
+        docsRequired: ['Artisan ID / Pehchan Card', 'GSTIN or Enrolment ID', 'Bank Account Passbook', 'PAN Card']
+      },
+      {
+        id: 'op2', name: 'Flipkart Samarth', type: 'online',
+        tags: ['Handicrafts', 'Textiles', 'Home Furnishing'],
+        description: '0% commission for first 6 months for handicraft makers with dedicated account manager.',
+        commission: '0% for 6 months',
+        badge: 'Zero Commission', badgeColor: '#2563EB',
+        benefits: ['Dedicated account manager', 'Training workshops', 'Catalog support'],
+        link: 'https://seller.flipkart.com/samarth',
+        icon: '📦', sellers: '1.8L+ artisans',
+        docsRequired: ['Craft certificate or SHG letter', 'Aadhaar / ID proof', 'Bank account details', 'Sample product photos']
+      },
+      {
+        id: 'op3', name: 'Meesho Artisans', type: 'online',
+        tags: ['Ethnic Wear', 'Home Decor', 'Fashion Accessories'],
+        description: 'Zero commission marketplace with fast payouts — ideal for Tier 2/3 city artisans.',
+        commission: '0% Commission',
+        badge: '0% Fee Tier', badgeColor: '#7C3AED',
+        benefits: ['Zero commission forever', '7-day payment cycle', 'Social commerce support'],
+        link: 'https://supplier.meesho.com/',
+        icon: '🏷️', sellers: '3L+ suppliers',
+        docsRequired: ['GSTIN or Composite ID', 'Cancelled cheque', 'Email & mobile number']
+      },
+      {
+        id: 'op4', name: 'ONDC Craft Network', type: 'online',
+        tags: ['All Crafts', 'Decentralized', 'Government Initiative'],
+        description: 'Open Network for Digital Commerce — government-backed, lowest commission for artisans.',
+        commission: '2–3%',
+        badge: 'Govt. Initiative', badgeColor: '#0891B2',
+        benefits: ['Lowest commissions in India', 'Multi-platform visibility', 'DPIIT backed'],
+        link: 'https://ondc.org/',
+        icon: '🏛️', sellers: 'Growing network',
+        docsRequired: ['ONDC Network Participant registration', 'Bank details', 'Digital product catalog']
+      },
+      {
+        id: 'op5', name: 'Myntra For Earth', type: 'online',
+        tags: ['Ethnic Wear', 'Handlooms', 'Sustainable Fashion'],
+        description: 'Premium sustainable ethnic wear, handlooms and handicrafts marketplace for high-AOV buyers.',
+        commission: '12–15%',
+        badge: 'Premium Buyers', badgeColor: '#EA580C',
+        benefits: ['High average order value', 'Brand building support', 'Fashion buyer access'],
+        link: 'https://partners.myntra.com/',
+        icon: '✨', sellers: '50K+ brands',
+        docsRequired: ['Handloom mark / GI certificate', 'Brand trademark (if applicable)', 'GSTIN', 'Quality lab test report']
+      }
+    ];
+
+    // Fairs & Exhibitions Data
+    const fairsData = [
+      {
+        id: 'f1', name: 'SARAS Regional Aajeevika Craft Mela', type: 'fair',
+        location: 'Bhopal Haat, Bhopal',
+        dates: '14 Nov 2026 – 25 Nov 2026',
+        deadline: '7 Nov 2026', daysLeft: 16,
+        status: 'Application Open', statusClass: 'cc-status-open',
+        organizer: 'Ministry of Rural Development',
+        stallFee: '₹2,000 – ₹5,000', eligibility: 'SHG Members & Registered Artisans',
+        applyLink: 'https://aajeevika.gov.in/',
+        lat: 23.2550, lng: 77.3980,
+        image: '/images/hero_crafts.jpg',
+        description: 'Annual government craft fair featuring artisans from self-help groups across India.'
+      },
+      {
+        id: 'f2', name: 'Gandhi Shilp Bazaar & National Craft Expo', type: 'fair',
+        location: 'Jaipur Exhibition Center, Jaipur',
+        dates: '5 Nov 2026 – 14 Nov 2026',
+        deadline: '28 Oct 2026', daysLeft: 6,
+        status: 'Closing Soon', statusClass: 'cc-status-closing',
+        organizer: 'AIACA & Crafts Council of India',
+        stallFee: '₹3,000 – ₹8,000', eligibility: 'All Registered Artisans with Pehchan Card',
+        applyLink: 'https://indian.handicrafts.gov.in/',
+        lat: 26.9124, lng: 75.7873,
+        image: '/images/artisan.png',
+        description: 'National-level craft expo showcasing traditional handicrafts and providing B2B buyer matchmaking.'
+      },
+      {
+        id: 'f3', name: 'National Shilpgram Crafts Festival', type: 'fair',
+        location: 'Shilpgram Amphitheatre, Udaipur',
+        dates: '21 Dec 2026 – 30 Dec 2026',
+        deadline: '1 Dec 2026', daysLeft: 40,
+        status: 'Application Open', statusClass: 'cc-status-open',
+        organizer: 'West Zone Cultural Centre',
+        stallFee: '₹1,500 – ₹4,000', eligibility: 'Traditional Craftspersons',
+        applyLink: 'https://wzccindia.com/',
+        lat: 24.5854, lng: 73.7125,
+        image: '/images/hero_crafts.jpg',
+        description: 'Ten-day celebration of traditional crafts and performing arts at the iconic Shilpgram village.'
+      },
+      {
+        id: 'f4', name: 'Hunar Haat – National Artisan Edition', type: 'fair',
+        location: 'Lal Parade Ground, Bhopal',
+        dates: '10 Jan 2027 – 22 Jan 2027',
+        deadline: '20 Dec 2026', daysLeft: 59,
+        status: 'Upcoming', statusClass: 'cc-status-upcoming',
+        organizer: 'Ministry of Minority Affairs',
+        stallFee: 'Free (Govt. Sponsored)', eligibility: 'Minority & Traditional Artisan Communities',
+        applyLink: 'https://hunarhaat.org/',
+        lat: 23.2680, lng: 77.4120,
+        image: '/images/artisan.png',
+        description: 'Government-sponsored exhibition providing free stalls, travel allowance and food stipend to artisans.'
+      },
+      {
+        id: 'f5', name: 'MP State Handicrafts Expo', type: 'fair',
+        location: 'Trade Fair Ground, Bhopal',
+        dates: '1 Feb 2027 – 10 Feb 2027',
+        deadline: '10 Jan 2027', daysLeft: 80,
+        status: 'Upcoming', statusClass: 'cc-status-upcoming',
+        organizer: 'MP Handicrafts Dev. Corp.',
+        stallFee: '₹1,000 – ₹3,000', eligibility: 'MP Registered Artisans',
+        applyLink: 'https://mphandicrafts.com/',
+        lat: 23.2300, lng: 77.4350,
+        image: '/images/hero_crafts.jpg',
+        description: 'State-level exhibition showcasing the finest handicrafts, stone carvings, and handloom textiles of Central India.'
+      }
+    ];
+
+    // Recalculate distances for all stores and fairs relative to currentCenter
+    function recalculateDistances() {
+      allStores.forEach(s => {
+        s.distance = haversineDistance(currentCenter[0], currentCenter[1], s.lat, s.lng);
+      });
+      allStores.sort((a, b) => a.distance - b.distance);
+
+      fairsData.forEach(f => {
+        f.distance = haversineDistance(currentCenter[0], currentCenter[1], f.lat, f.lng);
+      });
+      fairsData.sort((a, b) => a.distance - b.distance);
+    }
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener("DOMContentLoaded", function () {
+      recalculateDistances();
+      updateLocationDisplayLabels();
+      initMap();
+      renderLocalStores();
+      renderOnlinePlatforms();
+      renderFairs();
+      updateResultsCounts();
+
+      // Window resize map fix
+      window.addEventListener('resize', () => {
+        if (mapInstance) mapInstance.invalidateSize();
+      });
+    });
+
+    function updateLocationDisplayLabels() {
+      const full = `${currentCity}, ${currentStateName}`;
+      const el1 = document.getElementById("currentLocationName");
+      const el2 = document.getElementById("mapLocLabel");
+      if (el1) el1.innerText = full;
+      if (el2) el2.innerText = full;
+    }
+
+    // ==================== MAP INITIALIZATION ====================
+    function initMap() {
+      if (mapInstance) return;
+      const mapElement = document.getElementById("bhopalArtisanMap");
+      if (!mapElement) return;
+
+      mapInstance = L.map("bhopalArtisanMap", {
+        center: currentCenter,
+        zoom: currentRadius <= 10 ? 14 : currentRadius <= 25 ? 13 : 11,
+        zoomControl: false,
+        attributionControl: false,
+        tap: true,
+        dragging: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        subdomains: 'abcd',
+        attribution: '© OpenStreetMap contributors, © CARTO'
+      }).addTo(mapInstance);
+
+      // User location marker with ripple ring
+      const userIcon = L.divIcon({
+        className: 'cc-user-map-marker',
+        html: '<div class="cc-pulse-dot"><div class="cc-pulse-ring"></div></div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+      userMarker = L.marker(currentCenter, { icon: userIcon, zIndexOffset: 1000 })
+        .addTo(mapInstance)
+        .bindPopup(`<strong>📍 Your Location</strong><br><span style="font-size:12px;color:#075C55;">${currentCity}, ${currentStateName}</span>`);
+
+      drawRadiusCircle();
+      addMapMarkers();
+
+      setTimeout(() => {
+        if (mapInstance) mapInstance.invalidateSize();
+      }, 250);
+    }
+
+    function drawRadiusCircle() {
+      if (!mapInstance) return;
+      if (radiusCircle) mapInstance.removeLayer(radiusCircle);
+      radiusCircle = L.circle(currentCenter, {
+        radius: currentRadius * 1000,
+        color: '#075C55',
+        fillColor: '#075C55',
+        fillOpacity: 0.06,
+        weight: 1.5,
+        dashArray: '6, 5'
+      }).addTo(mapInstance);
+    }
+
+    function addMapMarkers() {
+      if (!mapInstance) return;
+      // Remove old markers
+      mapMarkers.forEach(m => mapInstance.removeLayer(m));
+      mapMarkers = [];
+
+      const stores = getFilteredStores();
+      stores.forEach(s => {
+        const isSelected = false;
+        const icon = L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div class="cc-map-pin pin-green" id="marker-pin-${s.id}"><span class="cc-pin-pulse"></span>${s.name.length > 14 ? s.name.substring(0,14)+'…' : s.name}</div>`,
+          iconSize: [120, 30],
+          iconAnchor: [60, 15]
+        });
+        const marker = L.marker([s.lat, s.lng], { icon })
+          .addTo(mapInstance)
+          .bindPopup(`
+            <div style="min-width:190px; padding:2px;">
+              <strong style="font-size:13.5px; color:#0F172A; display:block; margin-bottom:2px;">${s.name}</strong>
+              <span style="font-size:11.5px; color:#64748B; display:block; margin-bottom:4px;">${s.address}</span>
+              <span style="font-size:11.5px; color:#075C55; font-weight:700;">⭐ ${s.rating} (${s.reviews} reviews) • 📍 ${s.distance} km</span><br>
+              <div style="display:flex; gap:6px; margin-top:8px;">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; padding:5px 8px; background:#075C55; color:#fff; border-radius:8px; font-size:11px; font-weight:600; text-decoration:none;">Directions ↗</a>
+                <button type="button" onclick="openStoreDetail('${s.id}')" style="padding:5px 8px; background:#F1F5F9; color:#0F172A; border:1px solid #CBD5E1; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer;">Details</button>
+              </div>
+            </div>
+          `);
+        marker.storeId = s.id;
+        mapMarkers.push(marker);
+      });
+
+      // Fair markers (within radius or expanded)
+      const fairs = getFilteredFairs();
+      fairs.filter(f => f.distance <= Math.max(currentRadius, 60)).forEach(f => {
+        if (!f.lat) return;
+        const icon = L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div class="cc-map-pin pin-orange">🎪 ${f.name.length > 12 ? f.name.substring(0,12)+'…' : f.name}</div>`,
+          iconSize: [130, 30],
+          iconAnchor: [65, 15]
+        });
+        const marker = L.marker([f.lat, f.lng], { icon })
+          .addTo(mapInstance)
+          .bindPopup(`
+            <div style="min-width:190px">
+              <strong style="font-size:13px; color:#0F172A; display:block;">${f.name}</strong>
+              <span style="font-size:11px; color:#64748B;">📍 ${f.location}</span><br>
+              <span style="font-size:11px; color:#64748B;">📅 ${f.dates}</span><br>
+              <span style="font-size:11.5px; color:#059669; font-weight:700;">${f.status} • ${f.daysLeft}d left</span><br>
+              <a href="${f.applyLink}" target="_blank" rel="noopener noreferrer" style="display:inline-block; margin-top:6px; padding:4px 10px; background:#D97706; color:#fff; border-radius:8px; font-size:11px; font-weight:600; text-decoration:none;">Apply Now ↗</a>
+            </div>
+          `);
+        mapMarkers.push(marker);
+      });
+    }
+
+    function zoomMap(delta) {
+      if (mapInstance) mapInstance.setZoom(mapInstance.getZoom() + delta);
+    }
+
+    function recenterMap() {
+      if (mapInstance) {
+        mapInstance.flyTo(currentCenter, currentRadius <= 10 ? 14 : currentRadius <= 25 ? 13 : 11, { duration: 0.8 });
+        if (userMarker) userMarker.openPopup();
+      }
+    }
+
+    // Smooth focus from card to map
+    function focusStoreOnMap(storeId) {
+      const store = allStores.find(s => s.id === storeId);
+      if (!store || !mapInstance) return;
+
+      // Update card visual active state
+      document.querySelectorAll('.cc-store-card').forEach(c => c.classList.remove('selected-on-map'));
+      const card = document.querySelector(`[data-store-id="${storeId}"]`);
+      if (card) card.classList.add('selected-on-map');
+
+      // Fly to store on map
+      mapInstance.flyTo([store.lat, store.lng], 15, { duration: 0.8 });
+
+      // Open popup
+      const matchingMarker = mapMarkers.find(m => m.storeId === storeId);
+      if (matchingMarker) {
+        setTimeout(() => matchingMarker.openPopup(), 400);
+      }
+
+      // On mobile screens, scroll smoothly towards the map so it is visible
+      if (window.innerWidth < 1024) {
+        const mapCol = document.querySelector('.cc-map-column');
+        if (mapCol) {
+          mapCol.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+
+    // ==================== GEOLOCATION SYSTEM ====================
+    function requestGpsLocation() {
+      const btn = document.getElementById("btnUseGps");
+      const label = document.getElementById("gpsBtnText");
+      if (label) label.textContent = "Locating...";
+
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser. Please enter your city manually.");
+        if (label) label.textContent = "Use GPS";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          currentCenter = [lat, lng];
+
+          try {
+            const res = await fetch(`/api/markets/geocode?lat=${lat}&lng=${lng}`);
+            const data = await res.json();
+            if (data.ok && data.city) {
+              currentCity = data.city;
+              currentStateName = data.state || "India";
+            } else {
+              currentCity = "My Location";
+              currentStateName = "GPS Coordinates";
+            }
+          } catch (e) {
+            currentCity = "My Location";
+            currentStateName = "GPS Coordinates";
+          }
+
+          updateLocationDisplayLabels();
+          recalculateDistances();
+          drawRadiusCircle();
+          addMapMarkers();
+          recenterMap();
+          filterAllContent();
+
+          if (userMarker) {
+            userMarker.setLatLng(currentCenter).bindPopup(`<strong>📍 Your Live Location</strong><br><span style="font-size:12px;color:#075C55;">${currentCity}, ${currentStateName}</span>`).openPopup();
+          }
+
+          if (btn) btn.classList.add("active");
+          if (label) label.textContent = "✓ GPS Active";
+        },
+        (err) => {
+          console.warn("GPS detection error:", err);
+          if (label) label.textContent = "Use GPS";
+          alert("Location permission was denied or timed out. Please enter your city manually in the search dialog.");
+          openCityModal();
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
+    function openCityModal() {
+      const modal = document.getElementById("cityPickerModal");
+      if (modal) modal.style.display = "flex";
+      const inp = document.getElementById("citySearchInput");
+      if (inp) {
+        inp.value = "";
+        setTimeout(() => inp.focus(), 100);
+      }
+    }
+
+    function closeCityModal() {
+      const modal = document.getElementById("cityPickerModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    async function applySearchedCity() {
+      const inp = document.getElementById("citySearchInput");
+      const query = inp ? inp.value.trim() : "";
+      if (!query) return;
+
+      try {
+        const res = await fetch(`/api/markets/geocode?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data.ok && data.lat && data.lng) {
+          chooseCityPreset(data.city || query, data.state || "India", data.lat, data.lng);
+        } else {
+          alert(data.error || "City not found in India. Please check spelling.");
+        }
+      } catch (e) {
+        alert("Network error searching city. Please try again.");
+      }
+    }
+
+    function chooseCityPreset(city, state, lat, lng) {
+      currentCity = city;
+      currentStateName = state;
+      currentCenter = [lat, lng];
+
+      updateLocationDisplayLabels();
+      recalculateDistances();
+      drawRadiusCircle();
+      addMapMarkers();
+      recenterMap();
+      filterAllContent();
+
+      if (userMarker) {
+        userMarker.setLatLng(currentCenter).bindPopup(`<strong>📍 ${city}</strong><br><span style="font-size:12px;color:#075C55;">${state}</span>`).openPopup();
+      }
+
+      const btn = document.getElementById("btnUseGps");
+      const label = document.getElementById("gpsBtnText");
+      if (btn) btn.classList.remove("active");
+      if (label) label.textContent = "Use GPS";
+
+      closeCityModal();
+    }
+
+    // ==================== RENDER FUNCTIONS ====================
+    function renderLocalStores() {
+      const container = document.getElementById('storesContainer');
+      const stores = getFilteredStores();
+      
+      if (stores.length === 0) {
+        container.innerHTML = `
+          <div class="cc-empty-card">
+            <span>🔍</span>
+            <h4>No stores match your filters</h4>
+            <p>Try expanding the search radius (${currentRadius} km) or choose another city.</p>
+            <button type="button" class="cc-btn-reset-filters" style="margin-top:10px;" onclick="updateRadius(50)">Expand to 50 km</button>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = stores.map(s => `
+        <div class="cc-store-card" data-store-id="${s.id}" onclick="focusStoreOnMap('${s.id}')">
+          <div class="cc-store-thumb-wrap">
+            <img src="${s.image}" alt="${s.name}" class="cc-store-thumb" onerror="this.onerror=null; this.src='/images/hero_crafts.jpg';">
+            <span class="cc-store-dist-badge">📍 ${s.distance} km</span>
+          </div>
+          <div class="cc-store-body">
+            <h4 class="cc-store-title">${s.name}</h4>
+            <div class="cc-store-tags">
+              ${s.tags.map(t => `<span class="cc-tag-pill">${t}</span>`).join('')}
+            </div>
+            <div class="cc-store-detail-row">
+              <span>📍</span>
+              <span>${s.address}</span>
+            </div>
+            <div class="cc-store-detail-row">
+              <span>🕒</span>
+              <span>${s.hours}</span>
+            </div>
+            <div class="cc-store-rating-row">
+              <span class="cc-star-icon">⭐</span>
+              <span>${s.rating}</span>
+              <span class="cc-reviews-count">(${s.reviews} reviews)</span>
+            </div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener noreferrer" class="cc-btn-directions" style="flex:1;" onclick="event.stopPropagation()">
+                Directions ↗
+              </a>
+              <button type="button" class="cc-btn-directions" style="background:#F1F5F9; color:#0F172A; border:1px solid #CBD5E1;" onclick="event.stopPropagation(); openStoreDetail('${s.id}')">
+                Details
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderOnlinePlatforms() {
+      const container = document.getElementById('onlinePlatformsContainer');
+      const platforms = getFilteredOnline();
+
+      if (platforms.length === 0) {
+        container.innerHTML = `
+          <div class="cc-empty-card">
+            <span>🔍</span>
+            <h4>No platforms match your search</h4>
+            <p>Try different keywords.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = platforms.map(p => `
+        <div class="cc-platform-card">
+          <div class="cc-platform-header">
+            <div class="cc-platform-icon">${p.icon}</div>
+            <div class="cc-platform-title-group">
+              <h4>${p.name}</h4>
+              <span class="cc-platform-sellers">${p.sellers}</span>
+            </div>
+            <span class="cc-platform-badge" style="background:${p.badgeColor}15; color:${p.badgeColor}; border:1px solid ${p.badgeColor}30">${p.badge}</span>
+          </div>
+          <p class="cc-platform-desc">${p.description}</p>
+          <div class="cc-platform-tags">
+            ${p.tags.map(t => `<span class="cc-tag-pill">${t}</span>`).join('')}
+          </div>
+          <div class="cc-platform-commission">
+            <span>💰 Commission:</span>
+            <strong>${p.commission}</strong>
+          </div>
+          <div class="cc-platform-benefits">
+            ${p.benefits.map(b => `<span class="cc-benefit-item">✓ ${b}</span>`).join('')}
+          </div>
+          <div class="cc-platform-actions">
+            <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="cc-btn-onboard">
+              Start Onboarding ↗
+            </a>
+            <button type="button" class="cc-btn-learn" onclick="openPlatformGuide('${p.id}')">
+              📋 Requirements Checklist
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderFairs() {
+      const container = document.getElementById('fairsContainer');
+      const fairs = getFilteredFairs();
+
+      if (fairs.length === 0) {
+        container.innerHTML = `
+          <div class="cc-empty-card">
+            <span>🔍</span>
+            <h4>No exhibitions match your search</h4>
+            <p>Try expanding keywords or date range.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = fairs.map(f => `
+        <div class="cc-fair-card-v2">
+          <div class="cc-fair-thumb-wrap">
+            <img src="${f.image}" alt="${f.name}" class="cc-fair-thumb-v2" onerror="this.onerror=null; this.src='/images/hero_crafts.jpg';">
+            <span class="cc-fair-dist-badge">📍 ${f.distance < 10 ? f.distance+' km' : Math.round(f.distance)+' km'}</span>
+          </div>
+          <div class="cc-fair-body">
+            <div class="cc-fair-badges-row">
+              <span class="cc-fair-status-pill ${f.statusClass}">${f.status}</span>
+              ${f.daysLeft <= 14 ? `<span class="cc-fair-urgency">⏰ ${f.daysLeft}d left to apply</span>` : ''}
+            </div>
+            <h4 class="cc-fair-title-v2" title="${f.name}">${f.name}</h4>
+            <div class="cc-fair-meta-grid">
+              <div class="cc-fair-meta-item"><span>📅</span> ${f.dates}</div>
+              <div class="cc-fair-meta-item"><span>📍</span> ${f.location}</div>
+              <div class="cc-fair-meta-item"><span>🏛️</span> ${f.organizer}</div>
+              <div class="cc-fair-meta-item"><span>🎟️</span> Stall: ${f.stallFee}</div>
+              <div class="cc-fair-meta-item"><span>📋</span> ${f.eligibility}</div>
+              <div class="cc-fair-meta-item"><span>⏳</span> Deadline: ${f.deadline}</div>
+            </div>
+            <div class="cc-fair-actions">
+              <a href="${f.applyLink}" target="_blank" rel="noopener noreferrer" class="cc-btn-apply">
+                Apply Now ↗
+              </a>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}" target="_blank" rel="noopener noreferrer" class="cc-btn-fair-directions">
+                📍 Directions
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== FILTERING LOGIC ====================
+    function getFilteredStores() {
+      const query = (document.getElementById('marketKeywordInput')?.value || '').toLowerCase();
+      return allStores.filter(s => {
+        if (s.distance > currentRadius) return false;
+        if (query) {
+          const searchable = `${s.name} ${s.tags.join(' ')} ${s.address} ${s.description}`.toLowerCase();
+          return searchable.includes(query);
+        }
+        return true;
+      });
+    }
+
+    function getFilteredOnline() {
+      const query = (document.getElementById('marketKeywordInput')?.value || '').toLowerCase();
+      return onlinePlatforms.filter(p => {
+        if (query) {
+          const searchable = `${p.name} ${p.tags.join(' ')} ${p.description} ${p.commission}`.toLowerCase();
+          return searchable.includes(query);
+        }
+        return true;
+      });
+    }
+
+    function getFilteredFairs() {
+      const query = (document.getElementById('marketKeywordInput')?.value || '').toLowerCase();
+      return fairsData.filter(f => {
+        if (query) {
+          const searchable = `${f.name} ${f.location} ${f.organizer} ${f.eligibility} ${f.description}`.toLowerCase();
+          return searchable.includes(query);
+        }
+        return true;
+      });
+    }
+
+    function filterAllContent() {
+      renderLocalStores();
+      renderOnlinePlatforms();
+      renderFairs();
+      updateResultsCounts();
+      addMapMarkers();
+      updateSectionVisibility();
+    }
+
+    function updateRadius(val) {
+      currentRadius = parseInt(val, 10);
+      const radSelect = document.getElementById('radiusSelect');
+      if (radSelect && radSelect.value !== String(currentRadius)) {
+        radSelect.value = String(currentRadius);
+      }
+      drawRadiusCircle();
+      renderLocalStores();
+      renderFairs();
+      updateResultsCounts();
+      addMapMarkers();
+
+      if (mapInstance) {
+        if (currentRadius <= 10) mapInstance.setZoom(14);
+        else if (currentRadius <= 25) mapInstance.setZoom(13);
+        else mapInstance.setZoom(11);
+      }
+    }
+
+    function selectTab(tabKey, btn) {
+      currentTab = tabKey;
+      document.querySelectorAll(".cc-tab-pill").forEach(el => el.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      updateSectionVisibility();
+    }
+
+    function updateSectionVisibility() {
+      const local = document.getElementById('localSection');
+      const online = document.getElementById('onlineSection');
+      const fairs = document.getElementById('fairsSection');
+      const noResults = document.getElementById('noResultsState');
+
+      local.style.display = (currentTab === 'all' || currentTab === 'local') ? '' : 'none';
+      online.style.display = (currentTab === 'all' || currentTab === 'online') ? '' : 'none';
+      fairs.style.display = (currentTab === 'all' || currentTab === 'fairs') ? '' : 'none';
+
+      const hasLocal = getFilteredStores().length > 0;
+      const hasOnline = getFilteredOnline().length > 0;
+      const hasFairs = getFilteredFairs().length > 0;
+      
+      let hasResults = false;
+      if (currentTab === 'all') hasResults = hasLocal || hasOnline || hasFairs;
+      else if (currentTab === 'local') hasResults = hasLocal;
+      else if (currentTab === 'online') hasResults = hasOnline;
+      else if (currentTab === 'fairs') hasResults = hasFairs;
+
+      if (noResults) noResults.style.display = hasResults ? 'none' : 'flex';
+    }
+
+    function updateResultsCounts() {
+      const ls = getFilteredStores().length;
+      const op = getFilteredOnline().length;
+      const fs = getFilteredFairs().length;
+      const el1 = document.getElementById('localResultsCount');
+      const el2 = document.getElementById('onlineResultsCount');
+      const el3 = document.getElementById('fairsResultsCount');
+      if (el1) el1.textContent = `${ls} store${ls!==1?'s':''} found`;
+      if (el2) el2.textContent = `${op} platform${op!==1?'s':''}`;
+      if (el3) el3.textContent = `${fs} event${fs!==1?'s':''}`;
+    }
+
+    function resetAllFilters() {
+      const in1 = document.getElementById('marketKeywordInput');
+      const in2 = document.getElementById('globalMarketSearch');
+      if (in1) in1.value = '';
+      if (in2) in2.value = '';
+      const radSelect = document.getElementById('radiusSelect');
+      if (radSelect) radSelect.value = '25';
+      currentRadius = 25;
+      currentTab = 'all';
+      document.querySelectorAll(".cc-tab-pill").forEach(el => el.classList.remove("active"));
+      const allTab = document.querySelector('[data-tab="all"]');
+      if (allTab) allTab.classList.add("active");
+      filterAllContent();
+      drawRadiusCircle();
+      if (mapInstance) mapInstance.setZoom(13);
+    }
+
+    // ==================== INTERACTION HANDLERS ====================
+    function handleGlobalSearch(value) {
+      const in1 = document.getElementById('marketKeywordInput');
+      if (in1) in1.value = value;
+      filterAllContent();
+    }
+
+    function promptChangeLocation() {
+      openCityModal();
+    }
+
+    function toggleFilterDrawer() {
+      openCityModal();
+    }
+
+    // Mobile sidebar drawer controller
+    function toggleCcSidebar(show) {
+      const sidebar = document.getElementById('appSidebar');
+      const backdrop = document.getElementById('ccSidebarBackdrop');
+      if (sidebar) sidebar.classList.toggle('open', show);
+      if (backdrop) backdrop.classList.toggle('open', show);
+      document.body.style.overflow = show ? 'hidden' : '';
+    }
+
+    function openStoreDetail(storeId) {
+      const store = allStores.find(s => s.id === storeId);
+      if (!store) return;
+
+      const content = document.getElementById('storeDetailContent');
+      content.innerHTML = `
+        <div class="cc-store-detail">
+          <div class="cc-store-detail-img" style="background-image:url('${store.image}'); background-size:cover; background-position:center; height:180px; border-radius:14px; position:relative;">
+            <div class="cc-store-detail-badge" style="position:absolute; bottom:12px; left:12px; background:rgba(0,0,0,0.7); color:#fff; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;">
+              📍 ${store.distance} km away
+            </div>
+          </div>
+          <h3 style="font-size:20px; font-weight:700; color:#0F172A; margin:14px 0 6px;">${store.name}</h3>
+          <div class="cc-store-detail-rating" style="margin-bottom:12px; font-size:13px; color:#475569;">
+            ⭐ <strong style="color:#0F172A;">${store.rating}</strong> <span>(${store.reviews} verified customer reviews)</span>
+          </div>
+          <p class="cc-store-detail-desc" style="font-size:13.5px; color:#334155; line-height:1.5; margin-bottom:14px;">${store.description}</p>
+          
+          <div class="cc-store-detail-info" style="background:#F8FAF9; padding:12px 14px; border-radius:12px; margin-bottom:14px; font-size:13px; display:flex; flex-direction:column; gap:6px;">
+            <div><span>📍</span> <strong>Address:</strong> ${store.address}</div>
+            <div><span>🕒</span> <strong>Hours:</strong> ${store.hours}</div>
+            <div><span>📞</span> <strong>Phone:</strong> <a href="tel:${store.phone}" style="color:#075C55; font-weight:600;">${store.phone}</a></div>
+          </div>
+
+          <div class="cc-store-detail-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px;">
+            ${store.tags.map(t => `<span class="cc-tag-pill">${t}</span>`).join('')}
+          </div>
+
+          <div style="background:#ECFDF5; border:1px solid #A7F3D0; padding:12px; border-radius:10px; margin-bottom:16px;">
+            <strong style="font-size:12.5px; color:#065F46; display:block; margin-bottom:4px;">🤝 Artisan Supply Opportunity</strong>
+            <span style="font-size:12px; color:#047857;">This store purchases handicrafts on wholesale consignment terms. Contact the store manager to schedule a sample showcase.</span>
+          </div>
+
+          <div class="cc-store-detail-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}" target="_blank" rel="noopener noreferrer" class="cc-btn-directions-lg" style="flex:1; text-align:center; padding:12px; background:#075C55; color:white; border-radius:10px; font-weight:700; text-decoration:none;">
+              📍 Get Directions
+            </a>
+            <a href="tel:${store.phone}" class="cc-btn-call-lg" style="flex:1; text-align:center; padding:12px; background:#F1F5F9; color:#0F172A; border:1px solid #CBD5E1; border-radius:10px; font-weight:700; text-decoration:none;">
+              📞 Call Store
+            </a>
+          </div>
+        </div>
+      `;
+      const modal = document.getElementById('storeDetailModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeStoreModal() {
+      const modal = document.getElementById('storeDetailModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function openPlatformGuide(platformId) {
+      const platform = onlinePlatforms.find(p => p.id === platformId);
+      if (!platform) return;
+
+      const content = document.getElementById('platformGuideContent');
+      content.innerHTML = `
+        <div style="padding:4px;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <span style="font-size:28px;">${platform.icon}</span>
+            <div>
+              <h3 style="font-size:18px; font-weight:700; color:#0F172A; margin:0;">${platform.name}</h3>
+              <span style="font-size:12px; color:#059669; font-weight:600;">Commission: ${platform.commission}</span>
+            </div>
+          </div>
+          <p style="font-size:13px; color:#475569; line-height:1.5; margin-bottom:16px;">
+            ${platform.description}
+          </p>
+
+          <h4 style="font-size:14px; font-weight:700; color:#0F172A; margin:0 0 8px;">📋 Required Documents &amp; Eligibility</h4>
+          <ul style="margin:0 0 16px 20px; padding:0; font-size:13px; color:#334155; line-height:1.6;">
+            ${platform.docsRequired.map(d => `<li><strong>${d}</strong></li>`).join('')}
+          </ul>
+
+          <div style="background:#FEF3C7; border:1px solid #FDE68A; padding:12px; border-radius:10px; margin-bottom:18px;">
+            <strong style="font-size:12.5px; color:#92400E; display:block; margin-bottom:2px;">💡 Artisan Subsidy Tip</strong>
+            <span style="font-size:12px; color:#78350F;">Artisans with a Ministry of Textiles Pehchan ID Card receive dedicated onboarding assistance and waiver of registration deposit.</span>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <a href="${platform.link}" target="_blank" rel="noopener noreferrer" style="flex:1; text-align:center; padding:12px; background:#075C55; color:white; border-radius:10px; font-weight:700; text-decoration:none; font-size:13.5px;">
+              Apply on ${platform.name} ↗
+            </a>
+            <button type="button" onclick="closePlatformGuideModal()" style="padding:12px 16px; background:#F1F5F9; border:1px solid #CBD5E1; border-radius:10px; font-weight:600; cursor:pointer;">
+              Close
+            </button>
+          </div>
+        </div>
+      `;
+      const modal = document.getElementById('platformGuideModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closePlatformGuideModal() {
+      const modal = document.getElementById('platformGuideModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function showNotifications() {
+      const panel = document.getElementById('notifPanel');
+      if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function cycleLang() {
+      const langs = ['English', 'हिन्दी', 'मराठी', 'ગુજરાતી'];
+      const label = document.getElementById('langLabel');
+      if (label) {
+        const idx = langs.indexOf(label.textContent);
+        label.textContent = langs[(idx + 1) % langs.length];
+      }
+    }
+
+    function triggerAskAI() {
+      alert("✨ CraftConnect AI Assistant:\n\nHello! I can help you:\n• Find nearby craft stores for your products\n• Calculate consignment margins\n• Apply for upcoming fairs like SARAS Mela\n• Connect with online platforms like Amazon Karigar & ONDC\n\nHow can I help you today?");
+    }
+  </script>
+</body>
+</html>

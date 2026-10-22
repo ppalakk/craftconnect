@@ -1,0 +1,955 @@
+<% layout("/layouts/boilerplate")%>
+
+  <style>
+    /* ================= REGISTER PAGE — MATCHING MODERN GLASSMORPHISM DESIGN ================= */
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --cc-forest: #1b4d3e;
+      --cc-forest-light: #245a4a;
+      --cc-forest-dark: #143b30;
+      --cc-emerald: #2d8b6f;
+      --cc-amber: #e99436;
+      --cc-amber-glow: #f5a623;
+      --cc-charcoal: #1a1a2e;
+      --cc-surface: rgba(255, 255, 255, 0.72);
+      --cc-glass-border: rgba(255, 255, 255, 0.35);
+      --cc-glass-shadow: rgba(27, 77, 62, 0.12);
+      --cc-radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body,
+    body.login-page-body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(145deg, #0f2e24 0%, #1b4d3e 35%, #245a4a 55%, #1a3f33 100%) !important;
+      overflow-x: hidden;
+      color: #1a1a2e;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Reset Bootstrap container constraints from boilerplate */
+    .container {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .container>.alert {
+      display: none;
+    }
+
+    /* Animated ambient orbs */
+    .login-bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 12s ease-in-out infinite alternate;
+    }
+
+    .login-bg-orb--1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(45, 139, 111, 0.25);
+      top: -120px;
+      right: -80px;
+      animation-duration: 14s;
+    }
+
+    .login-bg-orb--2 {
+      width: 350px;
+      height: 350px;
+      background: rgba(233, 148, 54, 0.12);
+      bottom: -100px;
+      left: -60px;
+      animation-duration: 18s;
+      animation-direction: alternate-reverse;
+    }
+
+    .login-bg-orb--3 {
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.06);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-duration: 10s;
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(20px, -15px) scale(1.08);
+      }
+
+      100% {
+        transform: translate(-10px, 10px) scale(0.95);
+      }
+    }
+
+    /* Main card container */
+    .login-main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    .login-card-wrapper {
+      width: 100%;
+      max-width: 1040px;
+      display: grid;
+      grid-template-columns: 1fr;
+      border-radius: var(--cc-radius);
+      overflow: hidden;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      animation: cardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes cardRise {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Left hero panel */
+    .login-hero-panel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background-color: #075C55;
+      display: none;
+    }
+
+    .login-hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .login-hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+          rgba(7, 92, 85, 0.08),
+          rgba(7, 92, 85, 0.22));
+      pointer-events: none;
+    }
+
+    /* Right form panel — GLASSMORPHISM */
+    .login-form-panel {
+      background: var(--cc-surface);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      padding: 34px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-form-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Header */
+    .login-form-header {
+      margin-bottom: 20px;
+    }
+
+    .login-form-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--cc-charcoal);
+      margin: 0 0 4px;
+      letter-spacing: -0.3px;
+    }
+
+    .login-form-header p {
+      font-size: 13px;
+      color: #4b5563;
+      margin: 0;
+      font-weight: 450;
+    }
+
+    /* Alerts */
+    .login-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      animation: alertSlide 0.3s ease-out;
+    }
+
+    @keyframes alertSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-alert--error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .login-alert--success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .login-alert--warn {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .login-alert-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .login-alert-text {
+      flex: 1;
+    }
+
+    .login-alert-close {
+      background: none;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .login-alert-close:hover {
+      opacity: 1;
+    }
+
+    /* Form layout & fields */
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 540px) {
+      .form-row-2col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .login-field {
+      margin-bottom: 13px;
+    }
+
+    .login-field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--cc-charcoal);
+      margin-bottom: 5px;
+    }
+
+    .login-field-label .req {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+
+    .login-input-wrap {
+      position: relative;
+    }
+
+    .login-input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      pointer-events: none;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--cc-charcoal);
+      background: rgba(255, 255, 255, 0.65);
+      border: 1.5px solid #d1d5db;
+      border-radius: 13px;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .login-input::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    .login-input:hover {
+      border-color: #a7c4b8;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .login-input:focus {
+      border-color: var(--cc-forest);
+      background: #fff;
+      box-shadow: 0 0 0 3.5px rgba(27, 77, 62, 0.15), 0 2px 8px rgba(27, 77, 62, 0.08);
+    }
+
+    .login-input:focus~.login-input-icon {
+      opacity: 0.75;
+    }
+
+    .login-input.input-error {
+      border-color: #ef4444;
+    }
+
+    .login-input.input-error:focus {
+      box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.12);
+    }
+
+    select.login-input {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%22%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%231b4d3e%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    .login-input-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      color: #9ca3af;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .login-input-toggle:hover {
+      color: #4b5563;
+    }
+
+    .login-field-error {
+      display: none;
+      font-size: 11px;
+      color: #ef4444;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .login-field-error.visible {
+      display: block;
+    }
+
+    /* Terms Checkbox */
+    .login-remember {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 4px 0 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .login-remember input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      border-radius: 4px;
+      accent-color: var(--cc-forest);
+      cursor: pointer;
+    }
+
+    .login-remember span {
+      font-size: 12px;
+      font-weight: 500;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+
+    .login-remember span a {
+      color: var(--cc-forest);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .login-remember span a:hover {
+      text-decoration: underline;
+    }
+
+    /* Primary submit button */
+    .login-submit-btn {
+      width: 100%;
+      padding: 13px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--cc-forest) 0%, var(--cc-emerald) 100%);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 4px 16px rgba(27, 77, 62, 0.35);
+      letter-spacing: 0.2px;
+    }
+
+    .login-submit-btn:hover {
+      background: linear-gradient(135deg, var(--cc-forest-dark) 0%, var(--cc-forest) 100%);
+      box-shadow: 0 6px 20px rgba(27, 77, 62, 0.45);
+      transform: translateY(-1.5px);
+    }
+
+    .login-submit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(27, 77, 62, 0.3);
+    }
+
+    /* Divider */
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .login-divider-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .login-divider-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    /* Guest Artisan Button */
+    .login-guest-btn {
+      width: 100%;
+      padding: 12px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--cc-forest);
+      background: rgba(27, 77, 62, 0.06);
+      border: 1.5px solid rgba(27, 77, 62, 0.18);
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .login-guest-btn:hover {
+      background: rgba(27, 77, 62, 0.1);
+      border-color: rgba(27, 77, 62, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(27, 77, 62, 0.1);
+      color: var(--cc-forest-dark);
+    }
+
+    .login-guest-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-guest-btn-icon {
+      font-size: 16px;
+    }
+
+    .login-guest-btn-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(27, 77, 62, 0.1);
+      color: var(--cc-forest);
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Login link */
+    .login-register-link {
+      text-align: center;
+      font-size: 13px;
+      color: #4b5563;
+      margin-top: 16px;
+      margin-bottom: 0;
+    }
+
+    .login-register-link a {
+      font-weight: 700;
+      color: var(--cc-forest);
+      text-decoration: none;
+      margin-left: 4px;
+      transition: color 0.2s;
+    }
+
+    .login-register-link a:hover {
+      color: var(--cc-emerald);
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .login-footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 20px 18px;
+      font-weight: 450;
+    }
+
+    /* Desktop responsive */
+    @media (min-width: 768px) {
+      .login-card-wrapper {
+        grid-template-columns: 5fr 7fr;
+      }
+
+      .login-hero-panel {
+        display: flex;
+      }
+
+      .login-form-panel {
+        padding: 38px 36px;
+      }
+
+      .login-form-header h2 {
+        font-size: 28px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .login-form-panel {
+        padding: 42px 42px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .login-main {
+        padding: 16px 12px 30px;
+      }
+
+      .login-form-panel {
+        padding: 24px 18px;
+      }
+
+      .login-form-header h2 {
+        font-size: 22px;
+      }
+
+      .login-submit-btn {
+        padding: 12px 16px;
+      }
+    }
+  </style>
+
+  <body class="login-page-body">
+
+    <!-- Ambient background orbs -->
+    <div class="login-bg-orb login-bg-orb--1"></div>
+    <div class="login-bg-orb login-bg-orb--2"></div>
+    <div class="login-bg-orb login-bg-orb--3"></div>
+
+    <!-- Main Register Container -->
+    <main class="login-main">
+      <div class="login-card-wrapper">
+
+        <!-- Left Hero Panel: Artisan Image Only (Matching Login Page) -->
+        <div class="login-hero-panel">
+          <img src="/images/artisan.png" alt="Indian artisan creating traditional handicrafts" class="login-hero-image">
+        </div>
+
+        <!-- Right Form Panel — Glassmorphism -->
+        <div class="login-form-panel">
+          <div class="login-form-inner">
+
+            <!-- Header -->
+            <div class="login-form-header">
+              <h2>Create Account ✨</h2>
+              <p>Join India's AI-Powered Artisan Network</p>
+            </div>
+
+            <!-- Server Alerts -->
+            <% if (typeof error !=='undefined' && error) { %>
+              <div class="login-alert login-alert--error">
+                <span class="login-alert-icon">⚠️</span>
+                <div class="login-alert-text">
+                  <%= error %>
+                </div>
+                <button type="button" class="login-alert-close" onclick="this.parentElement.remove()">&times;</button>
+              </div>
+              <% } %>
+
+                <% if (typeof success !=='undefined' && success) { %>
+                  <div class="login-alert login-alert--success">
+                    <span class="login-alert-icon">✅</span>
+                    <div class="login-alert-text">
+                      <%= success %>
+                    </div>
+                    <button type="button" class="login-alert-close"
+                      onclick="this.parentElement.remove()">&times;</button>
+                  </div>
+                  <% } %>
+
+                    <!-- Client-side Validation Alert -->
+                    <div id="clientErrorBox" class="login-alert login-alert--warn" style="display: none;">
+                      <span class="login-alert-icon">⚠️</span>
+                      <div class="login-alert-text" id="clientErrorMsg">Please correct the highlighted fields.</div>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form id="registerForm" action="/register" method="POST" novalidate
+                      onsubmit="return validateRegisterForm(event)">
+                      <input type="hidden" name="redirect"
+                        value="<%= typeof redirect !== 'undefined' ? redirect : '' %>">
+                      <input type="hidden" name="role" value="artisan">
+
+                      <!-- Full Name -->
+                      <div class="login-field">
+                        <label for="name" class="login-field-label">
+                          Full Name <span class="req">*</span>
+                        </label>
+                        <div class="login-input-wrap">
+                          <span class="login-input-icon">👤</span>
+                          <input type="text" id="name" name="name" required autocomplete="name"
+                            placeholder="e.g. Meera Devi" class="login-input">
+                        </div>
+                        <p id="nameError" class="login-field-error">Please enter your full name.</p>
+                      </div>
+
+                      <!-- Email & Phone Grid -->
+                      <div class="form-row-2col">
+                        <div class="login-field">
+                          <label for="email" class="login-field-label">
+                            Email Address <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">✉️</span>
+                            <input type="email" id="email" name="email" required autocomplete="email"
+                              placeholder="meera@craft.in" class="login-input">
+                          </div>
+                          <p id="emailError" class="login-field-error">Enter a valid email.</p>
+                        </div>
+
+                        <div class="login-field">
+                          <label for="phone" class="login-field-label">
+                            Mobile Number <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">📞</span>
+                            <input type="tel" id="phone" name="phone" required autocomplete="tel"
+                              placeholder="9876543210" class="login-input">
+                          </div>
+                          <p id="phoneError" class="login-field-error">Enter 10-digit mobile number.</p>
+                        </div>
+                      </div>
+
+                      <!-- Craft & State Grid -->
+                      <div class="form-row-2col">
+                        <div class="login-field">
+                          <label for="craft" class="login-field-label">
+                            Craft / Trade <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">🎨</span>
+                            <select id="craft" name="craft" required class="login-input">
+                              <option value="handicraft">Handicrafts &amp; Bamboo</option>
+                              <option value="textile">Textiles &amp; Handloom</option>
+                              <option value="pottery">Pottery &amp; Terracotta</option>
+                              <option value="woodwork">Woodwork &amp; Carving</option>
+                              <option value="jewellery">Traditional Jewellery</option>
+                              <option value="metalwork">Metal &amp; Bell Brass</option>
+                              <option value="painting">Folk Painting &amp; Art</option>
+                              <option value="other">Other Traditional Crafts</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="login-field">
+                          <label for="state" class="login-field-label">
+                            State / Region <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">📍</span>
+                            <input type="text" id="state" name="state" required placeholder="e.g. Rajasthan"
+                              class="login-input">
+                          </div>
+                          <p id="stateError" class="login-field-error">Please enter your state.</p>
+                        </div>
+                      </div>
+
+                      <!-- Password & Confirm Password Grid -->
+                      <div class="form-row-2col">
+                        <div class="login-field">
+                          <label for="password" class="login-field-label">
+                            Password <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">🔒</span>
+                            <input type="password" id="password" name="password" required minlength="6"
+                              autocomplete="new-password" placeholder="Min. 6 chars" class="login-input"
+                              style="padding-right: 40px;">
+                            <button type="button" onclick="togglePasswordVisibility('password', this)"
+                              class="login-input-toggle" aria-label="Toggle password">
+                              👁️
+                            </button>
+                          </div>
+                          <p id="passwordError" class="login-field-error">Min. 6 characters.</p>
+                        </div>
+
+                        <div class="login-field">
+                          <label for="confirmPassword" class="login-field-label">
+                            Confirm Password <span class="req">*</span>
+                          </label>
+                          <div class="login-input-wrap">
+                            <span class="login-input-icon">🔒</span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6"
+                              autocomplete="new-password" placeholder="Re-enter password" class="login-input"
+                              style="padding-right: 40px;">
+                            <button type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
+                              class="login-input-toggle" aria-label="Toggle confirm password">
+                              👁️
+                            </button>
+                          </div>
+                          <p id="confirmError" class="login-field-error">Passwords must match.</p>
+                        </div>
+                      </div>
+
+                      <!-- Terms Agreement -->
+                      <label class="login-remember">
+                        <input type="checkbox" id="terms" name="terms" required checked>
+                        <span>I agree to CraftConnect <a href="#">Terms of Service</a> &amp; <a href="#">Privacy
+                            Policy</a>.</span>
+                      </label>
+
+                      <!-- Submit Button -->
+                      <button type="submit" id="submitBtn" class="login-submit-btn">
+                        <span id="btnText">Create Account</span>
+                        <span id="btnIcon">→</span>
+                      </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="login-divider">
+                      <div class="login-divider-line"></div>
+                      <span class="login-divider-text">or explore without an account</span>
+                      <div class="login-divider-line"></div>
+                    </div>
+
+                    <!-- Continue as Guest Artisan Button -->
+                    <a href="/auth/demo?role=artisan" class="login-guest-btn" id="guestRegisterBtn">
+                      <span class="login-guest-btn-icon">🌿</span>
+                      <span>Continue as Guest Artisan</span>
+                      <span class="login-guest-btn-badge">Quick Access</span>
+                    </a>
+
+                    <!-- Sign In Link -->
+                    <p class="login-register-link">
+                      Already have an account?
+                      <a
+                        href="/login<%= typeof redirect !== 'undefined' && redirect ? '?redirect=' + encodeURIComponent(redirect) : '' %>">
+                        Sign In →
+                      </a>
+                    </p>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="login-footer">
+      <p>CraftConnect · Empowering India's Artisans through AI &amp; Direct Market Linkages</p>
+    </footer>
+
+    <script>
+      function togglePasswordVisibility(fieldId, btn) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        if (field.type === 'password') {
+          field.type = 'text';
+          btn.innerText = '🙈';
+        } else {
+          field.type = 'password';
+          btn.innerText = '👁️';
+        }
+      }
+
+      function validateRegisterForm(e) {
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const state = document.getElementById('state');
+        const pass = document.getElementById('password');
+        const confirm = document.getElementById('confirmPassword');
+        const terms = document.getElementById('terms');
+
+        const clientErrorBox = document.getElementById('clientErrorBox');
+        const clientErrorMsg = document.getElementById('clientErrorMsg');
+
+        const nameErr = document.getElementById('nameError');
+        const emailErr = document.getElementById('emailError');
+        const phoneErr = document.getElementById('phoneError');
+        const stateErr = document.getElementById('stateError');
+        const passErr = document.getElementById('passwordError');
+        const confirmErr = document.getElementById('confirmError');
+
+        let isValid = true;
+        let firstMsg = '';
+
+        // Reset errors
+        [name, email, phone, state, pass, confirm].forEach(el => el.classList.remove('input-error'));
+        [nameErr, emailErr, phoneErr, stateErr, passErr, confirmErr].forEach(el => el.classList.remove('visible'));
+
+        if (!name.value.trim()) {
+          name.classList.add('input-error');
+          nameErr.classList.add('visible');
+          isValid = false;
+          firstMsg = 'Please enter your full name.';
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+          email.classList.add('input-error');
+          emailErr.classList.add('visible');
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Please enter a valid email address.';
+        }
+
+        const digits = phone.value.replace(/\D/g, '');
+        if (digits.length < 10) {
+          phone.classList.add('input-error');
+          phoneErr.classList.add('visible');
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Please enter a valid 10-digit mobile number.';
+        }
+
+        if (!state.value.trim()) {
+          state.classList.add('input-error');
+          stateErr.classList.add('visible');
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Please enter your state or region.';
+        }
+
+        if (pass.value.length < 6) {
+          pass.classList.add('input-error');
+          passErr.classList.add('visible');
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Password must be at least 6 characters.';
+        }
+
+        if (pass.value !== confirm.value) {
+          confirm.classList.add('input-error');
+          confirmErr.classList.add('visible');
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Passwords do not match.';
+        }
+
+        if (!terms.checked) {
+          isValid = false;
+          if (!firstMsg) firstMsg = 'Please accept the terms to continue.';
+        }
+
+        if (!isValid) {
+          e.preventDefault();
+          clientErrorBox.style.display = 'flex';
+          clientErrorMsg.innerText = firstMsg;
+          return false;
+        }
+
+        clientErrorBox.style.display = 'none';
+        document.getElementById('btnText').innerText = 'Creating account...';
+        document.getElementById('btnIcon').innerText = '⏳';
+        return true;
+      }
+
+      // Auto-dismiss alerts after 6s
+      document.querySelectorAll('.login-alert').forEach(alert => {
+        if (alert.id === 'clientErrorBox') return;
+        setTimeout(() => {
+          alert.style.transition = 'opacity 0.4s, transform 0.4s';
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-8px)';
+          setTimeout(() => alert.remove(), 400);
+        }, 6000);
+      });
+    </script>
+  </body>

@@ -1,0 +1,410 @@
+/* ===============================================================
+   CRAFTCONNECT — SIDEBAR  (Mobile drawer + Desktop persistent)
+   =============================================================== */
+
+/* ── Sidebar shell ── */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100%;
+    background: linear-gradient(180deg, #032B25 0%, #04332D 58%, #032620 100%);
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.18);
+    transition: left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+/* ── Brand header ── */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 20px 18px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.sidebar-brand-text h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.2px;
+}
+
+.sidebar-brand-text span {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+}
+
+.sidebar-close-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    transition: background 0.18s;
+    flex-shrink: 0;
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Artisan profile mini strip ── */
+.sidebar-profile-strip {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 14px 20px;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.sidebar-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-profile-info strong {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: white;
+}
+
+.sidebar-profile-info small {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar-verified-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.18);
+    color: #a7f3d0;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(167, 243, 208, 0.3);
+    white-space: nowrap;
+}
+
+/* ── Scrollable body ── */
+.sidebar-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.sidebar-body::-webkit-scrollbar { width: 4px; }
+.sidebar-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* ── Section labels ── */
+.sidebar-section-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    padding: 14px 20px 5px;
+}
+
+/* ── Nav items ── */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 1px 10px;
+}
+
+.sidebar-menu li a,
+.sidebar-menu li button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 14px;
+    color: rgba(255, 255, 255, 0.82);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 12px;
+    transition: background 0.18s, color 0.18s;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.sidebar-menu li a.active,
+.sidebar-menu li button.active {
+    background: #0F5A4E;
+    color: #FFFFFF;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.sidebar-nav-icon {
+    font-size: 17px;
+    width: 26px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar-nav-badge {
+    margin-left: auto;
+    background: #F38221;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+/* ── Divider ── */
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.09);
+    margin: 8px 20px;
+}
+
+/* ── Info card & Growth box ── */
+.sidebar-growth-box {
+    margin: 24px 12px 10px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.sidebar-growth-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.sidebar-growth-box strong {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.25;
+    margin-bottom: 6px;
+}
+
+.sidebar-growth-box p {
+    font-size: 11px;
+    color: #92B9AA;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.sidebar-info-card {
+    margin: 10px 10px 4px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-growth-card strong {
+    color: #d9f99d;
+}
+
+.sidebar-info-card p {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.45;
+}
+
+.sidebar-info-card strong {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 4px;
+}
+
+/* ── Contact links ── */
+.sidebar-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+    padding: 5px 14px;
+    transition: color 0.15s;
+}
+
+.sidebar-contact-link:hover {
+    color: #a7f3d0;
+}
+
+/* ── Footer ── */
+.sidebar-footer {
+    flex-shrink: 0;
+    padding: 12px 20px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-footer p {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.38);
+    text-align: center;
+}
+
+/* ── Hamburger button ── */
+.hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.hamburger-btn:hover {
+    background: #eef7f3;
+}
+
+.hamburger-btn span {
+    display: block;
+    width: 22px;
+    height: 2.5px;
+    background: #17665a;
+    border-radius: 2px;
+    transition: all 0.25s;
+}
+
+/* ── Dark overlay ── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.32s ease, visibility 0.32s;
+    z-index: 1199;
+}
+
+.sidebar-overlay.open {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════
+   DESKTOP LAYOUT — Persistent sidebar
+   ══════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+
+    /* Always visible — no transform needed */
+    .sidebar {
+        position: fixed;
+        left: 0 !important;
+        top: 0;
+        height: 100vh;
+        width: 260px;
+        box-shadow: 2px 0 20px rgba(0,0,0,0.12);
+        transition: none;
+    }
+
+    /* Overlay never shown on desktop */
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    /* Close button hidden on desktop */
+    .sidebar-close-btn {
+        display: none;
+    }
+
+    /* Push app content to the right of the sidebar */
+    body > .app {
+        margin-left: 260px;
+        max-width: none;
+        width: calc(100% - 260px);
+        min-height: 100vh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+    }
+
+    /* Also push sidebar overlay to not cover app */
+    body > #sidebarOverlay {
+        left: 260px;
+    }
+
+    /* Hamburger hidden on desktop */
+    .hamburger-btn {
+        display: none;
+    }
+
+    /* Hide floating mobile bottom nav bar on desktop screens */
+    .bottom-nav,
+    .mobile-only-bottom-nav,
+    .mobile-only-nav {
+        display: none !important;
+    }
+
+    /* Remove bottom padding needed for mobile bottom nav bar */
+    body > .app {
+        padding-bottom: 32px !important;
+    }
+}

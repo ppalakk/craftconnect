@@ -1,0 +1,613 @@
+<!-- ================= MARKETS: SMART MARKET LINKAGE & DISCOVERY PLATFORM ================= -->
+<section class="screen" id="markets">
+    <div style="padding: 10px 0 30px;">
+        <!-- ================= 1. HERO BANNER: SMART MARKET LINKAGE ================= -->
+        <section class="cc-hero-card">
+          <div class="cc-hero-left">
+            <div class="cc-hero-badge">
+              <span>📍</span>
+              <span>Smart Market Linkage</span>
+            </div>
+            <h2 class="cc-hero-title">
+              Find the Right Markets
+              <span class="highlight-orange">for Your Crafts</span>
+            </h2>
+            <p class="cc-hero-desc">
+              Get local market suggestions based on your location, and connect with trusted online platforms like Amazon, Flipkart, Meesho, Myntra &amp; more.
+            </p>
+            <div class="cc-hero-pills-row">
+              <button type="button" class="cc-hero-pill-btn" onclick="document.getElementById('spaStoresSection').scrollIntoView({behavior:'smooth',block:'start'})">
+                <span>🏪</span>
+                <span>Local Markets</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="document.getElementById('spaDigitalSection').scrollIntoView({behavior:'smooth',block:'start'})">
+                <span>🛒</span>
+                <span>Online Platforms</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="alert('Filtered by best profit margin & wholesale pricing')">
+                <span>🏷️</span>
+                <span>Better Prices</span>
+              </button>
+              <button type="button" class="cc-hero-pill-btn" onclick="document.getElementById('spaFairsSection').scrollIntoView({behavior:'smooth'})">
+                <span>📈</span>
+                <span>Bigger Reach</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="cc-hero-right">
+            <div class="cc-hero-doodle-wrap">
+              <span>Your Craft</span>
+              <span>Our Support</span>
+              <div class="cc-hero-doodle-arrow">♡ ➔</div>
+            </div>
+            <div class="cc-hero-photo-wrap">
+              <img src="/images/hero_crafts.jpg" alt="Traditional Indian Crafts" class="cc-hero-photo" onerror="this.src='/images/artisan.png'">
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. LOCATION & SEARCH BAR CARD ================= -->
+        <div class="cc-loc-search-card">
+          <div class="cc-loc-info-group">
+            <div class="cc-loc-pin-icon">📍</div>
+            <div>
+              <span class="cc-loc-label">Your Current Location</span>
+              <div class="cc-loc-value-row">
+                <span class="cc-loc-name" id="spaLocDisplay">Bhopal, Madhya Pradesh</span>
+                <button type="button" class="cc-loc-change-link" onclick="CraftMarketDiscovery.promptManualLocation()">
+                  <span>🔄</span>
+                  <span>Change</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="cc-loc-search-box">
+            <span style="color: #94A3B8;">🔍</span>
+            <input type="text" placeholder="Search markets, platforms or product types..." id="spaMarketKeywordInput" onkeyup="if(event.key==='Enter')CraftMarketDiscovery.searchManualCity(this.value)">
+            <button type="button" class="cc-loc-filter-slider-btn" title="Filter Options" onclick="CraftMarketDiscovery.promptManualLocation()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="21" y2="21"></line><line x1="4" x2="20" y1="14" y2="14"></line><line x1="4" x2="20" y1="7" y2="7"></line><circle cx="8" cy="21" r="2"></circle><circle cx="16" cy="14" r="2"></circle><circle cx="10" cy="7" r="2"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= 3. FILTER TABS & DISTANCE DROPDOWN ================= -->
+        <div class="cc-filter-tabs-bar">
+          <div class="cc-tab-pills-group">
+            <button type="button" class="cc-tab-pill active" onclick="CraftMarketDiscovery.switchTab('all'); this.parentElement.querySelectorAll('.cc-tab-pill').forEach(b => b.classList.remove('active')); this.classList.add('active');">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+              <span>All Markets</span>
+            </button>
+            <button type="button" class="cc-tab-pill" onclick="CraftMarketDiscovery.switchTab('local'); this.parentElement.querySelectorAll('.cc-tab-pill').forEach(b => b.classList.remove('active')); this.classList.add('active');">
+              <span>🏪</span>
+              <span>Local Markets</span>
+            </button>
+            <button type="button" class="cc-tab-pill" onclick="CraftMarketDiscovery.switchTab('digital'); document.getElementById('spaDigitalSection').scrollIntoView({behavior:'smooth',block:'start'}); this.parentElement.querySelectorAll('.cc-tab-pill').forEach(b => b.classList.remove('active')); this.classList.add('active');">
+              <span>🛒</span>
+              <span>Online Platforms</span>
+            </button>
+            <button type="button" class="cc-tab-pill" onclick="CraftMarketDiscovery.switchTab('events'); this.parentElement.querySelectorAll('.cc-tab-pill').forEach(b => b.classList.remove('active')); this.classList.add('active');">
+              <span>🎪</span>
+              <span>Fairs &amp; Exhibitions</span>
+            </button>
+          </div>
+
+          <div class="cc-distance-dropdown-wrap">
+            <button type="button" class="cc-distance-pill" onclick="CraftMarketDiscovery.setRadius(CraftMarketDiscovery.getState().radius === 25 ? 50 : 25)">
+              <span>📍</span>
+              <span id="spaRadiusLabel">Within 25 km</span>
+              <span style="font-size: 10px; color: #64748B;">▾</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= 4. MIDDLE TWO-COLUMN GRID: STORES & MAP ================= -->
+        <div class="cc-middle-grid" id="spaStoresSection">
+          <!-- Left Column: Local Stores Near You -->
+          <div class="cc-stores-column">
+            <div class="cc-section-header-row">
+              <div class="cc-section-title-wrap">
+                <h3><span>📍</span> Local Stores Near You</h3>
+                <p>Handpicked stores and boutiques in your area that sell handmade and craft products.</p>
+              </div>
+              <a href="#" class="cc-view-all-link" onclick="CraftMarketDiscovery.switchTab('local'); return false;">View All →</a>
+            </div>
+
+            <!-- Stores Horizontal Row / Carousel -->
+            <div class="cc-stores-carousel-container" id="spaStoresContainer">
+              <!-- Card 1: Craft Bazaar -->
+              <div class="cc-store-card">
+                <div class="cc-store-thumb-wrap">
+                  <img src="/images/store_craft_bazaar.jpg" alt="Craft Bazaar" class="cc-store-thumb">
+                  <span class="cc-store-dist-badge">📍 2.3 km</span>
+                </div>
+                <div class="cc-store-body">
+                  <h4 class="cc-store-title">Craft Bazaar</h4>
+                  <div class="cc-store-tags">
+                    <span class="cc-tag-pill">Handicrafts</span>
+                    <span class="cc-tag-pill">Home Decor</span>
+                    <span class="cc-tag-pill">Textiles</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>📍</span>
+                    <span>MP Nagar, Bhopal</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>🕒</span>
+                    <span>10:00 AM – 9:00 PM</span>
+                  </div>
+                  <div class="cc-store-rating-row">
+                    <span class="cc-star-icon">⭐</span>
+                    <span>4.5</span>
+                    <span class="cc-reviews-count">(124 reviews)</span>
+                  </div>
+                  <a href="https://maps.google.com/?q=Craft+Bazaar+MP+Nagar+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
+                    Get Directions
+                  </a>
+                </div>
+              </div>
+
+              <!-- Card 2: The Artisan Hub -->
+              <div class="cc-store-card">
+                <div class="cc-store-thumb-wrap">
+                  <img src="/images/store_artisan_hub.jpg" alt="The Artisan Hub" class="cc-store-thumb">
+                  <span class="cc-store-dist-badge">📍 3.8 km</span>
+                </div>
+                <div class="cc-store-body">
+                  <h4 class="cc-store-title">The Artisan Hub</h4>
+                  <div class="cc-store-tags">
+                    <span class="cc-tag-pill">Woodwork</span>
+                    <span class="cc-tag-pill">Paintings</span>
+                    <span class="cc-tag-pill">Handmade Gifts</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>📍</span>
+                    <span>Ashoka Garden, Bhopal</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>🕒</span>
+                    <span>10:00 AM – 8:00 PM</span>
+                  </div>
+                  <div class="cc-store-rating-row">
+                    <span class="cc-star-icon">⭐</span>
+                    <span>4.3</span>
+                    <span class="cc-reviews-count">(86 reviews)</span>
+                  </div>
+                  <a href="https://maps.google.com/?q=The+Artisan+Hub+Ashoka+Garden+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
+                    Get Directions
+                  </a>
+                </div>
+              </div>
+
+              <!-- Card 3: Mitti & More -->
+              <div class="cc-store-card">
+                <div class="cc-store-thumb-wrap">
+                  <img src="/images/store_mitti_more.jpg" alt="Mitti & More" class="cc-store-thumb">
+                  <span class="cc-store-dist-badge">📍 5.1 km</span>
+                </div>
+                <div class="cc-store-body">
+                  <h4 class="cc-store-title">Mitti &amp; More</h4>
+                  <div class="cc-store-tags">
+                    <span class="cc-tag-pill">Pottery</span>
+                    <span class="cc-tag-pill">Textiles</span>
+                    <span class="cc-tag-pill">Decor</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>📍</span>
+                    <span>Bazar Chowk, Bhopal</span>
+                  </div>
+                  <div class="cc-store-detail-row">
+                    <span>🕒</span>
+                    <span>11:00 AM – 8:30 PM</span>
+                  </div>
+                  <div class="cc-store-rating-row">
+                    <span class="cc-star-icon">⭐</span>
+                    <span>4.2</span>
+                    <span class="cc-reviews-count">(67 reviews)</span>
+                  </div>
+                  <a href="https://maps.google.com/?q=Mitti+and+More+Bazar+Chowk+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
+                    Get Directions
+                  </a>
+                </div>
+              </div>
+
+            
+            </div><!-- /#spaStoresContainer -->
+          </div><!-- /.cc-stores-column -->
+        </div><!-- /.cc-middle-grid -->
+
+        <!-- DIGITAL MARKETS: independent section, not a local-store card -->
+        <section class="cc-digital-section" id="spaDigitalSection">
+          <div class="cc-section-header-row">
+            <div class="cc-section-title-wrap">
+              <span class="cc-section-kicker">SELL ONLINE</span>
+              <h3><span aria-hidden="true">🌐</span> Digital Marketplaces</h3>
+              <p>Compare online channels and explore the official seller portals for your handmade products.</p>
+            </div>
+            <span class="cc-digital-count">4 platforms to explore</span>
+          </div>
+          <div class="cc-digital-intro">
+            <div class="cc-digital-intro-icon" aria-hidden="true">✦</div>
+            <div>
+              <h4>Take Your Crafts Beyond Your City</h4>
+              <p>Choose a platform to learn about its selling options. Seller eligibility and fees may vary.</p>
+            </div>
+          </div>
+          <div class="cc-digital-grid">
+            <a href="https://sell.amazon.in/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore selling on Amazon India">
+              <span class="cc-digital-brand cc-brand-amazon">a</span><span class="cc-digital-copy"><strong>Amazon</strong><small>Seller registration</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://seller.flipkart.com/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore selling on Flipkart">
+              <span class="cc-digital-brand cc-brand-flipkart">F</span><span class="cc-digital-copy"><strong>Flipkart</strong><small>Seller hub</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://supplier.meesho.com/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore selling on Meesho">
+              <span class="cc-digital-brand cc-brand-meesho">M</span><span class="cc-digital-copy"><strong>Meesho</strong><small>Supplier portal</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://www.myntra.com/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore Myntra">
+              <span class="cc-digital-brand cc-brand-myntra">M</span><span class="cc-digital-copy"><strong>Myntra</strong><small>Explore the platform</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="cc-digital-footer"><span>ⓘ</span> Check each platform’s current requirements before registering as a seller.</div>
+        </section>
+
+        <!-- ================= 5. BOTTOM SECTION: UPCOMING FAIRS & EXHIBITIONS ================= -->
+        <section class="cc-fairs-section" id="spaFairsSection">
+          <div class="cc-section-header-row">
+            <div class="cc-section-title-wrap">
+              <h3><span>🎪</span> Upcoming Fairs &amp; Exhibitions</h3>
+              <p>Government-verified craft fairs, bazaars and cultural festivals with direct application links.</p>
+            </div>
+            <a href="#" class="cc-view-all-link" onclick="CraftMarketDiscovery.switchTab('events'); return false;">View All →</a>
+          </div>
+
+          <div class="cc-fairs-grid">
+            <!-- Exhibition Card 1 -->
+            <div class="cc-fair-card">
+              <img src="/images/fair_saras.jpg" alt="SARAS Regional Aajeevika Craft Mela" class="cc-fair-thumb">
+              <div class="cc-fair-info">
+                <div class="cc-fair-badges-row">
+                  <span class="cc-fair-status-pill cc-status-open">Application Open (7d left)</span>
+                  <span class="cc-fair-dist-pill">📍 4.1 km</span>
+                </div>
+                <h4 class="cc-fair-title" title="SARAS Regional Aajeevika Craft Mela">SARAS Regional Aajeevika Craft Mela</h4>
+                <div class="cc-fair-meta-row">
+                  <span class="cc-fair-meta-item">📅 14 Nov 2026 – 25 Nov 2026</span>
+                  <span class="cc-fair-meta-item">📍 Bhopal Haat</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Exhibition Card 2 -->
+            <div class="cc-fair-card">
+              <img src="/images/fair_gandhi.jpg" alt="Gandhi Shilp Bazaar & National Craft Expo" class="cc-fair-thumb">
+              <div class="cc-fair-info">
+                <div class="cc-fair-badges-row">
+                  <span class="cc-fair-status-pill cc-status-upcoming">Upcoming</span>
+                  <span class="cc-fair-dist-pill">📍 440.9 km</span>
+                </div>
+                <h4 class="cc-fair-title" title="Gandhi Shilp Bazaar & National Craft Expo">Gandhi Shilp Bazaar &amp; National Craft Expo</h4>
+                <div class="cc-fair-meta-row">
+                  <span class="cc-fair-meta-item">📅 5 Nov 2026 – 14 Nov 2026</span>
+                  <span class="cc-fair-meta-item">📍 Jaipur</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Exhibition Card 3 -->
+            <div class="cc-fair-card">
+              <img src="/images/fair_saras.jpg" alt="National Shilpgram Crafts Festival" class="cc-fair-thumb">
+              <div class="cc-fair-info">
+                <div class="cc-fair-badges-row">
+                  <span class="cc-fair-status-pill cc-status-open">Application Open (28d left)</span>
+                  <span class="cc-fair-dist-pill">📍 413.5 km</span>
+                </div>
+                <h4 class="cc-fair-title" title="National Shilpgram Crafts Festival">National Shilpgram Crafts Festival</h4>
+                <div class="cc-fair-meta-row">
+                  <span class="cc-fair-meta-item">📅 21 Dec 2026 – 30 Dec 2026</span>
+                  <span class="cc-fair-meta-item">📍 Udaipur</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Hidden containers for dynamic API loads so CraftMarketDiscovery doesn't error -->
+        <div style="display:none;">
+            <span id="locationDisplay">Bhopal, Madhya Pradesh</span>
+            <span id="marketLocationBadge"><span id="marketStatusDot"></span><span id="marketStatusText"></span></span>
+            <div id="marketLocationErrorBox"></div>
+            <select id="marketCategorySelect"><option value="all" selected>All</option></select>
+            <select id="marketRadiusSelect"><option value="25" selected>25</option></select>
+            <input type="checkbox" id="marketContactFilter">
+            <input type="text" id="marketCitySearchInput">
+            <div id="placesSetupBanner"></div>
+            <span id="localMarketsCount"></span>
+            <div id="localLoading"></div>
+            <div id="localMarketsList"></div>
+            <span id="marketEventsCount"></span>
+            <div id="eventsLoading"></div>
+            <div id="marketEventsList"></div>
+            <span id="digitalMarketsCount"></span>
+            <div id="digitalLoading"></div>
+            <div id="digitalMarketsList"></div>
+            <span id="marketConnectionsCount"></span>
+            <div id="marketConnectionsList"></div>
+            <div id="marketLocalSection"></div>
+            <div id="marketEventsSection"></div>
+            <div id="marketDigitalSection"></div>
+            <div id="marketConnectionsSection"></div>
+        </div>
+    </div>
+
+    <!-- Onboarding Guidance & Checklist Modal -->
+    <div id="marketOnboardingModal" class="market-modal-overlay">
+        <div class="market-modal-card">
+            <button type="button" class="market-modal-close" onclick="document.getElementById('marketOnboardingModal').style.display='none'">✕</button>
+            <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; background: #EAF4F2; color: #075C55; font-weight: 700; padding: 3px 8px; border-radius: 6px;" id="onboardingModalPlatformType">Seller Channel</span>
+                <h3 id="onboardingModalPlatformName" style="font-size: 20px; font-weight: 700; color: #075C55; margin: 6px 0 0 0;">Platform Onboarding</h3>
+            </div>
+
+            <div id="onboardingModalFeeInfo" style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; margin-bottom: 14px; line-height: 1.45;"></div>
+
+            <h4 style="font-size: 13.5px; margin: 0 0 8px 0; color: #0F172A;">📋 Required Seller Documents:</h4>
+            <ul id="onboardingModalDocsList" style="list-style: none; margin: 0 0 16px 0; padding: 0;"></ul>
+
+            <div style="background: #FFFBEB; border: 1px solid #FEF3C7; padding: 12px; border-radius: 8px; font-size: 12.5px; color: #92400E; margin-bottom: 16px; line-height: 1.45;">
+                💡 <strong>Artisan Registration Process:</strong> First, click below to open the official seller registration portal and complete your account setup. Then update your status here so CraftConnect can track your store progress.
+            </div>
+
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 4px;">Update Your Onboarding Status:</label>
+                <select id="onboardingStageSelect" class="filter-select" style="width: 100%;">
+                    <option value="not_started">Not Started (Reviewing requirements)</option>
+                    <option value="external_registration">Registered on Official Seller Portal</option>
+                    <option value="awaiting_approval">Submitted Documents / Awaiting Approval</option>
+                    <option value="connected">Active Seller Account (Storefront Live)</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 4px;">Merchant / Seller ID (Optional):</label>
+                <input type="text" id="onboardingMerchantIdInput" class="filter-search-input" style="width: 100%;" placeholder="e.g. A2XXXXXX or FLIP_XXXX">
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a id="onboardingModalSellerUrl" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-teal btn-sm" style="flex: 1; text-align: center;">
+                    🚀 Open Verified Seller Portal ↗
+                </a>
+                <button type="button" class="btn btn-orange btn-sm" style="flex: 1;" onclick="CraftMarketDiscovery.updateOnboardingStage()">
+                    💾 Save Onboarding Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authorized API Configuration Modal -->
+    <div id="marketApiConfigModal" class="market-modal-overlay">
+        <div class="market-modal-card">
+            <button type="button" class="market-modal-close" onclick="CraftMarketDiscovery.closeApiConfigModal()">✕</button>
+            <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; background: #EFF6FF; color: #1D4ED8; font-weight: 700; padding: 3px 8px; border-radius: 6px;">Developer API Integration</span>
+                <h3 id="apiConfigModalPlatformName" style="font-size: 20px; font-weight: 700; color: #075C55; margin: 6px 0 0 0;">Configure Developer API</h3>
+                <p id="apiConfigModalApiName" style="font-size: 12.5px; color: #64748B; margin: 4px 0 0 0;"></p>
+            </div>
+
+            <div style="background: #F1F5F9; border: 1px solid #E2E8F0; padding: 12px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; line-height: 1.45;">
+                <strong>Official Access Requirements:</strong><br>
+                <span id="apiConfigModalRequirements" style="color: #475569;"></span><br>
+                <a id="apiConfigModalDocLink" href="#" target="_blank" rel="noopener noreferrer" style="color: #075C55; font-weight: 600; text-decoration: underline; margin-top: 4px; display: inline-block;">
+                    View Official Developer Documentation ↗
+                </a>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 4px;">Developer App / Client ID:</label>
+                <input type="text" id="apiConfigClientId" class="filter-search-input" style="width: 100%;" placeholder="e.g. amzn1.sp.solution.xxxx">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 4px;">Developer Client Secret / App Key:</label>
+                <input type="password" id="apiConfigClientSecret" class="filter-search-input" style="width: 100%;" placeholder="••••••••••••••••">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn btn-outline-teal btn-sm" style="flex: 1;" onclick="CraftMarketDiscovery.closeApiConfigModal()">Cancel</button>
+                <button type="button" class="btn btn-teal btn-sm" style="flex: 1;" onclick="CraftMarketDiscovery.saveApiCredentials()">Authorize API Connection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPA Map Initialization Trigger -->
+    <script>
+        window.initSpaMap = function() {
+            if (window.spaMap) {
+                window.spaMap.invalidateSize();
+                return;
+            }
+            const mapEl = document.getElementById("spaArtisanMap");
+            if (!mapEl || typeof L === 'undefined') return;
+
+            window.spaMap = L.map("spaArtisanMap", {
+                center: [23.2599, 77.4126],
+                zoom: 13,
+                zoomControl: false,
+                attributionControl: false
+            });
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+                subdomains: 'abcd'
+            }).addTo(window.spaMap);
+
+            const spaMarkers = [
+                { lat: 23.2620, lng: 77.3950, label: "Local Market", type: "pin-green" },
+                { lat: 23.2350, lng: 77.4320, label: "Craft Bazaar", type: "pin-orange" },
+                { lat: 23.2512, lng: 77.4421, label: "The Artisan Hub", type: "pin-orange" },
+                { lat: 23.2420, lng: 77.4180, label: "Online Platform", type: "pin-pink" }
+            ];
+
+            spaMarkers.forEach(m => {
+                const icon = L.divIcon({
+                    className: 'custom-leaflet-marker',
+                    html: `<div class="cc-map-pin ${m.type}">${m.label}</div>`,
+                    iconSize: [80, 24],
+                    iconAnchor: [40, 12]
+                });
+                L.marker([m.lat, m.lng], { icon }).addTo(window.spaMap);
+            });
+        };
+
+        // When user navigates to markets screen in SPA
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(window.initSpaMap, 500);
+        });
+        window.addEventListener('hashchange', function() {
+            if (window.location.hash === '#markets') {
+                setTimeout(window.initSpaMap, 200);
+            }
+        });
+    </script>
+</section>
+
+<!-- ================= INSIGHTS ================= -->
+<section class="screen" id="insights">
+    <div class="section-title">
+        <h2 data-i18n="insights_title">Demand & Market Intelligence</h2>
+        <span class="ai-badge" id="demandLastUpdated" style="background: #0F5147; color: white;">🟢 Live Market
+            Signals</span>
+    </div>
+
+    <p style="color: #5a7571; font-size: 13px; margin-bottom: 20px;">Understand real-time craft demand, trending
+        product categories, seasonal opportunities, and regional market signals across India.</p>
+
+    <!-- Filter Bar & Context -->
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 16px 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid #E7EEEA; box-shadow: 0 4px 12px rgba(0,0,0,0.03); flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h3
+                style="margin: 0; font-size: 12px; text-transform: uppercase; color: #5a7571; letter-spacing: 0.5px;">
+                📍 Artisan Market Location</h3>
+            <p id="demandLocation" style="margin: 4px 0 0; color: #0F5147; font-weight: 700; font-size: 16px;">
+                Bhopal, Madhya Pradesh</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <div>
+                <select id="demandCategoryFilter" onchange="loadDemandTrends()"
+                    style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cce2dc; font-family: inherit; font-size: 13px; background: #f9fbf9; color: #173f39; cursor: pointer;">
+                    <option value="all" selected>All Craft Categories</option>
+                    <option value="bamboo">Bamboo & Wood</option>
+                    <option value="terracotta">Terracotta & Clay</option>
+                    <option value="textiles">Textiles & Handloom</option>
+                    <option value="decor">Decor & Hampers</option>
+                </select>
+            </div>
+            <div>
+                <select id="demandPeriodFilter" onchange="loadDemandTrends()"
+                    style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cce2dc; font-family: inherit; font-size: 13px; background: #f9fbf9; color: #173f39; cursor: pointer;">
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>30 Days</option>
+                    <option value="90">90 Days</option>
+                </select>
+            </div>
+            <button class="btn btn-deep-teal" onclick="loadDemandTrends()"
+                style="padding: 8px 14px; font-size: 13px; border-radius: 8px; background: #0F5147; color: white; border: none; cursor: pointer; transition: all 250ms ease;">↻
+                Refresh</button>
+        </div>
+    </div>
+
+    <!-- 3. Trending Right Now -->
+    <div class="section-title" style="margin-top: 24px; margin-bottom: 12px;">
+        <h2 style="font-size: 18px; font-weight: 700; color: #0F5147;">🔥 Trending Right Now</h2>
+        <span style="font-size: 12px; color: #5a7571;">Top performing product categories in demand</span>
+    </div>
+    <div id="trendingGridContainer"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px;">
+        <!-- Trending products injected dynamically -->
+    </div>
+
+    <!-- 4. Emerging Opportunities for Artisans -->
+    <div class="section-title" style="margin-top: 24px; margin-bottom: 12px;">
+        <h2 style="font-size: 18px; font-weight: 700; color: #0F5147;">🎯 Emerging Business Opportunities</h2>
+        <span style="font-size: 12px; color: #5a7571;">High-margin product ideas & seasonal demand picks</span>
+    </div>
+    <div id="emergingOppsContainer"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 28px;">
+        <!-- Opportunities injected dynamically -->
+    </div>
+
+    <!-- 5. AI Recommendations for Your Craft Business -->
+    <div class="advice-card"
+        style="background: white; border-radius: 16px; border: 1px solid #E7EEEA; border-left: 5px solid #E99436; padding: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); margin-bottom: 28px;">
+        <div class="advice-header"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <span
+                style="background: #FDF4E7; color: #D97E1E; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; border: 1px solid #FCDAA8;">🤖
+                Personalized AI Production Recommendations</span>
+            <small style="font-size: 11px; color: #888;">Updated for Guest</small>
+        </div>
+        <h3 id="aiInsightTitle" style="font-size: 18px; color: #0F5147; font-weight: 700; margin-bottom: 8px;">
+            Focus Production on Bamboo Hampers & Terracotta Combos</h3>
+        <p id="aiInsightText" style="font-size: 13px; color: #5a7571; line-height: 1.5; margin-bottom: 16px;">
+            Based on your catalog products, current festive season trends, and regional buyer inquiry signals.
+        </p>
+
+        <div id="aiRecommendationsList" style="display: grid; gap: 12px; margin-bottom: 18px;">
+            <!-- Recommendation items injected dynamically -->
+        </div>
+
+        <div style="display: flex; gap: 10px; border-top: 1px solid #f0ede6; padding-top: 14px;">
+            <button class="btn btn-outline"
+                style="padding: 8px 16px; font-size: 13px; border-radius: 8px; border: 1.5px solid #0F5147; color: #0F5147; background: transparent; cursor: pointer;"
+                onclick="showScreen('catalog')">View My Catalog</button>
+            <button class="btn btn-deep-teal"
+                style="padding: 8px 16px; font-size: 13px; border-radius: 8px; background: #0F5147; color: white; border: none; cursor: pointer;"
+                onclick="showScreen('markets')">Find Matching Markets</button>
+        </div>
+    </div>
+
+    <!-- 6. Demand Across India (Regional Heatmap / Breakdown) -->
+    <div class="section-card"
+        style="background: white; padding: 20px; border-radius: 16px; border: 1px solid #E7EEEA; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 24px;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h2 style="font-size: 18px; font-weight: 700; color: #0F5147; margin: 0;">🇮🇳 Regional Demand
+                    Signals Across India</h2>
+                <p style="font-size: 12px; color: #5a7571; margin-top: 2px;">Key artisan demand clusters and
+                    active mela venues</p>
+            </div>
+        </div>
+
+        <div id="regionalGridContainer"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px;">
+            <!-- Regional cards injected dynamically -->
+        </div>
+    </div>
+
+    <!-- Transparency Disclaimer -->
+    <div style="text-align: center; font-size: 11px; color: #888; padding: 12px 0 20px 0;">
+        ℹ️ <em>Sample Intelligence Note: Market indicators combine live regional signal data with benchmark
+            artisan sales statistics. Always verify venue details before bulk transport.</em>
+    </div>
+</section>
+
+<!-- ================= PENDING ORDERS TAB ================= -->
+<section class="screen" id="orders">
+    <div class="section-title">
+        <h2 data-i18n="orders_title">Pending Orders</h2>
+        <span class="ai-badge" data-i18n="orders_badge">Fulfillment desk</span>
+    </div>
+    <p class="screen-sub" data-i18n="orders_sub">Track active buyer orders and mark items dispatched when they
+        leave the workshop.</p>
+    <div class="orders-filter-tabs">
+        <button class="orders-tab active" onclick="filterOrders('all', this)" data-i18n="orders_tab_all">All
+            Orders</button>
+        <button class="orders-tab" onclick="filterOrders('pending', this)" data-i18n="orders_tab_pending">⏳
+            Pending</button>
+        <button class="orders-tab" onclick="filterOrders('dispatched', this)"
+            data-i18n="orders_tab_dispatched">✅ Dispatched</button>
+    </div>
+    <div class="orders-list" id="ordersPageList"></div>
+</section>

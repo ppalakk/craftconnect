@@ -1,0 +1,454 @@
+<!-- ================= PROFILE ================= -->
+<section class="screen" id="profile">
+    <div class="profile-layout-container">
+        <!-- 1. Header Card with Avatar, User Info & Edit Photo Trigger -->
+        <div class="profile-header-card" id="profileHeaderCard">
+            <!-- Left: Avatar Wrapper & Photo Upload Button -->
+            <div class="profile-avatar-block">
+                <div class="profile-photo-container" id="profilePhotoContainer">
+                    <div class="profile-avatar-wrapper <%= (typeof currUser === 'undefined' || !currUser) ? 'profile-avatar--guest' : (currUser.avatar ? 'profile-avatar--user' : 'profile-avatar--initials') %>" id="profileAvatarWrapper" onclick="openPhotoUploadModal()" title="Click to upload or change profile photo">
+                        <% if (typeof currUser !== 'undefined' && currUser && currUser.avatar) { %>
+                            <img class="avatar" id="profileAvatarImg" src="<%= currUser.avatar %>" alt="<%= currUser.name %>">
+                        <% } else if (typeof currUser !== 'undefined' && currUser && currUser.name) { %>
+                            <div class="avatar avatar-initials" id="profileAvatarInitials"><%= currUser.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) %></div>
+                        <% } else { %>
+                            <img class="avatar" id="profileAvatarImg" src="/images/default_avatar.png" alt="Guest Artisan Profile">
+                        <% } %>
+                        <div class="profile-avatar-overlay">
+                            <span class="profile-avatar-overlay-icon">📷</span>
+                            <span class="profile-avatar-overlay-text">Change</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="profile-photo-edit-btn" id="profilePhotoEditBtn" onclick="openPhotoUploadModal()">
+                    <span class="profile-photo-edit-icon">✏️</span>
+                    <span class="profile-photo-edit-label" id="profilePhotoEditLabel">
+                        <%= (typeof currUser !== 'undefined' && currUser && currUser.avatar) ? 'Change Photo' : 'Upload Photo' %>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Right: Artisan User Details -->
+            <div class="profile-user-details">
+                <div class="profile-name-row">
+                    <h2 class="profile-name" id="profileUserName"><%= (typeof currUser !== 'undefined' && currUser && currUser.name) ? currUser.name : 'Guest Artisan' %></h2>
+                    <span class="profile-badge-pill <%= (typeof currUser !== 'undefined' && currUser) ? 'badge-verified' : 'badge-guest' %>" id="profileAuthBadge">
+                        <%= (typeof currUser !== 'undefined' && currUser) ? '✓ Verified Artisan' : 'Guest Mode' %>
+                    </span>
+                </div>
+                <p class="artisan-type" id="profileUserCraft">
+                    <%= (typeof currUser !== 'undefined' && currUser) ? (currUser.craft ? (currUser.craft.charAt(0).toUpperCase() + currUser.craft.slice(1) + ' Artisan') : 'Handicraft Artisan') : 'Handicraft & Bamboo Artisan' %>
+                </p>
+                <p class="artisan-loc" id="profileUserState">
+                    📍 <%= (typeof currUser !== 'undefined' && currUser) ? ((currUser.state || 'Rajasthan') + ' • Certified GI Cluster') : 'Jaipur, Rajasthan • Certified GI Cluster' %>
+                </p>
+                <div class="profile-header-tags">
+                    <span class="profile-mini-tag">🌿 Eco-Friendly</span>
+                    <span class="profile-mini-tag">⚡ Fast Dispatch</span>
+                    <span class="profile-mini-tag">🛡️ Authenticated Seller</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Responsive Hierarchy Grid: Left Main (Stats + AI Memory) & Right Side (Storefront QR) -->
+        <div class="profile-dashboard-grid">
+            <div class="profile-main-column">
+                <!-- Statistics Card Container -->
+                <div class="profile-stats-card">
+                    <div class="section-title" style="margin-bottom: 12px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #0F5147; margin: 0;">Performance Overview</h3>
+                        <span class="ai-badge" style="background: #e8f5e9; color: #0F5147; font-size: 11px;">Active Workspace</span>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="profile-stat" onclick="showScreen('catalog')">
+                            <span class="profile-stat-icon">🧺</span>
+                            <strong id="profileStatProducts">4</strong>
+                            <span data-i18n="profile_stat_products">Products</span>
+                        </div>
+                        <div class="profile-stat" onclick="showScreen('orders')">
+                            <span class="profile-stat-icon">🚚</span>
+                            <strong id="profileStatOrders">5</strong>
+                            <span data-i18n="profile_stat_orders">Orders</span>
+                        </div>
+                        <div class="profile-stat" onclick="showScreen('markets')">
+                            <span class="profile-stat-icon">🏪</span>
+                            <strong id="profileStatLeads">8</strong>
+                            <span data-i18n="profile_stat_leads">Leads</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalized AI Business Memory -->
+                <div class="profile-memory-card-wrap">
+                    <div class="section-title" style="margin-top: 24px; margin-bottom: 12px;">
+                        <h2 data-i18n="profile_memory_title">Personalized AI Business Memory</h2>
+                    </div>
+                    <div class="memory-card" id="actionLogList">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Storefront QR Code Box -->
+            <div class="profile-side-column">
+                <div class="qr-card" id="artisanQrCard">
+                    <div class="section-title" style="margin-bottom: 8px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #0F5147; margin: 0;">Storefront QR Code</h3>
+                        <span class="ai-badge">Digital Identity</span>
+                    </div>
+                    <p class="screen-sub" id="qrProfileUrl">Your public catalog link will appear here.</p>
+                    <div id="artisanQr" class="qr-canvas"></div>
+                    <div class="qr-actions">
+                        <button type="button" class="mini-btn" onclick="downloadArtisanQr()">Download QR</button>
+                        <button type="button" class="mini-btn" onclick="shareArtisanQr()">Share QR Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= PROFILE PHOTO UPLOAD MODAL ================= -->
+<div id="photoUploadModal" class="photo-upload-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="photoUploadTitle">
+    <div class="photo-upload-card">
+        <div class="photo-upload-header">
+            <h3 id="photoUploadTitle">Upload Profile Photo</h3>
+            <button type="button" class="photo-upload-close-btn" onclick="closePhotoUploadModal()" aria-label="Close">&times;</button>
+        </div>
+        <div class="photo-upload-body">
+            <div class="photo-upload-preview-area" id="photoUploadPreviewArea" onclick="document.getElementById('photoUploadInput').click()">
+                <div class="photo-upload-placeholder" id="photoUploadPlaceholder">
+                    <span class="photo-upload-placeholder-icon">📸</span>
+                    <p>Click or drag an image here from your device</p>
+                    <small>Supports JPG, PNG, WebP · Max 5 MB</small>
+                </div>
+                <img class="photo-upload-preview-img" id="photoUploadPreviewImg" src="" alt="Preview" style="display: none;">
+            </div>
+            <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="handleProfilePhotoSelect(event)">
+            
+            <div class="photo-upload-actions">
+                <button type="button" class="photo-upload-btn photo-upload-btn--select" onclick="document.getElementById('photoUploadInput').click()">
+                    📁 Choose From Device
+                </button>
+                <button type="button" class="photo-upload-btn photo-upload-btn--save" id="photoUploadSaveBtn" onclick="saveProfilePhoto()" disabled>
+                    ✅ Save Photo
+                </button>
+            </div>
+            <button type="button" class="photo-upload-btn photo-upload-btn--remove" id="photoUploadRemoveBtn" onclick="removeProfilePhoto()" style="display: none;">
+                🗑️ Remove Current Photo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= PRODUCT DETAIL MODAL ================= -->
+<div class="modal-overlay" id="productDetailModal">
+    <div class="modal-content product-detail-modal-box">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span class="ai-icon">🏷️</span>
+                <div>
+                    <h3 id="modalProductTitle">Product Title</h3>
+                    <p id="modalProductCraft">Craft Category</p>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeProductDetail()">✕</button>
+        </div>
+
+        <div class="product-detail-body">
+            <img id="modalProductImg" class="detail-img" src="" alt="Product Detail">
+
+            <div class="detail-badges">
+                <span class="category-chip" id="modalCategory">Category</span>
+                <span class="badge-gi" data-i18n="card_gi_tag">✓ AI GI Verified</span>
+                <span class="badge-stock" data-i18n="card_in_stock">In Stock</span>
+            </div>
+
+            <p id="modalProductDesc" class="detail-description"></p>
+
+            <div class="detail-section">
+                <h5 data-i18n="detail_features_title">✨ Key Visual Features</h5>
+                <ul id="modalFeaturesList" class="features-list"></ul>
+            </div>
+
+            <div class="detail-section">
+                <h5 data-i18n="detail_tags_title">🏷️ Craft Tags</h5>
+                <div id="modalTagsContainer" class="tags-container"></div>
+            </div>
+
+            <div class="detail-section">
+                <h5 data-i18n="detail_buyers_title">🎯 Recommended Target Buyers</h5>
+                <p id="modalTargetMarket" class="target-text"></p>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="detail-price-box">
+                <div class="detail-price-row">
+                    <div>
+                        <span class="detail-price-label" data-i18n="detail_price_label">ML Optimal Fair
+                            Price</span>
+                        <h3 id="modalPrice" class="detail-price-val">₹750</h3>
+                    </div>
+                    <span class="tier-badge" id="modalPriceTier">Mid-range</span>
+                </div>
+                <p id="modalPriceReason" class="detail-reason"></p>
+            </div>
+
+            <div class="detail-actions">
+                <button class="detail-share-btn" onclick="shareCatalogProduct()">
+                    <span data-i18n="btn_share_buyer">🔗 Share with Buyers / WhatsApp</span>
+                </button>
+                <button class="detail-delete-btn" onclick="deleteCurrentProduct()">
+                    <span data-i18n="btn_delete_craft">🗑️ Remove Product</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= PENDING ORDERS MODAL ================= -->
+<div class="modal-overlay" id="ordersModal" onclick="handleOrdersModalBackdropClick(event)">
+    <div class="modal-content orders-modal-box" id="ordersModalBox">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span class="ai-icon orders-icon">📦</span>
+                <div>
+                    <h3>Orders Breakdown</h3>
+                    <p id="ordersModalSubtitle">2 pending · 3 completed</p>
+                </div>
+            </div>
+            <button class="close-btn orders-close-btn" onclick="closeOrdersModal()">✕</button>
+        </div>
+
+        <div class="orders-filter-tabs" id="ordersFilterTabs">
+            <button class="orders-tab active" onclick="filterOrders('all', this)" id="tabAll">All
+                Orders</button>
+            <button class="orders-tab" onclick="filterOrders('pending', this)" id="tabPending">⏳
+                Pending</button>
+            <button class="orders-tab" onclick="filterOrders('dispatched', this)" id="tabDispatched">✅
+                Dispatched</button>
+        </div>
+
+        <div class="orders-list" id="ordersList">
+            <!-- Dynamically populated via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- ================= FLOATING VOICE ASSISTANT BUTTON ================= -->
+<div class="floating-voice-btn" onclick="openVoiceModal()">
+    <span class="pulse-ring"></span>
+    <span data-i18n="voice_ai_btn">🎙️AI Voice</span>
+</div>
+
+<!-- ================= MULTILINGUAL VOICE AI MODAL ================= -->
+<div class="modal-overlay" id="voiceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span class="ai-icon">🎙️</span>
+                <div>
+                    <h3 data-i18n="voice_modal_title">Multilingual Voice AI Assistant</h3>
+                    <p data-i18n="voice_modal_sub">Speak in your language for instant advice</p>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeVoiceModal()">✕</button>
+        </div>
+
+        <div class="lang-selector">
+            <label for="voiceLang" data-i18n="voice_label_lang">Select Language:</label>
+            <select id="voiceLang">
+                <option value="en-IN">English (India)</option>
+                <option value="hi-IN" selected>हिन्दी (Hindi)</option>
+                <option value="mr-IN">मराठी (Marathi)</option>
+                <option value="gu-IN">ગુજરાતી (Gujarati)</option>
+            </select>
+        </div>
+
+        <div class="quick-chips">
+            <span onclick="setVoiceQuery('Mera terracotta product kis daam par bechna chahiye?')"
+                data-i18n="chip_pricing">💡 Pricing advice?</span>
+            <span onclick="setVoiceQuery('Bamboo product ke liye sabse accha market kaunsa hai?')"
+                data-i18n="chip_market">🏪 Best market?</span>
+            <span onclick="setVoiceQuery('Festive season ke liye kya tayari karein?')"
+                data-i18n="chip_festive">🎉 Festival tips?</span>
+        </div>
+
+        <div class="voice-status" id="voiceStatus" data-i18n="voice_status_default">
+            Tap microphone to speak or write query below:
+        </div>
+
+        <div class="chat-response-box" id="voiceResponseBox" style="display:none;">
+            <div class="ai-avatar">🌿 AI:</div>
+            <div class="ai-text" id="voiceResponseText"></div>
+            <button class="speech-btn" onclick="speakResponse()" data-i18n="btn_listen">🔊 Listen to
+                Answer</button>
+        </div>
+
+        <div class="input-row">
+            <button class="mic-btn" id="micBtn" onclick="toggleSpeechRecognition()">🎙️</button>
+            <input type="text" id="voiceQueryInput" placeholder="Ask voice assistant in your language..."
+                data-i18n-placeholder="voice_input_placeholder" onkeypress="handleVoiceEnter(event)">
+            <button class="send-btn" onclick="sendVoiceQuery()" data-i18n="btn_send">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= BOTTOM NAVIGATION (Mobile Only - Hidden on Desktop) ================= -->
+<nav class="bottom-nav mobile-only-bottom-nav" id="bottomNav">
+    <div class="nav-item active" id="nav-home" onclick="showScreen('home')">
+        <span>⌂</span>
+        <span data-i18n="nav_home">Home</span>
+    </div>
+    <div class="nav-item" id="nav-catalog" onclick="showScreen('catalog')">
+        <span>📦</span>
+        <span data-i18n="nav_catalog">Catalog</span>
+    </div>
+    <div class="nav-item" id="nav-products" onclick="showScreen('products')">
+        <span>📸</span>
+        <span data-i18n="nav_scan">AI Scan</span>
+    </div>
+    <div class="nav-item" id="nav-markets-bottom" onclick="showScreen('markets')">
+        <span>🏪</span>
+        <span data-i18n="nav_markets">Markets</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="showScreen('profile')">
+        <span>👤</span>
+        <span data-i18n="nav_profile">Profile</span>
+    </div>
+</nav>
+
+<!-- Notifications Drawer -->
+<aside id="notificationDrawer" class="notification-drawer" aria-hidden="true">
+    <div class="notify-head">
+        <h3>Notifications</h3>
+        <button type="button" class="close-btn" onclick="toggleNotificationDrawer(false)">✕</button>
+    </div>
+    <div id="notificationList" class="notify-list"></div>
+</aside>
+
+<!-- Digital Seller Account Portal Modal -->
+<div id="sellerModal"
+    style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 30, 26, 0.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 16px;">
+    <div
+        style="background: white; border-radius: 20px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); position: relative; border: 1px solid #E7EEEA;">
+        <button onclick="closeSellerModal()"
+            style="position: absolute; top: 16px; right: 16px; border: none; background: #f0f4f3; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; font-weight: bold; color: #5a7571;">✕</button>
+        <div style="margin-bottom: 16px;">
+            <h3 id="modalPlatformName" style="font-size: 22px; font-weight: 700; color: #0F5147; margin: 0;">
+                Platform Onboarding</h3>
+            <p id="modalPlatformType" style="font-size: 13px; color: #5a7571; margin-top: 4px;">Seller Account &
+                Catalog Sync Portal</p>
+        </div>
+
+        <div
+            style="background: #FDF4E7; border-left: 4px solid #E99436; padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; color: #173f39;">
+            ⚡ Direct Artisan Storefront Integration • Verified Official Seller Portal
+        </div>
+
+        <h4 style="font-size: 14px; margin-bottom: 8px; color: #173f39;">✨ Key Seller Benefits:</h4>
+        <ul id="modalPerksList" style="list-style: none; margin: 12px 0; padding: 0;">
+            <!-- Injected dynamically -->
+        </ul>
+
+        <div
+            style="background: #f4f9f7; border: 1px solid #cce2dc; padding: 12px; border-radius: 10px; margin: 16px 0; font-size: 13px;">
+            <strong>📦 CraftConnect Catalog:</strong> Ready to connect your catalog items with official seller
+                onboarding portal.
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <a id="modalSellerLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-deep-teal"
+                style="flex: 1; background: #0F5147; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 250ms ease;">🚀
+                Open Verified Seller Portal ↗</a>
+            <button class="btn btn-outline"
+                style="flex: 1; background: transparent; color: #0F5147; border: 1.5px solid #0F5147; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 250ms ease;"
+                onclick="simulateSync()">⚡ Queue Catalog Sync</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SCHEME DETAILS MODAL ================= -->
+<div id="schemeDetailModal" class="scheme-modal-backdrop" aria-hidden="true" role="dialog"
+    aria-labelledby="schemeModalTitle" style="display: none;">
+    <div class="scheme-modal-card">
+        <div class="scheme-modal-header">
+            <div class="scheme-modal-header-meta">
+                <div class="scheme-modal-icon-wrap" id="schemeModalIconWrap">
+                    🏛️
+                </div>
+                <div>
+                    <span class="scheme-modal-ministry-tag" id="schemeModalMinistry">Ministry of MSME</span>
+                    <h3 id="schemeModalTitle">PM Vishwakarma Scheme</h3>
+                    <span class="scheme-modal-category-chip" id="schemeModalCategoryChip">Toolkits &amp;
+                        Subsidised Credit</span>
+                </div>
+            </div>
+            <button type="button" class="scheme-modal-close-btn" onclick="closeSchemeModal()"
+                aria-label="Close details">✕</button>
+        </div>
+
+        <div class="scheme-modal-body" id="schemeModalBody">
+            <!-- Dynamic scheme content injected here -->
+        </div>
+
+        <div class="scheme-modal-footer">
+            <button type="button" class="scheme-modal-btn-close" onclick="closeSchemeModal()">Close</button>
+            <a id="schemeModalApplyBtn" href="#" target="_blank" rel="noopener noreferrer"
+                class="scheme-modal-btn-apply">
+                Apply on Official Portal ↗
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ================= AUTH REQUIRED GUARD MODAL ================= -->
+<div id="authGuardModal" class="auth-guard-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="authGuardTitle">
+    <div class="auth-guard-card">
+        <div class="auth-guard-header">
+            <div class="auth-guard-badge">
+                <span>🔒</span>
+                <span>Sign In Required</span>
+            </div>
+            <button type="button" class="auth-guard-close-btn" onclick="closeAuthGuardModal()" aria-label="Close dialog">✕</button>
+        </div>
+
+        <div class="auth-guard-body">
+            <div class="auth-guard-icon-hero">🌿</div>
+            <h3 id="authGuardTitle">Unlock Full Artisan Features</h3>
+            <p id="authGuardMessage">You are exploring in Guest Mode. Please sign in or register to use this feature.</p>
+
+            <div class="auth-guard-perks">
+                <div class="auth-perk-item">
+                    <span>📸</span>
+                    <div>
+                        <strong>AI Cataloging &amp; Pricing</strong>
+                        <small>Extract craft attributes and evaluate ML fair market rates</small>
+                    </div>
+                </div>
+                <div class="auth-perk-item">
+                    <span>🚚</span>
+                    <div>
+                        <strong>Order Fulfillment Desk</strong>
+                        <small>Dispatch buyer orders and generate tracking records</small>
+                    </div>
+                </div>
+                <div class="auth-perk-item">
+                    <span>💹</span>
+                    <div>
+                        <strong>Profit &amp; Expense Ledger</strong>
+                        <small>Record workshop costs and calculate real net profit</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-guard-footer">
+            <a id="authGuardLoginBtn" href="/login" class="auth-guard-btn-primary">
+                Sign In to Your Account →
+            </a>
+            <a id="authGuardRegisterBtn" href="/register" class="auth-guard-btn-secondary">
+                Don't have an account? Sign Up Free
+            </a>
+        </div>
+    </div>
+</div>
