@@ -1,6 +1,10 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row">
-<div class="alert alert-danger col-6 offset-3" role="alert">
-<h4 class="alert-heading"><%= err.message %></h4>
-</div>
+<div class="row mt-4">
+  <div class="alert alert-danger col-10 offset-1 col-md-6 offset-md-3 text-center" role="alert">
+    <h4 class="alert-heading font-semibold text-lg mb-2">⚠️ An Error Occurred</h4>
+    <p class="mb-0 text-sm"><%= (typeof err === 'object' && err !== null && err.message) ? err.message : (typeof err === 'string' ? err : 'Something went wrong. Please return to dashboard or try again.') %></p>
+    <div class="mt-4">
+      <a href="/dashboard" class="btn btn-outline-danger btn-sm">Return to Dashboard</a>
+    </div>
+  </div>
 </div>

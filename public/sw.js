@@ -3,11 +3,12 @@ const PRECACHE = [
   "/",
   "/dashboard",
   "/index.html",
-  "/public/style.css",
-  "/public/sidebar.css",
-  "/public/main.js",
-  "/public/app-modules.js",
-  "/public/sidebar.js"
+  "/public/css/style.css",
+  "/public/css/sidebar.css",
+  "/public/css/market-discovery.css",
+  "/public/js/main.js",
+  "/public/js/app-modules.js",
+  "/public/js/sidebar.js"
 ];
 
 self.addEventListener("install", (event) => {

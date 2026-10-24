@@ -14,10 +14,16 @@ const productSchema = new mongoose.Schema({
     enum: ['Online Storefront', 'Local Wholesale Market', 'Weekly Haat Co-op', 'Export Hub'],
     default: 'Online Storefront'
   },
+  image: {
+    url: String,
+    filename: String
+  },
   imageUrl: { type: String },
   arModelUrl: { type: String },
-  artisanId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  artisanId: { type: mongoose.Schema.Types.Mixed, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Product', productSchema);
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
+
+module.exports = Product;

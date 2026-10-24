@@ -1,0 +1,106 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="h4 fw-bold text-success mb-1">📊 Financial Performance Report</h2>
+      <p class="text-muted small mb-0">CraftConnect Consolidated Workshop Economics &amp; Unit Profitability</p>
+    </div>
+    <div>
+      <a href="/dashboard#finance" class="btn btn-sm btn-outline-success">
+        ← Return to Interactive Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Key Metrics 4-Cards Grid -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="card shadow-sm border-0 bg-light p-3">
+        <span class="text-muted small text-uppercase fw-bold">Gross Revenue</span>
+        <h3 class="fw-bold text-dark mt-2 mb-0">₹<%= Number(grossRevenue).toLocaleString('en-IN') %></h3>
+        <span class="text-success small mt-1">Total completed sales</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card shadow-sm border-0 bg-light p-3">
+        <span class="text-muted small text-uppercase fw-bold">Total Workshop Costs</span>
+        <h3 class="fw-bold text-danger mt-2 mb-0">₹<%= Number(totalCost).toLocaleString('en-IN') %></h3>
+        <span class="text-muted small mt-1">Materials &amp; overhead</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card shadow-sm border-0 bg-light p-3">
+        <span class="text-muted small text-uppercase fw-bold">Net Profit</span>
+        <h3 class="fw-bold text-success mt-2 mb-0">₹<%= Number(netProfit).toLocaleString('en-IN') %></h3>
+        <span class="text-muted small mt-1">Gross profit margin</span>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card shadow-sm border-0 bg-light p-3">
+        <span class="text-muted small text-uppercase fw-bold">Overall Margin</span>
+        <h3 class="fw-bold text-primary mt-2 mb-0"><%= overallMargin %>%</h3>
+        <span class="text-muted small mt-1">Efficiency ratio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Profitability Table -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3">
+      <h5 class="card-title fw-bold text-dark mb-0">📦 Product Unit Profitability</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-uppercase">
+          <tr>
+            <th>Product Name</th>
+            <th class="text-center">Units Sold</th>
+            <th class="text-end">Selling Price</th>
+            <th class="text-end">Cost Price</th>
+            <th class="text-end">Net Profit</th>
+            <th class="text-end">Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (productMetrics && productMetrics.length > 0) { %>
+            <% productMetrics.forEach(p => { %>
+              <tr>
+                <td class="fw-semibold"><%= p.title %></td>
+                <td class="text-center"><span class="badge bg-secondary"><%= p.unitsSold %></span></td>
+                <td class="text-end">₹<%= Number(p.sellingPrice).toLocaleString('en-IN') %></td>
+                <td class="text-end">₹<%= Number(p.costPrice).toLocaleString('en-IN') %></td>
+                <td class="text-end fw-bold text-success">₹<%= Number(p.profit).toLocaleString('en-IN') %></td>
+                <td class="text-end"><span class="badge bg-success bg-opacity-25 text-success"><%= p.margin %>%</span></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">No product metrics recorded yet.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sales Channel Distribution -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <h5 class="card-title fw-bold text-dark mb-0">🛒 Sales Channel Volume</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <% Object.entries(channelDistribution || {}).forEach(([channel, volume]) => { %>
+          <div class="col-md-3 col-sm-6">
+            <div class="border rounded p-3 text-center">
+              <span class="text-muted small text-uppercase d-block mb-1"><%= channel %></span>
+              <span class="h4 fw-bold text-dark"><%= volume %></span>
+              <span class="text-muted small">units</span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</div>

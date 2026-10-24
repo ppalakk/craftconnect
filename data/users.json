@@ -54,5 +54,16 @@
     "password": "$2b$10$U4jVYAHczOUNmjq2t8/mqua4mrsjurT8NtRmgpqXSsIa4qYK5cYlm",
     "createdAt": "2026-10-18T17:35:20.869Z",
     "avatar": null
+  },
+  {
+    "id": "usr_1792817756940",
+    "name": "Duplicate Artisan",
+    "email": "test_artisan_1792817756410@example.com",
+    "phone": "9123456789",
+    "craft": "handicraft",
+    "state": "Rajasthan",
+    "role": "artisan",
+    "password": "$2b$10$TvsA7Jc6fz9UwRGMjE8ROemWuqxMeLXLLl7DSNJ9qfueScrdDlT/u",
+    "createdAt": "2026-10-24T04:55:56.998Z"
   }
 ]
