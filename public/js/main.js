@@ -64,8 +64,8 @@ function showScreen(screenId) {
         "catalog": 1,
         "products": 2,
         "markets": 3,
-        "insights": 4,
-        "profile": 5,
+        "profile": 4,
+        "insights": 3,
         "orders": 1
     };
 
@@ -108,6 +108,47 @@ function showScreen(screenId) {
             : "Search products, markets, schemes, or anything...";
     }
 }
+
+/* ================= MOBILE HEADER CONTROLLERS ================= */
+function toggleMobileSearch(forceState) {
+    const searchWrap = document.getElementById("mobileSearchExpand");
+    const searchInput = document.getElementById("mobileAppSearch");
+    if (!searchWrap) return;
+    const shouldShow = (typeof forceState === "boolean")
+        ? forceState
+        : (searchWrap.style.display === "none" || !searchWrap.style.display);
+    searchWrap.style.display = shouldShow ? "block" : "none";
+    if (shouldShow && searchInput) {
+        setTimeout(() => searchInput.focus(), 60);
+    }
+}
+
+function toggleMobileProfileMenu() {
+    const menu = document.getElementById("mobileProfileMenu");
+    if (menu) {
+        menu.classList.toggle("show");
+    }
+}
+
+function closeMobileProfileMenu() {
+    const menu = document.getElementById("mobileProfileMenu");
+    if (menu) {
+        menu.classList.remove("show");
+    }
+}
+
+// Global click-outside listener to close mobile profile & language menus
+document.addEventListener("click", function(e) {
+    const profileContainer = document.getElementById("mobileProfileDropdownContainer");
+    if (profileContainer && !profileContainer.contains(e.target)) {
+        closeMobileProfileMenu();
+    }
+    const langDropdown = document.getElementById("languageDropdown");
+    if (langDropdown && !langDropdown.contains(e.target)) {
+        const langMenu = document.getElementById("languageMenu");
+        if (langMenu) langMenu.classList.remove("show");
+    }
+});
 
 /* ================= MULTILINGUAL (I18N) LOGIC ================= */
 function toggleLanguageMenu() {

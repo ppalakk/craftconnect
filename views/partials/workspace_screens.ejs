@@ -3,32 +3,42 @@
     <!-- Top Hero Banner Card -->
     <div class="home-hero-card">
         <div class="home-hero-copy">
-            <h1>
-                <span id="homeGreetingText">Good Morning</span>,
-                <span id="welcomeName"><%= (typeof currUser !== 'undefined' && currUser) ? (currUser.name.split(' ')[0]) : '' %></span>
-                <span class="home-wave">👋</span>
-            </h1>
-            <p data-i18n="welcome_sub">Your AI Business Assistant is ready to help you grow your artisan sales.</p>
+            <div class="home-hero-top-row">
+                <div class="home-hero-text-col">
+                    <h1>
+                        <span id="homeGreetingText">Good Morning</span>,
+                        <span id="welcomeName"><%= (typeof currUser !== 'undefined' && currUser) ? (currUser.name.split(' ')[0]) : '' %></span>
+                        <span class="home-wave">👋</span>
+                    </h1>
+                    <p data-i18n="welcome_sub">Your AI Business Assistant is ready to grow your artisan sales.</p>
+                </div>
+                <div class="home-hero-mobile-photo">
+                    <img src="/images/hero_pots.jpg"
+                        alt="Handcrafted terracotta pottery in basket"
+                        onerror="this.src='/images/hero_crafts.jpg'">
+                </div>
+            </div>
+
             <div class="home-hero-pills">
                 <button type="button" class="home-hero-pill" onclick="showScreen('markets')">
                     <span class="pill-ico tone-green">🏪</span>
-                    <span>Get Market Suggestions</span>
+                    <span class="pill-label">Get Market Suggestions</span>
                 </button>
                 <button type="button" class="home-hero-pill" onclick="showScreen('schemes')">
                     <span class="pill-ico tone-teal">🏛️</span>
-                    <span>Find Govt Schemes</span>
+                    <span class="pill-label">Find Govt Schemes</span>
                 </button>
                 <button type="button" class="home-hero-pill" onclick="showScreen('products')">
                     <span class="pill-ico tone-mint">⛶</span>
-                    <span>Scan with AI</span>
+                    <span class="pill-label">Scan with AI</span>
                 </button>
                 <button type="button" class="home-hero-pill" onclick="showScreen('orders')">
                     <span class="pill-ico tone-sage">📦</span>
-                    <span>Track Orders</span>
+                    <span class="pill-label">Track Orders</span>
                 </button>
             </div>
         </div>
-        <div class="home-hero-visual">
+        <div class="home-hero-visual desktop-only-hero-visual">
             <div class="home-hero-photo">
                 <img src="/images/hero_pots.jpg"
                     alt="Handcrafted terracotta pottery in basket"
@@ -83,7 +93,9 @@
             <span class="bar bar-5"></span>
             <span class="bar bar-6"></span>
         </div>
-        <button type="button" class="ai-talk-btn" onclick="event.stopPropagation(); openVoiceModal();">🎤 Talk to AI</button>
+        <button type="button" class="ai-talk-btn" onclick="event.stopPropagation(); openVoiceModal();">
+            <span>🎙️</span> <span>Talk to AI &rsaquo;</span>
+        </button>
     </div>
 
     <!-- Quick Actions Header & 6-Card Grid -->

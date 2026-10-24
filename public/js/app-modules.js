@@ -282,9 +282,20 @@ function applyAuthUi() {
     const headerName = document.getElementById("headerUserName");
     const headerRole = document.getElementById("headerUserRole");
     const headerAvatar = document.getElementById("headerUserAvatar");
+    const headerNameMob = document.getElementById("headerUserNameMobile");
+    const headerRoleMob = document.getElementById("headerUserRoleMobile");
+    const headerAvatarMob = document.getElementById("headerUserAvatarMobile");
+    const mobileMenuName = document.getElementById("mobileMenuArtisanName");
+    const mobileMenuRole = document.getElementById("mobileMenuArtisanRole");
+
     if (headerName) headerName.innerText = user.name;
+    if (headerNameMob) headerNameMob.innerText = user.name;
+    if (mobileMenuName) mobileMenuName.innerText = user.name;
     if (headerRole) headerRole.innerText = (user.role || "artisan").toUpperCase();
+    if (headerRoleMob) headerRoleMob.innerText = (user.role || "artisan").toUpperCase();
+    if (mobileMenuRole) mobileMenuRole.innerText = (user.craft ? (user.craft.toUpperCase() + " ARTISAN") : "VERIFIED ARTISAN");
     if (headerAvatar && user.avatar) headerAvatar.src = user.avatar;
+    if (headerAvatarMob && user.avatar) headerAvatarMob.src = user.avatar;
     if (guestBanner) guestBanner.style.display = "none";
     if (sideActions) {
       sideActions.innerHTML = `<form action="/logout" method="POST"><button type="submit" class="sidebar-logout-btn">${t("sidebar_logout", "Logout")}</button></form>`;

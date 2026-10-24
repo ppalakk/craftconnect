@@ -61,58 +61,125 @@
 <div class="app">
     <!-- Top Application Header -->
     <header class="app-topbar">
-    <div class="brand">
-        <!-- Hamburger (mobile only) -->
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
-            <span></span><span></span><span></span>
-        </button>
-        <div class="logo">🌿</div>
-        <h2>Craft<span>Connect</span> <small class="version-tag" data-i18n="app_version">AI v2.0</small></h2>
-    </div>
-    <div class="cc-topbar-search-wrap app-global-search">
-        <span class="cc-topbar-search-icon">🔍</span>
-        <input type="search" id="globalAppSearch" class="cc-topbar-search-input"
-            placeholder="Search products, markets, schemes, or anything..."
-            oninput="handleGlobalAppSearch(this.value)" autocomplete="off">
-    </div>
-    <div class="header-actions">
-        <button type="button" class="notify-bell-btn" id="notifyBellBtn" onclick="toggleNotificationDrawer()"
-            aria-label="Notifications">
-            🔔
-            <span class="notify-count" id="notifyCount">0</span>
-        </button>
+        <!-- Main Header Row (Row 1) -->
+        <div class="app-topbar-main">
+            <div class="brand">
+                <!-- Hamburger (mobile only) -->
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="logo">🌿</div>
+                <h2>Craft<span>Connect</span> <small class="version-tag" data-i18n="app_version">AI v2.0</small></h2>
+            </div>
 
-        <!-- Language Dropdown -->
-        <div class="language-dropdown-container" id="languageDropdown">
-            <button type="button" id="languageButton" class="language-btn" onclick="toggleLanguageMenu()">
-                🌐 <span id="selectedLanguage">English</span> ▾
-            </button>
+            <!-- Global Search (Center on Desktop) -->
+            <div class="cc-topbar-search-wrap app-global-search">
+                <span class="cc-topbar-search-icon">🔍</span>
+                <input type="search" id="globalAppSearch" class="cc-topbar-search-input"
+                    placeholder="Search products, markets, schemes, or anything..."
+                    oninput="handleGlobalAppSearch(this.value)" autocomplete="off">
+            </div>
 
-            <div class="language-menu" id="languageMenu">
-                <button class="lang-opt" onclick="changeLanguage('en', 'English')">English</button>
-                <button class="lang-opt" onclick="changeLanguage('hi', 'हिन्दी')">हिन्दी</button>
-                <button class="lang-opt" onclick="changeLanguage('mr', 'मराठी')">मराठी</button>
-                <button class="lang-opt" onclick="changeLanguage('gu', 'ગુજરાતી')">ગુજરાતી</button>
+            <div class="header-actions">
+                <!-- Mobile Search Toggle Button (visible on mobile only) -->
+                <button type="button" class="mobile-search-btn" id="mobileSearchBtn" onclick="toggleMobileSearch()"
+                    aria-label="Search" title="Search">
+                    🔍
+                </button>
+
+                <button type="button" class="notify-bell-btn" id="notifyBellBtn" onclick="toggleNotificationDrawer()"
+                    aria-label="Notifications">
+                    🔔
+                    <span class="notify-count" id="notifyCount">0</span>
+                </button>
+
+                <!-- Language Dropdown -->
+                <div class="language-dropdown-container" id="languageDropdown">
+                    <button type="button" id="languageButton" class="language-btn" onclick="toggleLanguageMenu()">
+                        🌐 <span id="selectedLanguage">English</span> ▾
+                    </button>
+
+                    <div class="language-menu" id="languageMenu">
+                        <button class="lang-opt" onclick="changeLanguage('en', 'English')">English</button>
+                        <button class="lang-opt" onclick="changeLanguage('hi', 'हिन्दी')">हिन्दी</button>
+                        <button class="lang-opt" onclick="changeLanguage('mr', 'मराठी')">मराठी</button>
+                        <button class="lang-opt" onclick="changeLanguage('gu', 'ગુજરાતી')">ગુજરાતી</button>
+                    </div>
+                </div>
+
+                <!-- Desktop User Chip (Hidden on Mobile) -->
+                <button type="button" class="cc-user-chip header-user-chip desktop-only-user-chip" id="headerUserChip" onclick="showScreen('profile')">
+                    <img id="headerUserAvatar" class="cc-user-avatar"
+                        src="<%= (typeof currUser !== 'undefined' && currUser && currUser.avatar) ? currUser.avatar : '/images/default_avatar.png' %>"
+                        alt="Artisan" onerror="this.src='/images/default_avatar.png'">
+                    <div class="cc-user-details">
+                        <span class="cc-user-name" id="headerUserName"><%= (typeof currUser !== 'undefined' && currUser) ? currUser.name : '' %></span>
+                        <span class="cc-user-role" id="headerUserRole"><%= (typeof currUser !== 'undefined' && currUser) ? ((currUser.role || '').toUpperCase()) : '' %></span>
+                    </div>
+                </button>
+
+                <!-- Desktop Logout Button (Hidden on Mobile) -->
+                <a href="/logout" class="header-logout-btn desktop-only-logout-btn" id="headerLogoutLink" title="Sign out of CraftConnect">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
 
-        <button type="button" class="cc-user-chip header-user-chip" id="headerUserChip" onclick="showScreen('profile')">
-            <img id="headerUserAvatar" class="cc-user-avatar"
-                src="<%= (typeof currUser !== 'undefined' && currUser && currUser.avatar) ? currUser.avatar : '/images/default_avatar.png' %>"
-                alt="Artisan" onerror="this.src='/images/default_avatar.png'">
-            <div class="cc-user-details">
-                <span class="cc-user-name" id="headerUserName"><%= (typeof currUser !== 'undefined' && currUser) ? currUser.name : '' %></span>
-                <span class="cc-user-role" id="headerUserRole"><%= (typeof currUser !== 'undefined' && currUser) ? ((currUser.role || '').toUpperCase()) : '' %></span>
+        <!-- Mobile Expandable Search Bar -->
+        <div class="mobile-search-expand" id="mobileSearchExpand" style="display: none;">
+            <div class="mobile-search-input-wrap">
+                <span class="mobile-search-ico">🔍</span>
+                <input type="search" id="mobileAppSearch" class="mobile-search-input"
+                    placeholder="Search products, markets, schemes..."
+                    oninput="handleGlobalAppSearch(this.value)" autocomplete="off">
+                <button type="button" class="mobile-search-close" onclick="toggleMobileSearch(false)">✕</button>
             </div>
-        </button>
+        </div>
 
-        <!-- Prominent Logout Button -->
-        <a href="/logout" class="header-logout-btn" id="headerLogoutLink" title="Sign out of CraftConnect">
-            <span>🚪</span>
-            <span>Logout</span>
-        </a>
-    </div>
-</header>
+        <!-- Mobile Sub-Header Row: User Profile & Menu (Row 2, Visible on Mobile Only) -->
+        <div class="app-topbar-sub mobile-only-topbar-sub">
+            <div class="mobile-profile-dropdown-container" id="mobileProfileDropdownContainer">
+                <button type="button" class="mobile-user-chip-btn" id="mobileUserChipBtn" onclick="toggleMobileProfileMenu()" aria-label="User Profile Menu">
+                    <img id="headerUserAvatarMobile" class="mobile-user-avatar"
+                        src="<%= (typeof currUser !== 'undefined' && currUser && currUser.avatar) ? currUser.avatar : '/images/default_avatar.png' %>"
+                        alt="Artisan" onerror="this.src='/images/default_avatar.png'">
+                    <div class="mobile-user-details">
+                        <span class="mobile-user-name" id="headerUserNameMobile"><%= (typeof currUser !== 'undefined' && currUser) ? currUser.name : 'Guest Artisan' %></span>
+                        <span class="mobile-user-role" id="headerUserRoleMobile"><%= (typeof currUser !== 'undefined' && currUser) ? ((currUser.role || 'artisan').toUpperCase()) : 'ARTISAN' %></span>
+                    </div>
+                    <span class="mobile-profile-caret">▾</span>
+                </button>
+
+                <!-- Mobile Profile Menu Dropdown -->
+                <div class="mobile-profile-menu" id="mobileProfileMenu">
+                    <div class="mobile-profile-menu-header">
+                        <strong id="mobileMenuArtisanName"><%= (typeof currUser !== 'undefined' && currUser) ? currUser.name : 'Guest Artisan' %></strong>
+                        <small id="mobileMenuArtisanRole"><%= (typeof currUser !== 'undefined' && currUser && currUser.craft) ? (currUser.craft.toUpperCase() + ' ARTISAN') : 'VERIFIED ARTISAN' %></small>
+                    </div>
+                    <button type="button" class="mobile-profile-menu-item" onclick="showScreen('profile'); closeMobileProfileMenu();">
+                        <span>👤</span>
+                        <span>My Profile &amp; QR Showcase</span>
+                    </button>
+                    <% if (typeof currUser !== 'undefined' && currUser) { %>
+                    <a href="/logout" class="mobile-profile-menu-item mobile-logout-item">
+                        <span>🚪</span>
+                        <span>Sign Out</span>
+                    </a>
+                    <% } else { %>
+                    <a href="/login" class="mobile-profile-menu-item">
+                        <span>🔑</span>
+                        <span>Sign In</span>
+                    </a>
+                    <a href="/register" class="mobile-profile-menu-item">
+                        <span>✨</span>
+                        <span>Create Account</span>
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </header>
 
 <!-- ================= GUEST MODE ANNOUNCEMENT BANNER ================= -->
 <div id="guestBanner" class="guest-mode-banner" style="<%= (typeof currUser !== 'undefined' && currUser) ? 'display: none;' : '' %>">
