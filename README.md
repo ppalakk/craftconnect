@@ -4,6 +4,9 @@
 
 CraftConnect is a  AI platform designed to help marginalized artisans digitally showcase their products, create professional catalogs, discover suitable markets, and make better pricing and business decisions.
 
+### 🌐 Live Demo
+Experience the live application here: https://craftconnect-ekvw.onrender.com
+
 ## 🎯 Problem
 
 Artisans often face:
