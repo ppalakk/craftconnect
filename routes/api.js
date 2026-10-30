@@ -10,6 +10,16 @@ const multer = require("multer");
 const scanUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      const err = new Error("Unsupported image format. Please upload a JPG, PNG, or WEBP image.");
+      err.statusCode = 400;
+      cb(err, false);
+    }
+  },
 });
 
 /* ============ Session & Profile ============ */
@@ -170,29 +180,63 @@ router.delete("/expenses/:id", requireAuth, (req, res) => {
 
 /* ============ AI Scan & Pricing ============ */
 
-// POST /api/ai/scan — AI product analysis (auth required)
-router.post("/ai/scan", requireAuth, scanUpload.single("file"), async (req, res) => {
-  try {
-    res.json({
-      category: "bamboo",
-      craftType: "Handwoven Bamboo",
-      title: "Handwoven Bamboo Basket",
-      description:
-        "Expertly handcrafted artisan piece analyzed by Gemini Vision AI with high precision weave classification.",
-      features: [
-        "Eco-friendly organic bamboo",
-        "Reinforced traditional weave",
-        "Durable moisture-treated structure",
-      ],
-      targetMarket: "Home Decor, Eco-friendly lifestyle buyers, Corporate gifting",
-      priceRange: "₹650 – ₹1,050",
-      recommendedPrice: 850,
-      confidence: 88,
+const { analyzeProductImage } = require("../services/geminiVisionService");
+
+// POST /api/ai/scan — AI product analysis using Gemini Vision (auth required)
+router.post(
+  "/ai/scan",
+  requireAuth,
+  (req, res, next) => {
+    scanUpload.single("file")(req, res, (err) => {
+      if (err) {
+        const status = err.code === "LIMIT_FILE_SIZE" ? 400 : (err.statusCode || 400);
+        const msg = err.code === "LIMIT_FILE_SIZE" ? "Image exceeds 10MB limit." : err.message;
+        return res.status(status).json({ error: msg });
+      }
+      next();
     });
-  } catch (err) {
-    res.status(500).json({ error: "AI scan processing failed: " + err.message });
+  },
+  async (req, res) => {
+    try {
+      // Validate that an image file was actually uploaded
+      if (!req.file || !req.file.buffer || req.file.buffer.length === 0) {
+        return res.status(400).json({
+          error: "No image file uploaded. Please select or capture a product photo.",
+        });
+      }
+
+      const mimeType = req.file.mimetype || "image/jpeg";
+      const imageBuffer = req.file.buffer;
+
+      // Send the actual uploaded image to Gemini Vision for analysis
+      const analysis = await analyzeProductImage(imageBuffer, mimeType);
+
+      // Return the image-specific analysis (no hardcoded fallback)
+      res.json({
+        category: analysis.category,
+        craftType: analysis.craftType,
+        title: analysis.title,
+        description: analysis.description,
+        features: analysis.features,
+        materials: analysis.materials,
+        tags: analysis.tags,
+        targetMarket: analysis.targetMarket,
+        priceRange: analysis.priceRange,
+        recommendedPrice: analysis.recommendedPrice,
+        suggestedPriceMin: analysis.suggestedPriceMin,
+        suggestedPriceMax: analysis.suggestedPriceMax,
+        confidence: analysis.confidence,
+      });
+    } catch (err) {
+      console.error("AI scan error:", err.message);
+
+      const statusCode = err.statusCode || (err.message.includes("GEMINI_API_KEY") ? 503 : 500);
+      res.status(statusCode).json({
+        error: err.message || "AI scan processing failed. Please try again.",
+      });
+    }
   }
-});
+);
 
 /* ============ Insights ============ */
 

@@ -611,7 +611,7 @@ function openProductDetail(productId) {
     // Pricing
     document.getElementById("modalPrice").innerText = "₹" + (Number(prod.price) || 750).toLocaleString("en-IN");
     document.getElementById("modalPriceTier").innerText = prod.price_tier || "Mid-range";
-    document.getElementById("modalPriceReason").innerText = prod.reasoning || "Based on Random Forest ML pricing model evaluated against craft complexity and market demand.";
+    document.getElementById("modalPriceReason").innerText = prod.reasoning || "Based on AI pricing analysis evaluated against craft complexity and market demand.";
 
     document.getElementById("productDetailModal").classList.add("active");
 }
@@ -684,6 +684,7 @@ async function analyzeProduct(event) {
     const result = document.getElementById("catalogResult");
     const preview = document.getElementById("previewImage");
     const notice = document.getElementById("catalogAddNotice");
+    const fileInput = event.target;
 
     // Show image preview immediately
     const reader = new FileReader();
@@ -692,9 +693,18 @@ async function analyzeProduct(event) {
     };
     reader.readAsDataURL(file);
 
-    loading.style.display = "block";
+    // Clear previous results and show loading state
     result.style.display = "none";
     if (notice) notice.style.display = "none";
+    loading.style.display = "block";
+    pendingCatalogDraft = null;
+
+    // Disable the file input to prevent duplicate submissions
+    fileInput.disabled = true;
+
+    // Track this upload to prevent race conditions with older responses
+    const uploadTimestamp = Date.now();
+    window._lastScanTimestamp = uploadTimestamp;
 
     const formData = new FormData();
     formData.append("file", file);
@@ -708,8 +718,15 @@ async function analyzeProduct(event) {
             body: formData
         });
 
+        // If a newer upload was started, discard this response
+        if (window._lastScanTimestamp !== uploadTimestamp) {
+            console.log("Discarding stale AI scan response.");
+            return;
+        }
+
         if (!response.ok) {
-            throw new Error(`API analysis error: ${response.statusText}`);
+            const errBody = await response.json().catch(() => ({}));
+            throw new Error(errBody.error || `AI analysis error: ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -720,23 +737,49 @@ async function analyzeProduct(event) {
             category: data.category,
             craft_type: data.craftType,
             description: data.description,
-            visual_features: data.features,
-            tags: ["Handmade", "EcoFriendly", "ArtisanCraft"],
-            target_market: data.targetMarket.split(", ")
+            visual_features: data.features || [],
+            materials: data.materials || [],
+            tags: data.tags || [],
+            target_market: typeof data.targetMarket === "string"
+                ? data.targetMarket.split(", ").filter(Boolean)
+                : (Array.isArray(data.targetMarket) ? data.targetMarket : [])
         };
 
+        // Build pricing tier from AI confidence
+        const confVal = Number(data.confidence) || 75;
+        let priceTier = "Mid-range";
+        if (data.recommendedPrice > 1500) priceTier = "Premium";
+        else if (data.recommendedPrice < 500) priceTier = "Budget";
+
         pricingData = {
-            predicted_price_tier: "Mid-range",
-            price_display: data.priceRange,
+            predicted_price_tier: priceTier,
+            price_display: data.priceRange || `₹${data.suggestedPriceMin || 0} – ₹${data.suggestedPriceMax || 0}`,
             recommended_price_inr: data.recommendedPrice,
-            confidence_score: data.confidence / 100,
-            reasoning: "Evaluated by Random Forest ML model using handicraft material complexity."
+            suggested_min_inr: data.suggestedPriceMin,
+            suggested_max_inr: data.suggestedPriceMax,
+            confidence_score: confVal / 100,
+            reasoning: `Evaluated by Gemini Vision AI analysis with ${confVal}% confidence based on the detected product characteristics.`
         };
     } catch (err) {
-        console.error("AI API failed", err);
+        console.error("AI API failed:", err);
         loading.style.display = "none";
+        fileInput.disabled = false;
+
+        // Show a user-visible error message instead of silently failing
+        if (notice) {
+            notice.style.display = "flex";
+            const strong = notice.querySelector("strong");
+            if (strong) strong.innerText = "⚠️ AI analysis failed: " + (err.message || "Please try again.");
+            const sub = notice.querySelector("p");
+            if (sub) sub.innerText = "You can retry by uploading the image again.";
+        }
         return;
+    } finally {
+        fileInput.disabled = false;
     }
+
+    // If a newer upload was started while we were processing, discard
+    if (window._lastScanTimestamp !== uploadTimestamp) return;
 
     // Render results into UI
     document.getElementById("resTitle").innerText = catalogData.product_name || "Handcrafted Craft";
@@ -755,7 +798,7 @@ async function analyzeProduct(event) {
         });
     }
 
-    // Tags
+    // Tags — use AI-generated tags, not hardcoded ones
     const tagContainer = document.getElementById("resTags");
     tagContainer.innerHTML = "";
     if (catalogData.tags && catalogData.tags.length > 0) {
@@ -773,19 +816,17 @@ async function analyzeProduct(event) {
 
     // Pricing
     document.getElementById("resTier").innerText = pricingData.predicted_price_tier || "Mid-range";
-    document.getElementById("resPriceRange").innerText = pricingData.price_display || `₹${pricingData.suggested_min_inr || 600} – ₹${pricingData.suggested_max_inr || 1000}`;
-    document.getElementById("resRecPrice").innerText = `₹${pricingData.recommended_price_inr || 850}`;
+    document.getElementById("resPriceRange").innerText = pricingData.price_display || `₹${pricingData.suggested_min_inr || 0} – ₹${pricingData.suggested_max_inr || 0}`;
+    document.getElementById("resRecPrice").innerText = `₹${pricingData.recommended_price_inr || 0}`;
 
-    const confScore = Math.round((pricingData.confidence_score || 0.88) * 100);
+    const confScore = Math.round((pricingData.confidence_score || 0) * 100);
     document.getElementById("resConfidence").innerText = `${confScore}%`;
     document.getElementById("resConfidenceFill").style.width = `${confScore}%`;
-    document.getElementById("resReasoning").innerText = pricingData.reasoning || "Based on ML Random Forest pricing model.";
+    document.getElementById("resReasoning").innerText = pricingData.reasoning || "";
 
     const categoryCode = mapCategoryCode(catalogData.category);
     const uniqueTitle = uniqueProductName(catalogData.product_name, file && file.name);
-    const uniqueDesc = catalogData.description && !/exquisitely hand-formed handicraft product made by traditional artisans/i.test(catalogData.description)
-        ? catalogData.description
-        : `Handcrafted ${uniqueTitle} photographed on ${new Date().toLocaleDateString("en-IN")}.`;
+    const uniqueDesc = catalogData.description || `Handcrafted ${uniqueTitle} analyzed on ${new Date().toLocaleDateString("en-IN")}.`;
 
     pendingCatalogDraft = {
         id: "prod_" + Date.now(),
@@ -794,15 +835,15 @@ async function analyzeProduct(event) {
         category: catalogData.category || "Handicraft",
         craft_type: catalogData.craft_type || "Traditional Craft",
         image: preview.src,
-        price: Number(pricingData.recommended_price_inr) || 850,
+        price: Number(pricingData.recommended_price_inr) || 500,
         price_tier: pricingData.predicted_price_tier || "Mid-range",
-        price_range: pricingData.price_display || "₹650 – ₹1,100",
-        confidence: pricingData.confidence_score || 0.88,
+        price_range: pricingData.price_display || "Price estimate unavailable",
+        confidence: pricingData.confidence_score || 0,
         description: uniqueDesc,
-        features: catalogData.visual_features || ["Eco-friendly natural materials", "Handmade craft"],
-        tags: catalogData.tags || ["Handmade", "CraftConnect"],
+        features: catalogData.visual_features || [],
+        tags: catalogData.tags || [],
         target_market: Array.isArray(catalogData.target_market) ? catalogData.target_market.join(", ") : catalogData.target_market,
-        reasoning: pricingData.reasoning || "Evaluated by AI ML Pricing Model."
+        reasoning: pricingData.reasoning || ""
     };
 
     const titleInput = document.getElementById("editTitle");
@@ -816,7 +857,10 @@ async function analyzeProduct(event) {
 
     if (notice) {
         notice.style.display = "flex";
-        notice.querySelector("strong").innerText = "Review the unique fields below, then save to catalog.";
+        const strong = notice.querySelector("strong");
+        if (strong) strong.innerText = "Review the unique fields below, then save to catalog.";
+        const sub = notice.querySelector("p");
+        if (sub) sub.innerText = "Available under your digital artisan showcase.";
     }
 
     loading.style.display = "none";
@@ -827,21 +871,22 @@ async function analyzeProduct(event) {
 
 function mapCategoryCode(category) {
     const text = String(category || "").toLowerCase();
-    if (text.includes("terra") || text.includes("clay") || text.includes("pott")) return "terracotta";
-    if (text.includes("textile") || text.includes("loom") || text.includes("fabric")) return "textile";
-    if (text.includes("decor") || text.includes("gift") || text.includes("wood")) return "decor";
-    return "bamboo";
+    if (text.includes("bamboo") || (text.includes("wood") && !text.includes("decor"))) return "bamboo";
+    if (text.includes("terra") || text.includes("clay") || text.includes("pott") || text.includes("ceramic")) return "terracotta";
+    if (text.includes("textile") || text.includes("loom") || text.includes("fabric") || text.includes("weav") || text.includes("embroid")) return "textile";
+    if (text.includes("decor") || text.includes("gift") || text.includes("metal") || text.includes("paint")) return "decor";
+    return "decor";
 }
 
 function uniqueProductName(aiName, fileName) {
-    const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    if (aiName && String(aiName).trim() && !/^handcrafted artisan specialty$/i.test(aiName) && !/^handwoven bamboo basket$/i.test(aiName)) {
+        return String(aiName).trim();
+    }
     const fromFile = fileName ? fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim() : "";
     if (fromFile && fromFile.length > 2 && !/image|img|photo|dsc|screenshot/i.test(fromFile)) {
         return fromFile.replace(/\b\w/g, (c) => c.toUpperCase());
     }
-    if (aiName && !/^handcrafted artisan specialty$/i.test(aiName) && !/^handwoven bamboo basket$/i.test(aiName)) {
-        return `${aiName} · ${stamp}`;
-    }
+    const stamp = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
     return `New craft listing · ${stamp}`;
 }
 
@@ -858,7 +903,7 @@ function confirmSaveProduct() {
     const categoryLabels = {
         bamboo: "Bamboo & Wood",
         terracotta: "Terracotta & Clay",
-        textile: "Textiles",
+        textile: "Textiles & Weaving",
         decor: "Decor & Gifts"
     };
 
