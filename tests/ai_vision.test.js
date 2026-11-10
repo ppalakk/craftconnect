@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -236,6 +237,78 @@ describe('AI Vision Analysis & Product Cataloging Tests', () => {
       } finally {
         process.env.GEMINI_API_KEY = prevKey;
       }
+    });
+  });
+
+  /* ================= 4. LIVE GEMINI VISION REAL IMAGE TESTS ================= */
+  describe('4. Live Image Analysis on Genuine Craft Fixtures', () => {
+    const hasLiveKey = Boolean(
+      process.env.GEMINI_API_KEY &&
+      process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here'
+    );
+
+    test('4a. Live analysis of Handwoven Bamboo Basket', async (t) => {
+      if (!hasLiveKey) return t.skip('Live GEMINI_API_KEY not configured');
+      const imgPath = path.join(__dirname, 'fixtures', 'bamboo_basket.jpg');
+      if (!fs.existsSync(imgPath)) return t.skip('bamboo_basket.jpg fixture not found');
+
+      const buf = fs.readFileSync(imgPath);
+      let res;
+      try {
+        res = await analyzeProductImage(buf, 'image/jpeg');
+      } catch (err) {
+        if (err.statusCode === 429) return t.skip('Gemini rate limit hit — re-run tests after quota resets');
+        throw err;
+      }
+
+      assert.ok(res.title && res.title.length > 5, 'Must infer product title');
+      assert.equal(res.category, 'Bamboo & Wood', 'Must identify bamboo category');
+      assert.ok(res.description && res.description.length > 20, 'Must generate description');
+      assert.ok(Array.isArray(res.features) && res.features.length > 0, 'Must identify visual features');
+      assert.ok(res.recommendedPrice > 0, 'Must suggest selling price');
+      assert.ok(res.confidence >= 50 && res.confidence <= 100, 'Confidence must be bounded 50-100');
+    });
+
+    test('4b. Live analysis of Terracotta Clay Pot', async (t) => {
+      if (!hasLiveKey) return t.skip('Live GEMINI_API_KEY not configured');
+      const imgPath = path.join(__dirname, 'fixtures', 'terracotta_pot.jpg');
+      if (!fs.existsSync(imgPath)) return t.skip('terracotta_pot.jpg fixture not found');
+
+      const buf = fs.readFileSync(imgPath);
+      let res;
+      try {
+        res = await analyzeProductImage(buf, 'image/jpeg');
+      } catch (err) {
+        if (err.statusCode === 429) return t.skip('Gemini rate limit hit — re-run tests after quota resets');
+        throw err;
+      }
+
+      assert.ok(res.title && res.title.length > 5, 'Must infer product title');
+      assert.equal(res.category, 'Terracotta & Clay', 'Must identify terracotta category');
+      assert.ok(res.description && res.description.length > 20, 'Must generate description');
+      assert.ok(Array.isArray(res.features) && res.features.length > 0, 'Must identify visual features');
+      assert.ok(res.recommendedPrice > 0, 'Must suggest selling price');
+    });
+
+    test('4c. Live analysis of Embroidered Textile', async (t) => {
+      if (!hasLiveKey) return t.skip('Live GEMINI_API_KEY not configured');
+      const imgPath = path.join(__dirname, 'fixtures', 'embroidered_textile.jpg');
+      if (!fs.existsSync(imgPath)) return t.skip('embroidered_textile.jpg fixture not found');
+
+      const buf = fs.readFileSync(imgPath);
+      let res;
+      try {
+        res = await analyzeProductImage(buf, 'image/jpeg');
+      } catch (err) {
+        if (err.statusCode === 429) return t.skip('Gemini rate limit hit — re-run tests after quota resets');
+        throw err;
+      }
+
+      assert.ok(res.title && res.title.length > 5, 'Must infer product title');
+      assert.equal(res.category, 'Textiles & Weaving', 'Must identify textiles category');
+      assert.ok(res.description && res.description.length > 20, 'Must generate description');
+      assert.ok(Array.isArray(res.features) && res.features.length > 0, 'Must identify visual features');
+      assert.ok(res.recommendedPrice > 0, 'Must suggest selling price');
     });
   });
 });

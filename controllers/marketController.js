@@ -32,23 +32,143 @@ async function getUserConnections(userId) {
   return connectionStore.getForUser(userId);
 }
 
-// Discover Real Nearby Retail & Craft Businesses (Places API or Verified Hubs)
+// Reusable worldwide geocoding helper with caching and structured address parsing
+async function resolveLocationData({ query, lat, lng }) {
+  if (lat && lng) {
+    const pLat = parseFloat(lat);
+    const pLng = parseFloat(lng);
+    const cacheKey = `rev_${pLat.toFixed(4)}_${pLng.toFixed(4)}`;
+    if (geocodeCache.has(cacheKey)) {
+      return geocodeCache.get(cacheKey);
+    }
+
+    const revUrl = `https://nominatim.openstreetmap.org/reverse?lat=${pLat}&lon=${pLng}&format=json&addressdetails=1&zoom=14`;
+    const response = await fetch(revUrl, {
+      headers: { 'User-Agent': 'CraftConnect-ArtisanApp/2.0 (craftconnect@artisan.gov)' },
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!response.ok) throw new Error("Reverse geocoding service unavailable");
+
+    const data = await response.json();
+    const addr = data.address || {};
+    const city = addr.city || addr.town || addr.municipality || addr.village || addr.county || addr.state_district || "Current Location";
+    const state = addr.state || addr.province || addr.region || "";
+    const country = addr.country || "";
+    const countryCode = addr.country_code ? addr.country_code.toUpperCase() : "";
+
+    const parts = [city, state && state !== city ? state : null, country].filter(Boolean);
+    const displayName = parts.join(", ");
+
+    const result = {
+      ok: true,
+      type: "reverse",
+      lat: pLat,
+      lng: pLng,
+      city,
+      state,
+      country,
+      countryCode,
+      displayName,
+      rawAddress: addr
+    };
+
+    geocodeCache.set(cacheKey, result);
+    return result;
+  }
+
+  if (query) {
+    const cleanQ = String(query).trim();
+    if (!cleanQ) {
+      return { ok: false, error: "Please enter a valid city or location name." };
+    }
+
+    const cacheKey = `fwd_${cleanQ.toLowerCase()}`;
+    if (geocodeCache.has(cacheKey)) {
+      return geocodeCache.get(cacheKey);
+    }
+
+    // Worldwide geocoding without country restrictions
+    const fwdUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQ)}&format=json&addressdetails=1&limit=5`;
+    const response = await fetch(fwdUrl, {
+      headers: { 'User-Agent': 'CraftConnect-ArtisanApp/2.0 (craftconnect@artisan.gov)' },
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!response.ok) throw new Error("Forward geocoding service unavailable");
+
+    const data = await response.json();
+    if (!data || data.length === 0) {
+      return { ok: false, error: "Location not found. Please enter a valid city, state, or country." };
+    }
+
+    const item = data[0];
+    const addr = item.address || {};
+    const city = addr.city || addr.town || addr.municipality || addr.village || addr.county || cleanQ.split(',')[0].trim();
+    const state = addr.state || addr.province || addr.region || "";
+    const country = addr.country || "";
+    const countryCode = addr.country_code ? addr.country_code.toUpperCase() : "";
+
+    const parts = [city, state && state !== city ? state : null, country].filter(Boolean);
+    const displayName = parts.join(", ");
+
+    const result = {
+      ok: true,
+      type: "forward",
+      lat: parseFloat(item.lat),
+      lng: parseFloat(item.lon),
+      city,
+      state,
+      country,
+      countryCode,
+      displayName: displayName || item.display_name
+    };
+
+    geocodeCache.set(cacheKey, result);
+    return result;
+  }
+
+  return { ok: false, error: "Must specify either query or lat & lng" };
+}
+
+// Discover Real Nearby Retail & Craft Businesses (Worldwide Dynamic Multi-Provider)
 exports.getNearbyMarkets = async (req, res) => {
   try {
-    const { lat, lng, city, category, radius, hasContact } = req.query;
+    const { lat, lng, city, state, country, category, radius, hasContact, search } = req.query;
 
-    const parsedLat = lat ? parseFloat(lat) : null;
-    const parsedLng = lng ? parseFloat(lng) : null;
+    let parsedLat = lat ? parseFloat(lat) : null;
+    let parsedLng = lng ? parseFloat(lng) : null;
+    let resolvedCity = city ? String(city).trim() : null;
+    let resolvedState = state || "";
+    let resolvedCountry = country || "";
+
+    // If coordinates are missing but city is provided, automatically resolve coordinates
+    if ((parsedLat == null || parsedLng == null) && resolvedCity) {
+      try {
+        const geoRes = await resolveLocationData({ query: resolvedCity });
+        if (geoRes.ok && geoRes.lat != null && geoRes.lng != null) {
+          parsedLat = geoRes.lat;
+          parsedLng = geoRes.lng;
+          resolvedCity = geoRes.city || resolvedCity;
+          resolvedState = geoRes.state || resolvedState;
+          resolvedCountry = geoRes.country || resolvedCountry;
+        }
+      } catch (geoErr) {
+        console.warn("[marketController.getNearbyMarkets] Auto-geocode warning:", geoErr.message);
+      }
+    }
+
     const cleanRadius = radius ? parseInt(radius, 10) : 25;
     const hasContactOnly = hasContact === 'true' || hasContact === '1';
 
     const result = await placesService.discoverNearbyPlaces({
       lat: parsedLat,
       lng: parsedLng,
-      city: city ? String(city).trim() : null,
+      city: resolvedCity,
+      state: resolvedState,
+      country: resolvedCountry,
       category: category || "all",
       radiusKm: cleanRadius,
-      hasContactOnly
+      hasContactOnly,
+      searchQuery: search || null
     });
 
     res.json({
@@ -74,15 +194,28 @@ exports.getEvents = async (req, res) => {
   try {
     const { lat, lng, city, category, radius, upcomingOnly } = req.query;
 
-    const parsedLat = lat ? parseFloat(lat) : null;
-    const parsedLng = lng ? parseFloat(lng) : null;
+    let parsedLat = lat ? parseFloat(lat) : null;
+    let parsedLng = lng ? parseFloat(lng) : null;
+    let resolvedCity = city ? String(city).trim() : null;
+
+    if ((parsedLat == null || parsedLng == null) && resolvedCity) {
+      try {
+        const geoRes = await resolveLocationData({ query: resolvedCity });
+        if (geoRes.ok && geoRes.lat != null && geoRes.lng != null) {
+          parsedLat = geoRes.lat;
+          parsedLng = geoRes.lng;
+          resolvedCity = geoRes.city || resolvedCity;
+        }
+      } catch (e) {}
+    }
+
     const cleanRadius = radius ? parseInt(radius, 10) : 500;
     const isUpcomingOnly = upcomingOnly !== 'false';
 
     const result = eventsService.getVerifiedEvents({
       lat: parsedLat,
       lng: parsedLng,
-      city: city ? String(city).trim() : null,
+      city: resolvedCity,
       category: category || "all",
       radiusKm: cleanRadius,
       upcomingOnly: isUpcomingOnly
@@ -179,10 +312,8 @@ exports.updateConnection = async (req, res) => {
     let isAuthorized = false;
     let clientId = null;
 
-    // Check if API credentials were provided
     if (apiCredentials && typeof apiCredentials === 'object') {
       clientId = apiCredentials.clientId || apiCredentials.appId || null;
-      // In a real OAuth flow or developer key setup, we verify non-empty key structure
       if (clientId && (apiCredentials.clientSecret || apiCredentials.appSecret)) {
         isAuthorized = true;
       }
@@ -269,85 +400,15 @@ exports.deleteConnection = async (req, res) => {
   }
 };
 
-// Server-side Geocoding & Reverse Geocoding with Caching & Rate Protection
+// Server-side Geocoding & Reverse Geocoding with Caching & Rate Protection (Worldwide)
 exports.geocode = async (req, res) => {
   try {
     const { query, lat, lng } = req.query;
-
-    if (lat && lng) {
-      const pLat = parseFloat(lat);
-      const pLng = parseFloat(lng);
-      const cacheKey = `rev_${pLat.toFixed(4)}_${pLng.toFixed(4)}`;
-      if (geocodeCache.has(cacheKey)) {
-        return res.json(geocodeCache.get(cacheKey));
-      }
-
-      const revUrl = `https://nominatim.openstreetmap.org/reverse?lat=${pLat}&lon=${pLng}&format=json&zoom=14`;
-      const response = await fetch(revUrl, {
-        headers: { 'User-Agent': 'CraftConnect-ArtisanApp/2.0 (craftconnect@artisan.gov)' },
-        signal: AbortSignal.timeout(6000)
-      });
-      if (!response.ok) throw new Error("Reverse geocoding service unavailable");
-
-      const data = await response.json();
-      const addr = data.address || {};
-      const city = addr.city || addr.town || addr.municipality || addr.village || addr.county || addr.state_district || "Current Location";
-      const state = addr.state || "";
-
-      const result = {
-        ok: true,
-        type: "reverse",
-        lat: pLat,
-        lng: pLng,
-        city,
-        state,
-        displayName: `${city}${state ? ', ' + state : ''}`,
-        rawAddress: addr
-      };
-
-      geocodeCache.set(cacheKey, result);
-      return res.json(result);
+    const result = await resolveLocationData({ query, lat, lng });
+    if (!result.ok) {
+      return res.status(404).json(result);
     }
-
-    if (query) {
-      const cleanQ = String(query).trim();
-      const cacheKey = `fwd_${cleanQ.toLowerCase()}`;
-      if (geocodeCache.has(cacheKey)) {
-        return res.json(geocodeCache.get(cacheKey));
-      }
-
-      const fwdUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQ)}&format=json&countrycodes=in&limit=1`;
-      const response = await fetch(fwdUrl, {
-        headers: { 'User-Agent': 'CraftConnect-ArtisanApp/2.0 (craftconnect@artisan.gov)' },
-        signal: AbortSignal.timeout(6000)
-      });
-      if (!response.ok) throw new Error("Forward geocoding service unavailable");
-
-      const data = await response.json();
-      if (!data || data.length === 0) {
-        return res.status(404).json({ ok: false, error: "Location not found in India. Please check city name spelling." });
-      }
-
-      const item = data[0];
-      const parts = item.display_name.split(',').map(s => s.trim());
-      const city = parts[0] || cleanQ;
-      const state = parts.length > 2 ? parts[parts.length - 2] : "";
-
-      const result = {
-        ok: true,
-        type: "forward",
-        lat: parseFloat(item.lat),
-        lng: parseFloat(item.lon),
-        city,
-        state,
-        displayName: item.display_name
-      };
-
-      geocodeCache.set(cacheKey, result);
-      return res.json(result);
-    }
-
-    res.status(400).json({ ok: false, error: "Must specify either query or lat & lng" });
+    return res.json(result);
   } catch (error) {
     console.error("[marketController.geocode] Error:", error);
     res.status(500).json({
@@ -361,26 +422,40 @@ exports.geocode = async (req, res) => {
 // Combined Markets Endpoint (Backwards-compatible for existing callers)
 exports.getCombinedMarkets = async (req, res) => {
   try {
-    const { lat, lng, city, category, radius } = req.query;
-    const parsedLat = lat ? parseFloat(lat) : null;
-    const parsedLng = lng ? parseFloat(lng) : null;
+    const { lat, lng, city, category, radius, search } = req.query;
+    let parsedLat = lat ? parseFloat(lat) : null;
+    let parsedLng = lng ? parseFloat(lng) : null;
+    let resolvedCity = city ? String(city).trim() : null;
+
+    if ((parsedLat == null || parsedLng == null) && resolvedCity) {
+      try {
+        const geoRes = await resolveLocationData({ query: resolvedCity });
+        if (geoRes.ok && geoRes.lat != null && geoRes.lng != null) {
+          parsedLat = geoRes.lat;
+          parsedLng = geoRes.lng;
+          resolvedCity = geoRes.city || resolvedCity;
+        }
+      } catch (e) {}
+    }
+
     const cleanRadius = radius ? parseInt(radius, 10) : 25;
     const cleanCategory = category || "all";
 
     const placesResult = await placesService.discoverNearbyPlaces({
       lat: parsedLat,
       lng: parsedLng,
-      city,
+      city: resolvedCity,
       category: cleanCategory,
-      radiusKm: cleanRadius
+      radiusKm: cleanRadius,
+      searchQuery: search || null
     });
 
     const eventsResult = eventsService.getVerifiedEvents({
       lat: parsedLat,
       lng: parsedLng,
-      city,
+      city: resolvedCity,
       category: cleanCategory,
-      radiusKm: 500,
+      radiusKm: Math.max(cleanRadius, 200),
       upcomingOnly: true
     });
 
@@ -388,9 +463,14 @@ exports.getCombinedMarkets = async (req, res) => {
 
     res.json({
       ok: true,
-      city: placesResult.city,
+      city: placesResult.city || resolvedCity,
+      state: placesResult.state || "",
+      country: placesResult.country || "",
+      lat: parsedLat,
+      lng: parsedLng,
       category: cleanCategory,
       radiusKm: cleanRadius,
+      totalFound: placesResult.places.length,
       localMarkets: placesResult.places,
       local: placesResult.places,
       events: eventsResult.events,

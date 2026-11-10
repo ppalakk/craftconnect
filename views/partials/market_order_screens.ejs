@@ -55,7 +55,7 @@
               <span class="cc-loc-label">Your Current Location</span>
               <div class="cc-loc-value-row">
                 <span class="cc-loc-name" id="spaLocDisplay">Bhopal, Madhya Pradesh</span>
-                <button type="button" class="cc-loc-change-link" onclick="CraftMarketDiscovery.promptManualLocation()">
+                <button type="button" class="cc-loc-change-link" onclick="openCityModal()">
                   <span>🔄</span>
                   <span>Change</span>
                 </button>
@@ -65,8 +65,8 @@
 
           <div class="cc-loc-search-box">
             <span style="color: #94A3B8;">🔍</span>
-            <input type="text" placeholder="Search markets, platforms or product types..." id="spaMarketKeywordInput" onkeyup="if(event.key==='Enter')CraftMarketDiscovery.searchManualCity(this.value)">
-            <button type="button" class="cc-loc-filter-slider-btn" title="Filter Options" onclick="CraftMarketDiscovery.promptManualLocation()">
+            <input type="text" placeholder="Search markets, platforms or product types..." id="spaMarketKeywordInput" oninput="CraftMarketDiscovery.filterStores(this.value)" onkeyup="if(event.key==='Enter')CraftMarketDiscovery.searchKeyword(this.value)">
+            <button type="button" class="cc-loc-filter-slider-btn" title="Filter Options" onclick="openCityModal()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="21" y2="21"></line><line x1="4" x2="20" y1="14" y2="14"></line><line x1="4" x2="20" y1="7" y2="7"></line><circle cx="8" cy="21" r="2"></circle><circle cx="16" cy="14" r="2"></circle><circle cx="10" cy="7" r="2"></circle></svg>
             </button>
           </div>
@@ -94,11 +94,13 @@
           </div>
 
           <div class="cc-distance-dropdown-wrap">
-            <button type="button" class="cc-distance-pill" onclick="CraftMarketDiscovery.setRadius(CraftMarketDiscovery.getState().radius === 25 ? 50 : 25)">
-              <span>📍</span>
-              <span id="spaRadiusLabel">Within 25 km</span>
-              <span style="font-size: 10px; color: #64748B;">▾</span>
-            </button>
+            <select id="spaRadiusSelect" class="cc-radius-select" onchange="CraftMarketDiscovery.setRadius(this.value)">
+              <option value="5">📍 Within 5 km</option>
+              <option value="10">📍 Within 10 km</option>
+              <option value="25" selected>📍 Within 25 km</option>
+              <option value="50">📍 Within 50 km</option>
+              <option value="100">📍 Within 100 km</option>
+            </select>
           </div>
         </div>
 
@@ -111,108 +113,20 @@
                 <h3><span>📍</span> Local Stores Near You</h3>
                 <p>Handpicked stores and boutiques in your area that sell handmade and craft products.</p>
               </div>
-              <a href="#" class="cc-view-all-link" onclick="CraftMarketDiscovery.switchTab('local'); return false;">View All →</a>
+              <span id="spaLocalCount" style="font-size: 12.5px; font-weight: 600; color: #075C55;">Searching nearby...</span>
             </div>
 
             <!-- Stores Horizontal Row / Carousel -->
             <div class="cc-stores-carousel-container" id="spaStoresContainer">
-              <!-- Card 1: Craft Bazaar -->
-              <div class="cc-store-card">
-                <div class="cc-store-thumb-wrap">
-                  <img src="/images/store_craft_bazaar.jpg" alt="Craft Bazaar" class="cc-store-thumb">
-                  <span class="cc-store-dist-badge">📍 2.3 km</span>
+              <div class="cc-store-card" style="opacity: 0.7;">
+                <div class="cc-store-thumb-wrap" style="background:#E2E8F0; min-height:140px; display:flex; align-items:center; justify-content:center;">
+                  <span style="font-size:28px;">🏪</span>
                 </div>
                 <div class="cc-store-body">
-                  <h4 class="cc-store-title">Craft Bazaar</h4>
-                  <div class="cc-store-tags">
-                    <span class="cc-tag-pill">Handicrafts</span>
-                    <span class="cc-tag-pill">Home Decor</span>
-                    <span class="cc-tag-pill">Textiles</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>📍</span>
-                    <span>MP Nagar, Bhopal</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>🕒</span>
-                    <span>10:00 AM – 9:00 PM</span>
-                  </div>
-                  <div class="cc-store-rating-row">
-                    <span class="cc-star-icon">⭐</span>
-                    <span>4.5</span>
-                    <span class="cc-reviews-count">(124 reviews)</span>
-                  </div>
-                  <a href="https://maps.google.com/?q=Craft+Bazaar+MP+Nagar+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
-                    Get Directions
-                  </a>
+                  <h4 class="cc-store-title">Discovering craft stores...</h4>
+                  <p style="font-size:12px; color:#64748B;">Searching nearby artisan retail opportunities in your area.</p>
                 </div>
               </div>
-
-              <!-- Card 2: The Artisan Hub -->
-              <div class="cc-store-card">
-                <div class="cc-store-thumb-wrap">
-                  <img src="/images/store_artisan_hub.jpg" alt="The Artisan Hub" class="cc-store-thumb">
-                  <span class="cc-store-dist-badge">📍 3.8 km</span>
-                </div>
-                <div class="cc-store-body">
-                  <h4 class="cc-store-title">The Artisan Hub</h4>
-                  <div class="cc-store-tags">
-                    <span class="cc-tag-pill">Woodwork</span>
-                    <span class="cc-tag-pill">Paintings</span>
-                    <span class="cc-tag-pill">Handmade Gifts</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>📍</span>
-                    <span>Ashoka Garden, Bhopal</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>🕒</span>
-                    <span>10:00 AM – 8:00 PM</span>
-                  </div>
-                  <div class="cc-store-rating-row">
-                    <span class="cc-star-icon">⭐</span>
-                    <span>4.3</span>
-                    <span class="cc-reviews-count">(86 reviews)</span>
-                  </div>
-                  <a href="https://maps.google.com/?q=The+Artisan+Hub+Ashoka+Garden+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
-                    Get Directions
-                  </a>
-                </div>
-              </div>
-
-              <!-- Card 3: Mitti & More -->
-              <div class="cc-store-card">
-                <div class="cc-store-thumb-wrap">
-                  <img src="/images/store_mitti_more.jpg" alt="Mitti & More" class="cc-store-thumb">
-                  <span class="cc-store-dist-badge">📍 5.1 km</span>
-                </div>
-                <div class="cc-store-body">
-                  <h4 class="cc-store-title">Mitti &amp; More</h4>
-                  <div class="cc-store-tags">
-                    <span class="cc-tag-pill">Pottery</span>
-                    <span class="cc-tag-pill">Textiles</span>
-                    <span class="cc-tag-pill">Decor</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>📍</span>
-                    <span>Bazar Chowk, Bhopal</span>
-                  </div>
-                  <div class="cc-store-detail-row">
-                    <span>🕒</span>
-                    <span>11:00 AM – 8:30 PM</span>
-                  </div>
-                  <div class="cc-store-rating-row">
-                    <span class="cc-star-icon">⭐</span>
-                    <span>4.2</span>
-                    <span class="cc-reviews-count">(67 reviews)</span>
-                  </div>
-                  <a href="https://maps.google.com/?q=Mitti+and+More+Bazar+Chowk+Bhopal" target="_blank" rel="noopener noreferrer" class="cc-btn-directions">
-                    Get Directions
-                  </a>
-                </div>
-              </div>
-
-            
             </div><!-- /#spaStoresContainer -->
           </div><!-- /.cc-stores-column -->
         </div><!-- /.cc-middle-grid -->
@@ -225,7 +139,7 @@
               <h3><span aria-hidden="true">🌐</span> Digital Marketplaces</h3>
               <p>Compare online channels and explore the official seller portals for your handmade products.</p>
             </div>
-            <span class="cc-digital-count">4 platforms to explore</span>
+            <span class="cc-digital-count">5 platforms to explore</span>
           </div>
           <div class="cc-digital-intro">
             <div class="cc-digital-intro-icon" aria-hidden="true">✦</div>
@@ -246,6 +160,9 @@
             </a>
             <a href="https://www.myntra.com/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore Myntra">
               <span class="cc-digital-brand cc-brand-myntra">M</span><span class="cc-digital-copy"><strong>Myntra</strong><small>Explore the platform</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://ondc.org/participants/" class="cc-digital-platform" target="_blank" rel="noopener noreferrer" aria-label="Explore ONDC Seller Network Participants">
+              <span class="cc-digital-brand" style="background:#0F5147; color:#fff; font-weight:700;">O</span><span class="cc-digital-copy"><strong>ONDC</strong><small>Seller Network</small></span><span class="cc-digital-arrow" aria-hidden="true">↗</span>
             </a>
           </div>
           <div class="cc-digital-footer"><span>ⓘ</span> Check each platform’s current requirements before registering as a seller.</div>
@@ -419,8 +336,48 @@
         </div>
     </div>
 
+    <!-- ================= CITY / LOCATION SELECTOR MODAL (SPA) ================= -->
+    <div id="cityPickerModal" class="market-modal-overlay" style="display:none;">
+      <div class="market-modal-card" style="max-width: 480px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="font-size:17px; font-weight:700; color:#0F172A; margin:0; display:flex; align-items:center; gap:8px;">
+            <span>📍</span> Select Your Location
+          </h3>
+          <button type="button" class="market-modal-close" onclick="closeCityModal()">✕</button>
+        </div>
+        <p style="font-size:13px; color:#64748B; margin:0 0 14px; line-height:1.45;">
+          Search any city, state, or country worldwide (e.g. Agra, London, Jaipur, New York, Kathmandu) to find real craft markets and stores.
+        </p>
+
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <input type="text" id="citySearchInput" placeholder="Enter city name (e.g. Agra, London, Jaipur, New York)..." style="flex:1; padding:10px 14px; border:1px solid #CBD5E1; border-radius:10px; font-size:13.5px; outline:none;" onkeyup="if(event.key==='Enter')applySearchedCity()">
+          <button type="button" id="btnSetCityModal" onclick="applySearchedCity()" style="background:#075C55; color:white; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;">Set</button>
+        </div>
+
+        <button type="button" onclick="closeCityModal(); CraftMarketDiscovery.requestGPSLocation();" style="width:100%; background:#E8F5E9; color:#166534; border:1px solid #BBF7D0; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
+          <span>📡</span> Detect My Live GPS Location
+        </button>
+
+        <div style="font-size:11.5px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
+          Popular Artisan Locations
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Agra', 'Uttar Pradesh', 27.1753, 78.0098, 'India')">🕌 Agra, UP</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Jaipur', 'Rajasthan', 26.9124, 75.7873, 'India')">🏺 Jaipur, RJ</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Udaipur', 'Rajasthan', 24.5854, 73.7125, 'India')">🎨 Udaipur, RJ</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Mumbai', 'Maharashtra', 19.0760, 72.8777, 'India')">🌊 Mumbai, MH</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Delhi', 'Delhi NCR', 28.6139, 77.2090, 'India')">🎪 Delhi NCR</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Bhopal', 'Madhya Pradesh', 23.2599, 77.4126, 'India')">🏛️ Bhopal, MP</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Kathmandu', 'Bagmati', 27.7172, 85.3240, 'Nepal')">🏔️ Kathmandu, NP</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('London', 'Greater London', 51.5074, -0.1278, 'United Kingdom')">🎡 London, UK</button>
+          <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('New York', 'New York', 40.7128, -74.0060, 'USA')">🗽 New York, USA</button>
+        </div>
+      </div>
+    </div>
+
     <!-- SPA Map Initialization Trigger -->
     <script>
+        window.spaMapMarkers = [];
         window.initSpaMap = function() {
             if (window.spaMap) {
                 window.spaMap.invalidateSize();
@@ -429,8 +386,11 @@
             const mapEl = document.getElementById("spaArtisanMap");
             if (!mapEl || typeof L === 'undefined') return;
 
+            const st = (window.CraftMarketDiscovery && window.CraftMarketDiscovery.getState) ? window.CraftMarketDiscovery.getState() : {};
+            const initialCenter = (st.lat && st.lng) ? [st.lat, st.lng] : [23.2599, 77.4126];
+
             window.spaMap = L.map("spaArtisanMap", {
-                center: [23.2599, 77.4126],
+                center: initialCenter,
                 zoom: 13,
                 zoomControl: false,
                 attributionControl: false
@@ -441,31 +401,56 @@
                 subdomains: 'abcd'
             }).addTo(window.spaMap);
 
-            const spaMarkers = [
-                { lat: 23.2620, lng: 77.3950, label: "Local Market", type: "pin-green" },
-                { lat: 23.2350, lng: 77.4320, label: "Craft Bazaar", type: "pin-orange" },
-                { lat: 23.2512, lng: 77.4421, label: "The Artisan Hub", type: "pin-orange" },
-                { lat: 23.2420, lng: 77.4180, label: "Online Platform", type: "pin-pink" }
-            ];
+            if (st.placesData && st.placesData.places) {
+                window.updateSpaMap(st.lat || initialCenter[0], st.lng || initialCenter[1], st.placesData.places, st.radius || 25);
+            }
+        };
 
-            spaMarkers.forEach(m => {
+        window.updateSpaMap = function(lat, lng, places = [], radiusKm = 25) {
+            if (!window.spaMap || !lat || !lng) return;
+            const zoom = radiusKm <= 5 ? 15 : radiusKm <= 10 ? 14 : radiusKm <= 25 ? 13 : 11;
+            window.spaMap.setView([lat, lng], zoom);
+
+            if (window.spaMapMarkers) {
+                window.spaMapMarkers.forEach(m => window.spaMap.removeLayer(m));
+            }
+            window.spaMapMarkers = [];
+
+            // User pulse icon
+            const userIcon = L.divIcon({
+                className: 'cc-user-map-marker',
+                html: '<div class="cc-pulse-dot"><div class="cc-pulse-ring"></div></div>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+            const userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 })
+                .addTo(window.spaMap)
+                .bindPopup('<strong>📍 Your Location</strong>');
+            window.spaMapMarkers.push(userMarker);
+
+            // Discovered places pins
+            places.slice(0, 15).forEach(p => {
+                if (!p.lat || !p.lng) return;
                 const icon = L.divIcon({
                     className: 'custom-leaflet-marker',
-                    html: `<div class="cc-map-pin ${m.type}">${m.label}</div>`,
-                    iconSize: [80, 24],
-                    iconAnchor: [40, 12]
+                    html: `<div class="cc-map-pin pin-green">${p.name.length > 14 ? p.name.substring(0, 14) + '…' : p.name}</div>`,
+                    iconSize: [90, 24],
+                    iconAnchor: [45, 12]
                 });
-                L.marker([m.lat, m.lng], { icon }).addTo(window.spaMap);
+                const m = L.marker([p.lat, p.lng], { icon })
+                    .addTo(window.spaMap)
+                    .bindPopup(`<strong>${p.name}</strong><br><span style="font-size:11px;">${p.address || ''}</span><br><a href="${p.directionsUrl}" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:#075C55;font-weight:600;">Directions ↗</a>`);
+                window.spaMapMarkers.push(m);
             });
         };
 
         // When user navigates to markets screen in SPA
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(window.initSpaMap, 500);
+            setTimeout(window.initSpaMap, 400);
         });
         window.addEventListener('hashchange', function() {
             if (window.location.hash === '#markets') {
-                setTimeout(window.initSpaMap, 200);
+                setTimeout(window.initSpaMap, 150);
             }
         });
     </script>
@@ -588,8 +573,7 @@
 
     <!-- Transparency Disclaimer -->
     <div style="text-align: center; font-size: 11px; color: #888; padding: 12px 0 20px 0;">
-        ℹ️ <em>Sample Intelligence Note: Market indicators combine live regional signal data with benchmark
-            artisan sales statistics. Always verify venue details before bulk transport.</em>
+        ℹ️ <em>Verified Market Intelligence: Indicators combine official government exhibition calendars, authentic cooperative product benchmarks (TRIFED / CCIE), and regional seasonal signals. Always verify venue details before bulk transport.</em>
     </div>
 </section>
 
@@ -601,13 +585,36 @@
     </div>
     <p class="screen-sub" data-i18n="orders_sub">Track active buyer orders and mark items dispatched when they
         leave the workshop.</p>
-    <div class="orders-filter-tabs">
-        <button class="orders-tab active" onclick="filterOrders('all', this)" data-i18n="orders_tab_all">All
-            Orders</button>
-        <button class="orders-tab" onclick="filterOrders('pending', this)" data-i18n="orders_tab_pending">⏳
-            Pending</button>
-        <button class="orders-tab" onclick="filterOrders('dispatched', this)"
-            data-i18n="orders_tab_dispatched">✅ Dispatched</button>
+
+    <!-- Order summary pills -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:6px;background:#fff4e0;border:1.5px solid #fde6b3;border-radius:20px;padding:5px 13px;font-size:12.5px;font-weight:700;color:#b25a00;">
+            <span>⏳</span>
+            <span id="ordersPagePendingCount">–</span>
+            <span>Pending</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:#d6fae9;border:1.5px solid #a7f3cb;border-radius:20px;padding:5px 13px;font-size:12.5px;font-weight:700;color:#065f46;">
+            <span>✅</span>
+            <span id="ordersPageDispatchedCount">–</span>
+            <span>Dispatched</span>
+        </div>
+        <button onclick="fetchOrdersFromApi(true)" title="Refresh orders"
+            style="background:none;border:1.5px solid #cce8dc;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;color:#0F5147;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background 0.18s;">
+            🔄 Refresh
+        </button>
     </div>
-    <div class="orders-list" id="ordersPageList"></div>
+
+    <div class="orders-filter-tabs">
+        <button class="orders-tab active" onclick="filterOrders('all', this)" data-i18n="orders_tab_all">All Orders</button>
+        <button class="orders-tab" onclick="filterOrders('pending', this)" data-i18n="orders_tab_pending">⏳ Pending</button>
+        <button class="orders-tab" onclick="filterOrders('dispatched', this)" data-i18n="orders_tab_dispatched">✅ Dispatched</button>
+    </div>
+
+    <div class="orders-list" id="ordersPageList">
+        <!-- Orders are rendered here by orders-manager.js -->
+        <div style="text-align:center;padding:48px 20px;">
+            <div style="display:inline-block;width:30px;height:30px;border:3px solid #d8ede3;border-top-color:#0F5147;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:12px;"></div>
+            <p style="font-size:13px;color:#777;">Loading your orders…</p>
+        </div>
+    </div>
 </section>

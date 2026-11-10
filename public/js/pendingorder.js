@@ -139,6 +139,10 @@ const DEFAULT_ORDERS = [
     }
 ];
 
+if (typeof window !== "undefined") {
+    window.DEFAULT_ORDERS = DEFAULT_ORDERS;
+}
+
 // government scheme
 
 const SCHEMES = [

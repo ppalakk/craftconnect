@@ -26,7 +26,9 @@ function requireAuth(req, res, next) {
   const isApi =
     req.xhr ||
     (req.headers.accept && req.headers.accept.includes("application/json")) ||
-    req.path.startsWith("/api/");
+    req.path.startsWith("/api/") ||
+    (req.baseUrl && req.baseUrl.startsWith("/api")) ||
+    (req.originalUrl && req.originalUrl.startsWith("/api/"));
   if (isApi) {
     return res.status(401).json({
       ok: false,

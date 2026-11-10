@@ -1,0 +1,275 @@
+/**
+ * CraftConnect — Base & Global Layout
+ * File 1 of 10: base.css
+ * CSS resets, typography, root layout, header, screen switching, and base stat cards.
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+}
+
+body {
+    background: #f4f6f3;
+    color: #173f39;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 90vh;
+    max-height: 92vh;
+    margin: auto;
+    background: #fffdf9;
+    position: relative;
+    padding-bottom: 85px;
+    overflow-y: auto;
+    border-radius: 28px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e7efe9;
+}
+
+/* HEADER */
+header {
+    padding: 20px 22px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fffdf9;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #f0ede6;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #17665a, #0d463d);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(23, 102, 90, 0.25);
+}
+
+.brand h2 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.brand span {
+    color: #ef8b35;
+}
+
+.version-tag {
+    font-size: 10px;
+    background: #eef7f4;
+    color: #17665a;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.voice-btn-top {
+    background: #fdf3e7;
+    color: #d9741d;
+    border: 1px solid #fcdbb7;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.voice-btn-top:hover {
+    background: #fae4cb;
+}
+
+.login-btn {
+    background-color: #17665a;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.login-btn:hover {
+    background-color: #0f4b42;
+}
+
+/* SCREENS */
+.screen {
+    display: none;
+    padding: 15px 22px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.screen-sub {
+    font-size: 12px;
+    color: #666;
+    margin-top: -6px;
+    margin-bottom: 16px;
+}
+
+/* WELCOME & BANNER */
+.welcome h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.welcome p {
+    color: #666;
+    font-size: 13px;
+}
+
+.ai-banner {
+    background: linear-gradient(135deg, #17665a, #134e45);
+    color: white;
+    padding: 16px 18px;
+    border-radius: 20px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(23, 102, 90, 0.25);
+    transition: transform 0.2s;
+}
+
+.ai-banner:hover {
+    transform: translateY(-2px);
+}
+
+.ai-banner-icon {
+    font-size: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-banner-text h4 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ai-banner-text p {
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 2px;
+}
+
+.ai-banner-arrow {
+    font-size: 18px;
+    margin-left: auto;
+}
+
+/* STAT CARDS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.stat-card {
+    padding: 16px;
+    border-radius: 18px;
+    background: #eef7f3;
+    border: 1px solid #d8ede3;
+}
+
+.stat-card:nth-child(2) {
+    background: #fff4e8;
+    border-color: #fde4c9;
+}
+
+.stat-card:nth-child(3) {
+    background: #f3f0fd;
+    border-color: #e2dbf9;
+}
+
+.stat-card:nth-child(4) {
+    background: #eaf5fc;
+    border-color: #d1e8f7;
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-card h3 {
+    margin-top: 6px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.stat-card p {
+    color: #666;
+    font-size: 12px;
+}
+
+/* Interactive Pending Orders stat card */
+.stat-card--clickable {
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.stat-card--clickable:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 22px rgba(23, 102, 90, 0.15);
+    border-color: #17665a;
+}
+
+.stat-card--clickable:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.stat-card-hint {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #17665a;
+    margin-top: 4px;
+    opacity: 0.75;
+    letter-spacing: 0.2px;
+}
+

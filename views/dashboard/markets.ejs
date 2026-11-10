@@ -294,9 +294,11 @@
 
           <div class="cc-distance-dropdown-wrap">
             <select id="radiusSelect" class="cc-radius-select" onchange="updateRadius(this.value)">
+              <option value="5">📍 Within 5 km</option>
               <option value="10">📍 Within 10 km</option>
               <option value="25" selected>📍 Within 25 km</option>
               <option value="50">📍 Within 50 km</option>
+              <option value="100">📍 Within 100 km</option>
             </select>
           </div>
         </div>
@@ -467,12 +469,12 @@
         <button type="button" class="market-modal-close" onclick="closeCityModal()">✕</button>
       </div>
       <p style="font-size:13px; color:#64748B; margin:0 0 14px; line-height:1.45;">
-        Search any city or district in India to dynamically center the market map and find stores closest to you.
+        Search any city, state, or country worldwide (e.g. Agra, London, Jaipur, New York, Kathmandu) to find real craft markets and stores.
       </p>
 
       <div style="display:flex; gap:8px; margin-bottom:14px;">
-        <input type="text" id="citySearchInput" placeholder="Enter city name (e.g. Jaipur, Varanasi, Delhi)..." style="flex:1; padding:10px 14px; border:1px solid #CBD5E1; border-radius:10px; font-size:13.5px; outline:none;" onkeyup="if(event.key==='Enter')applySearchedCity()">
-        <button type="button" onclick="applySearchedCity()" style="background:#075C55; color:white; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;">Set</button>
+        <input type="text" id="citySearchInput" placeholder="Enter city name (e.g. Agra, London, Jaipur, New York)..." style="flex:1; padding:10px 14px; border:1px solid #CBD5E1; border-radius:10px; font-size:13.5px; outline:none;" onkeyup="if(event.key==='Enter')applySearchedCity()">
+        <button type="button" id="btnSetCityModal" onclick="applySearchedCity()" style="background:#075C55; color:white; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;">Set</button>
       </div>
 
       <button type="button" onclick="closeCityModal(); requestGpsLocation();" style="width:100%; background:#E8F5E9; color:#166534; border:1px solid #BBF7D0; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
@@ -480,17 +482,18 @@
       </button>
 
       <div style="font-size:11.5px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
-        Major Craft Clusters
+        Popular Artisan Locations
       </div>
       <div style="display:flex; flex-wrap:wrap; gap:8px;">
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Bhopal', 'Madhya Pradesh', 23.2599, 77.4126)">🏛️ Bhopal, MP</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Jaipur', 'Rajasthan', 26.9124, 75.7873)">🏺 Jaipur, RJ</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Varanasi', 'Uttar Pradesh', 25.3176, 82.9739)">🧵 Varanasi, UP</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Delhi', 'Delhi NCR', 28.6139, 77.2090)">🎪 Delhi NCR</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Udaipur', 'Rajasthan', 24.5854, 73.7125)">🎨 Udaipur, RJ</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Kolkata', 'West Bengal', 22.5726, 88.3639)">🪵 Kolkata, WB</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Madurai', 'Tamil Nadu', 9.9252, 78.1198)">🪔 Madurai, TN</button>
-        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Surat', 'Gujarat', 21.1702, 72.8311)">✨ Surat, GJ</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Agra', 'Uttar Pradesh', 27.1753, 78.0098, 'India')">🕌 Agra, UP</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Jaipur', 'Rajasthan', 26.9124, 75.7873, 'India')">🏺 Jaipur, RJ</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Udaipur', 'Rajasthan', 24.5854, 73.7125, 'India')">🎨 Udaipur, RJ</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Mumbai', 'Maharashtra', 19.0760, 72.8777, 'India')">🌊 Mumbai, MH</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Delhi', 'Delhi NCR', 28.6139, 77.2090, 'India')">🎪 Delhi NCR</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Bhopal', 'Madhya Pradesh', 23.2599, 77.4126, 'India')">🏛️ Bhopal, MP</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('Kathmandu', 'Bagmati', 27.7172, 85.3240, 'Nepal')">🏔️ Kathmandu, NP</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('London', 'Greater London', 51.5074, -0.1278, 'United Kingdom')">🎡 London, UK</button>
+        <button type="button" class="cc-tag-pill" style="cursor:pointer; padding:6px 12px; font-size:12.5px;" onclick="chooseCityPreset('New York', 'New York', 40.7128, -74.0060, 'USA')">🗽 New York, USA</button>
       </div>
     </div>
   </div>
@@ -525,8 +528,24 @@
     let currentCenter = [23.2599, 77.4126];
     let currentCity = "Bhopal";
     let currentStateName = "Madhya Pradesh";
+    let currentCountry = "India";
+    let activeStores = [];
 
-    if (window.CC_USER && window.CC_USER.state) {
+    // Check localStorage for saved artisan location
+    try {
+      const saved = localStorage.getItem('craftconnect_artisan_location');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.lat && parsed.lng && parsed.city) {
+          currentCity = parsed.city;
+          currentStateName = parsed.state || "";
+          currentCountry = parsed.country || "";
+          currentCenter = [parsed.lat, parsed.lng];
+        }
+      }
+    } catch (e) {}
+
+    if (!localStorage.getItem('craftconnect_artisan_location') && window.CC_USER && window.CC_USER.state) {
       const st = window.CC_USER.state.toLowerCase();
       if (st.includes("rajasthan")) {
         currentCenter = [26.9124, 75.7873];
@@ -814,7 +833,7 @@
       recalculateDistances();
       updateLocationDisplayLabels();
       initMap();
-      renderLocalStores();
+      fetchLocalStores();
       renderOnlinePlatforms();
       renderFairs();
       updateResultsCounts();
@@ -826,7 +845,8 @@
     });
 
     function updateLocationDisplayLabels() {
-      const full = `${currentCity}, ${currentStateName}`;
+      const parts = [currentCity, currentStateName && currentStateName !== currentCity ? currentStateName : null, currentCountry && currentCountry !== "India" ? currentCountry : null].filter(Boolean);
+      const full = parts.join(", ") || "Selected Location";
       const el1 = document.getElementById("currentLocationName");
       const el2 = document.getElementById("mapLocLabel");
       if (el1) el1.innerText = full;
@@ -1059,33 +1079,54 @@
       const query = inp ? inp.value.trim() : "";
       if (!query) return;
 
+      const setBtn = document.getElementById("btnSetCityModal");
+      if (setBtn) {
+        setBtn.disabled = true;
+        setBtn.innerText = "Searching...";
+      }
+
       try {
         const res = await fetch(`/api/markets/geocode?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         if (data.ok && data.lat && data.lng) {
-          chooseCityPreset(data.city || query, data.state || "India", data.lat, data.lng);
+          chooseCityPreset(data.city || query, data.state || "", data.lat, data.lng, data.country || "");
         } else {
-          alert(data.error || "City not found in India. Please check spelling.");
+          alert(data.error || "Location not found. Please enter a valid city, state, or country.");
         }
       } catch (e) {
-        alert("Network error searching city. Please try again.");
+        alert("Network error searching location. Please try again.");
+      } finally {
+        if (setBtn) {
+          setBtn.disabled = false;
+          setBtn.innerText = "Set";
+        }
       }
     }
 
-    function chooseCityPreset(city, state, lat, lng) {
+    function chooseCityPreset(city, state, lat, lng, country = "") {
       currentCity = city;
       currentStateName = state;
+      currentCountry = country;
       currentCenter = [lat, lng];
 
+      // Save selected location to localStorage for persistent state
+      try {
+        localStorage.setItem('craftconnect_artisan_location', JSON.stringify({
+          city: currentCity,
+          state: currentStateName,
+          country: currentCountry,
+          lat,
+          lng,
+          locationSource: "manual"
+        }));
+      } catch (e) {}
+
       updateLocationDisplayLabels();
-      recalculateDistances();
       drawRadiusCircle();
-      addMapMarkers();
       recenterMap();
-      filterAllContent();
 
       if (userMarker) {
-        userMarker.setLatLng(currentCenter).bindPopup(`<strong>📍 ${city}</strong><br><span style="font-size:12px;color:#075C55;">${state}</span>`).openPopup();
+        userMarker.setLatLng(currentCenter).bindPopup(`<strong>📍 ${city}</strong><br><span style="font-size:12px;color:#075C55;">${state}${country ? ', ' + country : ''}</span>`).openPopup();
       }
 
       const btn = document.getElementById("btnUseGps");
@@ -1094,6 +1135,88 @@
       if (label) label.textContent = "Use GPS";
 
       closeCityModal();
+
+      // Trigger fresh nearby discovery request
+      fetchLocalStores();
+    }
+
+    async function fetchLocalStores() {
+      const container = document.getElementById('storesContainer');
+      const countBadge = document.getElementById('localResultsCount');
+
+      if (container) {
+        container.innerHTML = `
+          <div class="cc-store-card" style="opacity: 0.7;">
+            <div class="cc-store-thumb-wrap" style="background:#E2E8F0; min-height:140px; display:flex; align-items:center; justify-content:center;">
+              <span style="font-size:28px;">🏪</span>
+            </div>
+            <div class="cc-store-body">
+              <h4 class="cc-store-title">Discovering craft stores...</h4>
+              <p style="font-size:12px; color:#64748B;">Searching nearby artisan retail opportunities in ${currentCity}.</p>
+            </div>
+          </div>
+        `;
+      }
+      if (countBadge) countBadge.innerText = 'Searching nearby...';
+
+      try {
+        let url = `/api/markets/nearby?lat=${currentCenter[0]}&lng=${currentCenter[1]}&city=${encodeURIComponent(currentCity)}&radius=${currentRadius}`;
+        const query = (document.getElementById('marketKeywordInput')?.value || '').trim();
+        if (query) url += `&search=${encodeURIComponent(query)}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.places)) {
+          activeStores = data.places.map(p => ({
+            id: p.id,
+            name: p.name,
+            type: 'local',
+            tags: p.types || ['Handicrafts'],
+            address: p.address || p.city || 'Nearby',
+            city: p.city || currentCity,
+            state: p.state || currentStateName,
+            hours: p.timings || '10:00 AM – 8:00 PM',
+            phone: p.phone,
+            website: p.website,
+            rating: p.rating,
+            reviews: p.userRatingsTotal,
+            lat: p.lat,
+            lng: p.lng,
+            distance: p.distanceKm != null ? p.distanceKm : haversineDistance(currentCenter[0], currentCenter[1], p.lat, p.lng),
+            description: p.notes || `${p.retailType || 'Artisan store'} in ${p.city || currentCity}.`,
+            image: p.imageUrl || p.fallbackUrl || '/images/store_craft_bazaar.jpg',
+            fallbackUrl: p.fallbackUrl || '/images/store_craft_bazaar.jpg',
+            imageAlt: p.imageAlt || `${p.name} - Craft Store`,
+            isActualPhoto: Boolean(p.isActualPhoto),
+            imageCategory: p.imageCategory || p.category || 'all',
+            directionsUrl: p.directionsUrl
+          }));
+        } else {
+          activeStores = [];
+        }
+      } catch (err) {
+        console.warn("Error fetching local stores:", err);
+        activeStores = [];
+      }
+
+      renderLocalStores();
+      updateResultsCounts();
+      addMapMarkers();
+    }
+
+    function getCategoryBadgeLabel(category) {
+      const map = {
+        pottery: '🏺 Pottery',
+        textiles: '🧵 Handloom',
+        bamboo: '🎋 Bamboo',
+        woodcraft: '🪵 Woodcraft',
+        jewellery: '💍 Jewellery',
+        paintings: '🎨 Folk Art',
+        decor: '🏺 Decor & Craft',
+        village: '🏡 Craft Village',
+        market: '🏪 Craft Market'
+      };
+      return map[category] || '✨ Handicrafts';
     }
 
     // ==================== RENDER FUNCTIONS ====================
@@ -1103,44 +1226,74 @@
       
       if (stores.length === 0) {
         container.innerHTML = `
-          <div class="cc-empty-card">
-            <span>🔍</span>
-            <h4>No stores match your filters</h4>
-            <p>Try expanding the search radius (${currentRadius} km) or choose another city.</p>
-            <button type="button" class="cc-btn-reset-filters" style="margin-top:10px;" onclick="updateRadius(50)">Expand to 50 km</button>
+          <div class="cc-empty-card" style="padding: 28px; text-align: center; background: white; border-radius: 14px; border: 1px dashed #CBD5E1; grid-column: 1 / -1;">
+            <span style="font-size: 32px;">🏪</span>
+            <h4 style="margin: 8px 0 4px; font-size: 15.5px; color: #0F172A; font-weight: 700;">No relevant craft markets found near this location</h4>
+            <p style="color: #64748B; font-size: 13px; max-width: 440px; margin: 0 auto 14px; line-height: 1.45;">
+              We couldn't find registered craft stores within ${currentRadius} km of ${currentCity}. Try expanding your search radius or check directly on Google Maps.
+            </p>
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+              <button type="button" class="cc-btn-reset-filters" style="background:#075C55; color:white; border:none; padding:8px 16px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;" onclick="updateRadius(50)">Expand to 50 km</button>
+              <button type="button" class="cc-btn-reset-filters" style="background:#075C55; color:white; border:none; padding:8px 16px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;" onclick="updateRadius(100)">Expand to 100 km</button>
+              <a href="https://www.google.com/maps/search/craft+stores+near+${encodeURIComponent(currentCity + (currentStateName ? ' ' + currentStateName : ''))}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; background:#F1F5F9; color:#075C55; border:1px solid #CBD5E1; padding:8px 14px; border-radius:8px; font-size:12.5px; font-weight:600; text-decoration:none;">
+                Open in Google Maps ↗
+              </a>
+            </div>
           </div>`;
         return;
       }
 
-      container.innerHTML = stores.map(s => `
+      container.innerHTML = stores.map(s => {
+        const isActual = Boolean(s.isActualPhoto);
+        const photoBadge = isActual
+          ? `<span class="cc-store-photo-badge" title="Verified business photograph">📷 Real Photo</span>`
+          : `<span class="cc-store-photo-badge cc-badge-category" title="Representative category photo">${getCategoryBadgeLabel(s.imageCategory || 'all')}</span>`;
+
+        return `
         <div class="cc-store-card" data-store-id="${s.id}" onclick="focusStoreOnMap('${s.id}')">
           <div class="cc-store-thumb-wrap">
-            <img src="${s.image}" alt="${s.name}" class="cc-store-thumb" onerror="this.onerror=null; this.src='/images/hero_crafts.jpg';">
+            <img src="${s.image}" alt="${s.imageAlt || s.name}" class="cc-store-thumb" loading="lazy" onerror="this.onerror=null; this.src='${s.fallbackUrl || '/images/store_craft_bazaar.jpg'}';">
             <span class="cc-store-dist-badge">📍 ${s.distance} km</span>
+            ${photoBadge}
           </div>
           <div class="cc-store-body">
             <h4 class="cc-store-title">${s.name}</h4>
             <div class="cc-store-tags">
-              ${s.tags.map(t => `<span class="cc-tag-pill">${t}</span>`).join('')}
+              ${(s.tags || []).slice(0, 3).map(t => `<span class="cc-tag-pill">${t}</span>`).join('')}
             </div>
             <div class="cc-store-detail-row">
               <span>📍</span>
-              <span>${s.address}</span>
+              <span title="${s.address}">${s.address}</span>
             </div>
+            ${s.hours ? `
             <div class="cc-store-detail-row">
               <span>🕒</span>
               <span>${s.hours}</span>
-            </div>
+            </div>` : ''}
+            ${s.phone ? `
+            <div class="cc-store-detail-row">
+              <span>📞</span>
+              <a href="tel:${s.phone}" style="color:inherit; text-decoration:none;" onclick="event.stopPropagation()">${s.phone}</a>
+            </div>` : ''}
             <div class="cc-store-rating-row">
-              <span class="cc-star-icon">⭐</span>
-              <span>${s.rating}</span>
-              <span class="cc-reviews-count">(${s.reviews} reviews)</span>
+              ${s.rating ? `
+                <span class="cc-star-icon">⭐</span>
+                <span>${s.rating}</span>
+                <span class="cc-reviews-count">(${s.reviews || 1} reviews)</span>
+              ` : `
+                <span style="color:#64748B; font-size:11.5px; font-weight:500;">📍 Verified Local Opportunity</span>
+              `}
             </div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener noreferrer" class="cc-btn-directions" style="flex:1;" onclick="event.stopPropagation()">
+            <div style="display:flex; gap:6px; margin-top:10px;">
+              <a href="${s.directionsUrl || ('https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng)}" target="_blank" rel="noopener noreferrer" class="cc-btn-directions" style="flex:1;" onclick="event.stopPropagation()">
                 Directions ↗
               </a>
-              <button type="button" class="cc-btn-directions" style="background:#F1F5F9; color:#0F172A; border:1px solid #CBD5E1;" onclick="event.stopPropagation(); openStoreDetail('${s.id}')">
+              ${s.website ? `
+                <a href="${s.website}" target="_blank" rel="noopener noreferrer" class="cc-btn-directions" style="background:#F1F5F9; color:#075C55; border:1px solid #CBD5E1; padding:7px 10px;" title="Official Website" onclick="event.stopPropagation()">
+                  🌐
+                </a>
+              ` : ''}
+              <button type="button" class="cc-btn-directions" style="background:#F1F5F9; color:#0F172A; border:1px solid #CBD5E1; padding:7px 10px;" onclick="event.stopPropagation(); openStoreDetail('${s.id}')">
                 Details
               </button>
             </div>
@@ -1245,11 +1398,12 @@
 
     // ==================== FILTERING LOGIC ====================
     function getFilteredStores() {
-      const query = (document.getElementById('marketKeywordInput')?.value || '').toLowerCase();
-      return allStores.filter(s => {
+      const query = (document.getElementById('marketKeywordInput')?.value || '').toLowerCase().trim();
+      const storesToFilter = (activeStores && activeStores.length > 0) ? activeStores : allStores;
+      return storesToFilter.filter(s => {
         if (s.distance > currentRadius) return false;
         if (query) {
-          const searchable = `${s.name} ${s.tags.join(' ')} ${s.address} ${s.description}`.toLowerCase();
+          const searchable = `${s.name} ${(s.tags || []).join(' ')} ${s.address || ''} ${s.description || ''}`.toLowerCase();
           return searchable.includes(query);
         }
         return true;
@@ -1294,16 +1448,14 @@
         radSelect.value = String(currentRadius);
       }
       drawRadiusCircle();
-      renderLocalStores();
-      renderFairs();
-      updateResultsCounts();
-      addMapMarkers();
-
       if (mapInstance) {
-        if (currentRadius <= 10) mapInstance.setZoom(14);
+        if (currentRadius <= 5) mapInstance.setZoom(15);
+        else if (currentRadius <= 10) mapInstance.setZoom(14);
         else if (currentRadius <= 25) mapInstance.setZoom(13);
-        else mapInstance.setZoom(11);
+        else if (currentRadius <= 50) mapInstance.setZoom(11);
+        else mapInstance.setZoom(10);
       }
+      fetchLocalStores();
     }
 
     function selectTab(tabKey, btn) {

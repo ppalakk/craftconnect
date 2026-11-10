@@ -47,7 +47,9 @@ function makeRequest(path, options = {}) {
     req.on('error', reject);
 
     if (options.body) {
-      if (typeof options.body === 'object') {
+      if (Buffer.isBuffer(options.body)) {
+        req.write(options.body);
+      } else if (typeof options.body === 'object') {
         req.write(JSON.stringify(options.body));
       } else {
         req.write(options.body);
@@ -65,10 +67,20 @@ describe('CraftConnect Cloud Deployment & Backend Test Suite', () => {
     }
   });
 
-  after(() => {
+  after(async () => {
+    try {
+      const mongoose = require('mongoose');
+      if (mongoose && mongoose.disconnect) {
+        await mongoose.disconnect();
+      }
+    } catch {}
     if (server && server.close) {
-      server.close();
+      await new Promise((resolve) => server.close(resolve));
     }
+    // Ensure all background driver pools close
+    setTimeout(() => {
+      process.exit(0);
+    }, 200).unref();
   });
 
   /* ================= 1. SERVER & HEALTH CHECK ================= */
@@ -337,6 +349,81 @@ describe('CraftConnect Cloud Deployment & Backend Test Suite', () => {
       assert.equal(res.statusCode, 200);
       assert.equal(res.json.city, 'Jaipur');
       assert.ok(res.json.temp);
+    });
+
+    test('POST /api/ai/scan blocks unauthenticated requests (401)', async () => {
+      const res = await makeRequest('/api/ai/scan', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' }
+      });
+      assert.equal(res.statusCode, 401);
+      assert.equal(res.json.ok, false);
+      assert.ok(res.json.error.includes('Authentication'));
+    });
+
+    test('POST /api/ai/scan rejects missing image with 400', async () => {
+      // 1. Get authenticated demo cookie
+      const authRes = await makeRequest('/auth/demo?role=artisan');
+      const cookie = authRes.headers['set-cookie'] ? authRes.headers['set-cookie'][0].split(';')[0] : '';
+      assert.ok(cookie);
+
+      // 2. Post without multipart image file
+      const boundary = '----WebKitFormBoundaryCraftTest' + Date.now();
+      const body = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="notes"\r\n\r\nTest\r\n--${boundary}--\r\n`);
+      const res = await makeRequest('/api/ai/scan', {
+        method: 'POST',
+        headers: {
+          'Cookie': cookie,
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          'Accept': 'application/json'
+        },
+        body
+      });
+      assert.equal(res.statusCode, 400);
+      assert.ok(res.json.error);
+    });
+
+    test('POST /api/ai/scan end-to-end analyzes genuine craft image via Express', async (t) => {
+      const hasKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here');
+      if (!hasKey) return t.skip('Live GEMINI_API_KEY not configured');
+
+      const fixturePath = path.join(__dirname, 'fixtures', 'bamboo_basket.jpg');
+      if (!fs.existsSync(fixturePath)) return t.skip('bamboo_basket.jpg fixture missing');
+
+      // 1. Sign in as demo artisan
+      const authRes = await makeRequest('/auth/demo?role=artisan');
+      const cookie = authRes.headers['set-cookie'] ? authRes.headers['set-cookie'][0].split(';')[0] : '';
+      assert.ok(cookie);
+
+      // 2. Build multipart body with real image
+      const imageBytes = fs.readFileSync(fixturePath);
+      const boundary = '----WebKitFormBoundaryCraft' + Date.now();
+      const pre = Buffer.from(
+        `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="bamboo_basket.jpg"\r\nContent-Type: image/jpeg\r\n\r\n`
+      );
+      const post = Buffer.from(`\r\n--${boundary}--\r\n`);
+      const multipartBody = Buffer.concat([pre, imageBytes, post]);
+
+      const res = await makeRequest('/api/ai/scan', {
+        method: 'POST',
+        headers: {
+          'Cookie': cookie,
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          'Accept': 'application/json'
+        },
+        body: multipartBody
+      });
+
+      // Skip gracefully if rate limited — quota is per-minute; transient
+      if (res.statusCode === 429) return t.skip('Gemini rate limit hit — re-run after quota resets');
+
+      assert.equal(res.statusCode, 200, 'AI scan HTTP status must be 200');
+      assert.equal(res.json.category, 'Bamboo & Wood', 'Inferred category must be Bamboo & Wood');
+      assert.ok(res.json.title && res.json.title.length > 5, 'Must have product title');
+      assert.ok(res.json.description && res.json.description.length > 20, 'Must have description');
+      assert.ok(Array.isArray(res.json.features) && res.json.features.length > 0, 'Must have visual features');
+      assert.ok(res.json.recommendedPrice > 0, 'Must have positive recommended price');
+      assert.ok(res.json.confidence >= 50 && res.json.confidence <= 100, 'Confidence must be percentage 50-100');
     });
   });
 

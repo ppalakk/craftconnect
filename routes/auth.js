@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const fileStore = require("../lib/userStore");
-const { sessionUser } = require("../middleware/auth");
 
-// GET /login
+/* ============ Authentication & Session Routes ============ */
+
+// GET /login — render login page
 router.get("/login", (req, res) => {
   if (req.session && req.session.user) {
     return res.redirect(req.query.redirect || "/dashboard");
@@ -21,7 +24,7 @@ router.get("/login", (req, res) => {
   });
 });
 
-// GET /register
+// GET /register — render registration page
 router.get("/register", (req, res) => {
   if (req.session && req.session.user) {
     return res.redirect(req.query.redirect || "/dashboard");
@@ -38,7 +41,7 @@ router.get("/register", (req, res) => {
   });
 });
 
-// POST /login
+// POST /login — authenticate user
 router.post("/login", async (req, res) => {
   const { email, password, role, redirect } = req.body;
   const redirectUrl = redirect && redirect.startsWith("/") ? redirect : "/dashboard";
@@ -58,15 +61,13 @@ router.post("/login", async (req, res) => {
   try {
     let authenticatedUser = null;
     const cleanId = String(email).trim();
-    const mongoose = require("mongoose");
 
-    // Try MongoDB first
+    // Try MongoDB Atlas first
     if (mongoose.connection.readyState === 1) {
       const userDoc = await User.findOne({
         $or: [{ email: cleanId.toLowerCase() }, { phone: cleanId }],
       });
       if (userDoc) {
-        const bcrypt = require("bcrypt");
         const match = await bcrypt.compare(password, userDoc.password);
         if (match) {
           authenticatedUser = {
@@ -114,7 +115,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// POST /register
+// POST /register — register new account
 router.post("/register", async (req, res) => {
   const isJson =
     req.xhr ||
@@ -167,7 +168,6 @@ router.post("/register", async (req, res) => {
 
   try {
     let createdUser = null;
-    const mongoose = require("mongoose");
 
     if (mongoose.connection.readyState === 1) {
       const existing = await User.findOne({
@@ -181,7 +181,6 @@ router.post("/register", async (req, res) => {
         if (isJson) return res.status(409).json({ ok: false, error: msg });
         return res.redirect(`/register?error=${encodeURIComponent(msg)}&redirect=${encodeURIComponent(redirectUrl)}`);
       }
-      const bcrypt = require("bcrypt");
       const hashedPassword = await bcrypt.hash(password, 10);
       const doc = await User.create({ ...payload, password: hashedPassword });
       createdUser = {
@@ -218,7 +217,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Quick 1-click Demo Login for Testing & Evaluation
+// ALL /auth/demo, /api/auth/demo-login — 1-click demo role sign in
 router.all(["/auth/demo", "/api/auth/demo-login"], async (req, res) => {
   const role = (req.body && req.body.role) || (req.query && req.query.role) || "artisan";
   let targetEmail = "sita@artisan.com";
@@ -226,7 +225,6 @@ router.all(["/auth/demo", "/api/auth/demo-login"], async (req, res) => {
   if (role === "buyer") targetEmail = "priya@buyer.com";
 
   let userObj = null;
-  const mongoose = require("mongoose");
 
   if (mongoose.connection.readyState === 1) {
     const userDoc = await User.findOne({ email: targetEmail });
@@ -281,7 +279,7 @@ router.all(["/auth/demo", "/api/auth/demo-login"], async (req, res) => {
   res.redirect(redirectUrl);
 });
 
-// Logout
+// ALL /logout — destroy session
 router.all("/logout", (req, res) => {
   req.session.destroy(() => {
     res.clearCookie("connect.sid");
@@ -294,14 +292,14 @@ router.all("/logout", (req, res) => {
   });
 });
 
-// Google OAuth placeholder
+// GET /auth/google — OAuth notice
 router.get("/auth/google", (req, res) => {
   res.redirect(
     "/login?error=" + encodeURIComponent("Google sign-in is disabled in local mode. Please use email/phone login.")
   );
 });
 
-// Forgot password placeholder
+// GET /forgot-password — reset notice
 router.get("/forgot-password", (req, res) => {
   res.render("users/login", {
     error: "Password reset is not available in offline mode. Please create a new account if needed.",

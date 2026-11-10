@@ -1,0 +1,256 @@
+[
+  {
+    "orderId": "ord_001",
+    "id": "ord_001",
+    "buyer": {
+      "name": "Meena Sharma",
+      "location": "📍 Jaipur, Rajasthan",
+      "phone": "+91 98290 11223",
+      "email": "meena.sharma@example.com"
+    },
+    "item": "Handwoven Bamboo Storage Basket (×2)",
+    "amount": 1500,
+    "qty": 2,
+    "productId": "prod_bamboo_basket",
+    "productImage": "/public/images/hero_crafts.jpg",
+    "date": "2026-10-01",
+    "status": "pending",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Flat 402, Royal Palms, C-Scheme, Jaipur, Rajasthan - 302001",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z",
+    "dispatchedAt": null,
+    "updatedAt": "2026-11-05T18:52:38.179Z"
+  },
+  {
+    "orderId": "ord_002",
+    "id": "ord_002",
+    "buyer": {
+      "name": "Rajiv Exports Pvt. Ltd.",
+      "location": "📍 Mumbai, Maharashtra",
+      "phone": "+91 98200 44556",
+      "email": "procurement@rajivexports.in"
+    },
+    "item": "Indigo Block-Printed Dupatta (×5)",
+    "amount": 6250,
+    "qty": 5,
+    "productId": "prod_indigo_stole",
+    "productImage": "/public/images/store_craft_bazaar.jpg",
+    "date": "2026-09-30",
+    "status": "pending",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Warehouse 12, Kalpataru Industrial Park, Andheri East, Mumbai, Maharashtra - 400069",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_003",
+    "id": "ord_003",
+    "buyer": {
+      "name": "Ananya Mehta",
+      "location": "📍 Bengaluru, Karnataka",
+      "phone": "+91 98450 77889",
+      "email": "ananya.m@example.com"
+    },
+    "item": "Terracotta Diya & Urli Set (×3)",
+    "amount": 1260,
+    "qty": 3,
+    "productId": "prod_terracotta_diya",
+    "productImage": "/public/images/hero_pots.jpg",
+    "date": "2026-10-01",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "77/4 12th Main, Indiranagar, Bengaluru, Karnataka - 560038",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_004",
+    "id": "ord_004",
+    "buyer": {
+      "name": "Dilli Haat Curator",
+      "location": "📍 New Delhi",
+      "phone": "+91 98100 22334",
+      "email": "crafts@dillihaat.org"
+    },
+    "item": "Sheesham Wood Coasters — Set of 6 (×4)",
+    "amount": 2320,
+    "qty": 4,
+    "productId": "prod_wood_coasters",
+    "productImage": "/public/images/store_artisan_hub.jpg",
+    "date": "2026-09-28",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Craft Pavilion Stall 14, INA Dilli Haat, New Delhi - 110023",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_005",
+    "id": "ord_005",
+    "buyer": {
+      "name": "Eco Home Decor Studio",
+      "location": "📍 Pune, Maharashtra",
+      "phone": "+91 98220 99887",
+      "email": "hello@ecohomedecor.in"
+    },
+    "item": "Handwoven Bamboo Storage Basket (×1)",
+    "amount": 750,
+    "qty": 1,
+    "productId": "prod_bamboo_basket",
+    "productImage": "/public/images/hero_crafts.jpg",
+    "date": "2026-09-26",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Shop 5, Koregaon Park Road, Pune, Maharashtra - 411001",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_006",
+    "id": "ord_006",
+    "buyer": {
+      "name": "FabIndia Curator",
+      "location": "📍 New Delhi",
+      "phone": "+91 98110 33445",
+      "email": "sourcing@fabindia.net"
+    },
+    "item": "Sheesham Wood Coasters — Set of 6 (×2)",
+    "amount": 1160,
+    "qty": 2,
+    "productId": "prod_wood_coasters",
+    "productImage": "/public/images/store_artisan_hub.jpg",
+    "date": "2026-09-22",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "B-28 Okhla Phase 1, New Delhi - 110020",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_007",
+    "id": "ord_007",
+    "buyer": {
+      "name": "Heritage Handlooms Guild",
+      "location": "📍 Kolkata, West Bengal",
+      "phone": "+91 98300 55667",
+      "email": "info@heritagehandlooms.org"
+    },
+    "item": "Indigo Block-Printed Dupatta (×2)",
+    "amount": 2500,
+    "qty": 2,
+    "productId": "prod_indigo_stole",
+    "productImage": "/public/images/store_craft_bazaar.jpg",
+    "date": "2026-09-18",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "14 Park Street, Kolkata, West Bengal - 700016",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_008",
+    "id": "ord_008",
+    "buyer": {
+      "name": "Kaveri Living Boutique",
+      "location": "📍 Chennai, Tamil Nadu",
+      "phone": "+91 98400 11998",
+      "email": "store@kaveriliving.com"
+    },
+    "item": "Handwoven Bamboo Storage Basket (×3)",
+    "amount": 2250,
+    "qty": 3,
+    "productId": "prod_bamboo_basket",
+    "productImage": "/public/images/hero_crafts.jpg",
+    "date": "2026-09-12",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "22 TTK Road, Alwarpet, Chennai, Tamil Nadu - 600018",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_009",
+    "id": "ord_009",
+    "buyer": {
+      "name": "Diwali Decor Emporium",
+      "location": "📍 Ahmedabad, Gujarat",
+      "phone": "+91 98250 88776",
+      "email": "sales@diwalidecor.in"
+    },
+    "item": "Terracotta Diya & Urli Set (×5)",
+    "amount": 2100,
+    "qty": 5,
+    "productId": "prod_terracotta_diya",
+    "productImage": "/public/images/hero_pots.jpg",
+    "date": "2026-08-25",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "CG Road, Navrangpura, Ahmedabad, Gujarat - 380009",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_010",
+    "id": "ord_010",
+    "buyer": {
+      "name": "Artisan Co-op Central",
+      "location": "📍 Jaipur, Rajasthan",
+      "phone": "+91 98290 66554",
+      "email": "support@artisancoop.in"
+    },
+    "item": "Sheesham Wood Coasters — Set of 6 (×3)",
+    "amount": 1740,
+    "qty": 3,
+    "productId": "prod_wood_coasters",
+    "productImage": "/public/images/store_artisan_hub.jpg",
+    "date": "2026-08-14",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Bapu Bazaar, Old City, Jaipur, Rajasthan - 302003",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_011",
+    "id": "ord_011",
+    "buyer": {
+      "name": "Global Craft Exports",
+      "location": "📍 Mumbai, Maharashtra",
+      "phone": "+91 98201 33221",
+      "email": "orders@globalcraftexports.com"
+    },
+    "item": "Indigo Block-Printed Dupatta (×4)",
+    "amount": 5000,
+    "qty": 4,
+    "productId": "prod_indigo_stole",
+    "productImage": "/public/images/store_craft_bazaar.jpg",
+    "date": "2026-05-20",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Nariman Point Business Hub, Mumbai, Maharashtra - 400021",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  },
+  {
+    "orderId": "ord_012",
+    "id": "ord_012",
+    "buyer": {
+      "name": "Sanskriti Handcrafts",
+      "location": "📍 Hyderabad, Telangana",
+      "phone": "+91 98490 55443",
+      "email": "contact@sanskritihandcrafts.in"
+    },
+    "item": "Handwoven Bamboo Storage Basket (×4)",
+    "amount": 3000,
+    "qty": 4,
+    "productId": "prod_bamboo_basket",
+    "productImage": "/public/images/hero_crafts.jpg",
+    "date": "2025-10-15",
+    "status": "dispatched",
+    "artisanEmail": "sita@artisan.com",
+    "shippingAddress": "Banjara Hills Road No. 12, Hyderabad, Telangana - 500034",
+    "artisanId": "usr_1790788468698",
+    "createdAt": "2026-11-05T18:42:48.683Z"
+  }
+]

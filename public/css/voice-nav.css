@@ -1,0 +1,375 @@
+/**
+ * CraftConnect — Voice Assistant & Navigation
+ * File 5 of 10: voice-nav.css
+ * Floating voice button, interactive voice modal, speech wave animations, fixed bottom 6-tab navigation, and language selection menu.
+ */
+
+/* FLOATING VOICE BUTTON & MODAL */
+.floating-voice-btn {
+    position: fixed;
+    bottom: 85px;
+    right: 25px;
+    background: linear-gradient(135deg, #ef8b35, #d9741d);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(239, 139, 53, 0.4);
+    z-index: 990;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s;
+}
+
+.floating-voice-btn:hover {
+    transform: scale(1.05);
+}
+
+.pulse-ring {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 440px;
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+}
+
+.modal-title {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ai-icon {
+    font-size: 26px;
+    background: #fdf3e7;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.modal-title h3 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.modal-title p {
+    font-size: 11px;
+    color: #777;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+}
+
+.lang-selector {
+    margin: 14px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.lang-selector select {
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-weight: 600;
+}
+
+.quick-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.quick-chips span {
+    font-size: 10px;
+    background: #f0f7f3;
+    color: #17665a;
+    padding: 5px 9px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.quick-chips span:hover {
+    background: #dceee4;
+}
+
+.voice-status {
+    font-size: 11px;
+    color: #777;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.chat-response-box {
+    background: #f6faf7;
+    border: 1px solid #d4eae0;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 14px;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.ai-avatar {
+    font-weight: 700;
+    font-size: 12px;
+    color: #17665a;
+}
+
+.ai-text {
+    font-size: 13px;
+    color: #333;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.speech-btn {
+    background: #eef7f3;
+    color: #17665a;
+    border: 1px solid #b8dfcb;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.mic-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: #ef8b35;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mic-btn.recording {
+    background: #d9381e;
+    animation: pulse 1s infinite;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 14px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+}
+
+.send-btn {
+    background: #17665a;
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* BOTTOM NAV (6 TABS) */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: 68px;
+    background: white;
+    border-top: 1px solid #eee;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    z-index: 1000;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #888;
+    font-size: 9.5px;
+    cursor: pointer;
+    padding: 4px 2px;
+    transition: color 0.15s ease;
+}
+
+.nav-item span:first-child {
+    font-size: 18px;
+}
+
+.nav-item.active {
+    color: #17665a;
+    font-weight: 700;
+}
+
+.ai-badge {
+    background: #17665a;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.ai-badge.gold {
+    background: #d9741d;
+}
+
+@media (min-width: 768px) {
+    .app {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 900px) {
+    .bottom-nav,
+    .mobile-only-bottom-nav,
+    .mobile-only-nav {
+        display: none !important;
+    }
+}
+
+/* ================= LANGUAGE DROPDOWN ================= */
+.language-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.language-btn {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(6, 95, 70, 0.08);
+}
+
+.language-btn:hover {
+    background-color: #d1fae5;
+    border-color: #6ee7b7;
+}
+
+.language-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background-color: #ffffff;
+    min-width: 140px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border: 1px solid #d1fae5;
+    border-radius: 14px;
+    z-index: 1100;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.language-menu.show {
+    display: block;
+    animation: fadeInMenu 0.18s ease-out;
+}
+
+@keyframes fadeInMenu {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.language-menu .lang-opt {
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.language-menu .lang-opt:hover {
+    background-color: #ecfdf5;
+    color: #047857;
+}
+
+.language-menu .lang-opt.active {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 700;
+}
+

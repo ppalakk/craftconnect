@@ -1,23 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { cloudinary, storage } = require("../cloudConfig");
+const { storage } = require("../cloudConfig");
 const upload = multer({ storage });
 const Product = require("../models/Product");
-
-// GET /products — list all products (or redirect/JSON)
-router.get("/", async (req, res) => {
-  try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
-      return res.json({ ok: true, products });
-    }
-    res.redirect("/catalog");
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.redirect("/dashboard");
-  }
-});
 
 // Middleware to accept either upload.single("image") or upload.single("product[image]")
 const uploadSingleProductImage = (req, res, next) => {
@@ -35,6 +21,22 @@ const uploadSingleProductImage = (req, res, next) => {
     next();
   });
 };
+
+/* ============ Product Routes ============ */
+
+// GET /products — list all products
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+      return res.json({ ok: true, products });
+    }
+    res.redirect("/catalog");
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.redirect("/dashboard");
+  }
+});
 
 // POST /products — create a new product with Cloudinary image upload & MongoDB Atlas storage
 router.post("/", uploadSingleProductImage, async (req, res) => {

@@ -1202,3 +1202,73 @@ const DEFAULT_PRODUCTS = [
         reasoning: "Standardized table accessory popular as corporate gift and souvenir with stable margins."
     }
 ];
+
+
+/* ================= MULTILINGUAL (I18N) LOGIC ================= */
+function toggleLanguageMenu() {
+    const menu = document.getElementById("languageMenu");
+    if (menu) menu.classList.toggle("show");
+}
+
+function changeLanguage(langCode, langName) {
+    window.currentLang = langCode;
+    const selectedSpan = document.getElementById("selectedLanguage");
+    if (selectedSpan) selectedSpan.innerText = langName;
+
+    const menu = document.getElementById("languageMenu");
+    if (menu) menu.classList.remove("show");
+
+    try {
+        localStorage.setItem("craftconnect_selected_lang", langCode);
+        localStorage.setItem("craftconnect_selected_lang_name", langName);
+    } catch (e) {
+        console.warn("Storage warning:", e);
+    }
+
+    document.documentElement.lang = langCode;
+    applyTranslations(langCode);
+
+    const voiceLangSelect = document.getElementById("voiceLang");
+    if (voiceLangSelect) {
+        const langMap = { "en": "en-IN", "hi": "hi-IN", "mr": "mr-IN", "gu": "gu-IN" };
+        if (langMap[langCode]) voiceLangSelect.value = langMap[langCode];
+    }
+
+    if (typeof renderCatalog === "function") renderCatalog();
+    if (typeof applyAuthUi === "function") applyAuthUi();
+}
+
+function applyTranslations(lang) {
+    const dict = (typeof TRANSLATIONS !== "undefined" && TRANSLATIONS[lang]) ? TRANSLATIONS[lang] : ((typeof TRANSLATIONS !== "undefined" && TRANSLATIONS["en"]) || {});
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if ((key === "artisan_name" || key === "artisan_craft" || key === "artisan_loc") && window.CC_USER && window.CC_USER.name) return;
+        if (dict[key]) el.innerText = dict[key];
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (dict[key]) el.placeholder = dict[key];
+    });
+
+    document.querySelectorAll(".lang-opt").forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.innerText.includes(lang) || btn.getAttribute("onclick")?.includes(`'${lang}'`)) btn.classList.add("active");
+    });
+
+    if (typeof renderOrdersList === "function") renderOrdersList();
+    if (typeof renderMaterials === "function") renderMaterials();
+    if (typeof renderSchemes === "function") renderSchemes();
+    if (typeof renderForum === "function") renderForum();
+    if (typeof renderFinance === "function") renderFinance();
+    if (typeof _applyMarketsDynamicText === "function") _applyMarketsDynamicText(lang);
+    if (typeof _applyInsightsDynamicText === "function") _applyInsightsDynamicText(lang);
+}
+
+function t(key, fallback) {
+    const langKey = typeof window.currentLang !== "undefined" ? window.currentLang : "en";
+    const dict = (typeof TRANSLATIONS !== "undefined" && TRANSLATIONS[langKey]) ? TRANSLATIONS[langKey] : {};
+    return dict[key] || ((typeof TRANSLATIONS !== "undefined" && TRANSLATIONS["en"]) ? TRANSLATIONS["en"][key] : fallback) || fallback || key;
+}
+window.t = t;

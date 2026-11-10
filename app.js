@@ -20,11 +20,11 @@ const ejsMate = require("ejs-mate");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
-const passport = require("passport");
 const MongoStore = require("connect-mongo");
 
 const fileStore = require("./lib/userStore");
 const expenseStore = require("./lib/expenseStore");
+const orderStore = require("./lib/orderStore");
 const { cloudinary } = require("./cloudConfig");
 
 const app = express();
@@ -40,8 +40,13 @@ const dbUrl = process.env.ATLASDB_URL;
 if (dbUrl) {
   mongoose
     .connect(dbUrl)
-    .then(() => {
+    .then(async () => {
       console.log("✅ Connected to MongoDB Atlas (CraftConnect) successfully!");
+      try {
+        await orderStore.seedDemoOrders();
+      } catch (e) {
+        console.warn("⚠️  Order seed notice (Mongo connect):", e.message);
+      }
     })
     .catch((err) => {
       console.error("❌ Database connection error:", err.message);
@@ -56,7 +61,7 @@ if (process.env.CLOUD_NAME && process.env.CLOUD_API_KEY) {
   cloudinary.api
     .ping()
     .then(() => {
-      console.log(`✅ Connected to Cloudinary (${process.env.CLOUD_NAME}) successfully!`);
+      console.log(`✅ Connected to Cloudinary successfully!`);
     })
     .catch((err) => {
       console.warn("⚠️  Cloudinary connectivity notice:", err.message);
@@ -85,7 +90,16 @@ if (dbUrl) {
 
 const sessionOptions = {
   store,
-  secret: process.env.SESSION_SECRET || process.env.SECRET || "craftconnect_session_secret_2026",
+  secret: (() => {
+    const s = process.env.SESSION_SECRET || process.env.SECRET;
+    if (!s && process.env.NODE_ENV === "production") {
+      console.error("❌ SECURITY: SESSION_SECRET is not set in production! Set SESSION_SECRET in your environment variables.");
+      process.exit(1);
+    } else if (!s) {
+      console.warn("⚠️  SESSION_SECRET not set. Using insecure default (fine for local dev; set SESSION_SECRET before deploying).");
+    }
+    return s || "craftconnect_session_secret_2026";
+  })(),
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -102,8 +116,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "8mb" }));
 app.use(session(sessionOptions));
 app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
+// NOTE: passport is required as a peer dependency by connect-flash internals
+// but is not configured with any strategy (CraftConnect uses custom bcrypt auth).
+// passport.initialize() is intentionally omitted to avoid unnecessary middleware.
 
 // Flash messages & current user available in all templates
 app.use((req, res, next) => {
@@ -169,6 +184,7 @@ const server = app.listen(PORT, HOST, async () => {
   try {
     await fileStore.seedDemo();
     expenseStore.seedDemo();
+    await orderStore.seedDemoOrders();
   } catch (seedErr) {
     console.warn("⚠️ Demo seed notice:", seedErr.message);
   }

@@ -1,12 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const fileStore = require("../lib/userStore");
 const expenseStore = require("../lib/expenseStore");
+const orderController = require("../controllers/orderController");
 const insightsController = require("../controllers/insightsController");
+const { analyzeProductImage } = require("../services/geminiVisionService");
 const { cloudinary } = require("../cloudConfig");
 const { sessionUser, requireAuth } = require("../middleware/auth");
-const multer = require("multer");
+
+// Scan upload multipart parser (memory storage for instant Gemini processing)
 const scanUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -22,6 +27,25 @@ const scanUpload = multer({
   },
 });
 
+const uploadSingleScan = (req, res, next) => {
+  scanUpload.fields([
+    { name: "file", maxCount: 1 },
+    { name: "image", maxCount: 1 }
+  ])(req, res, (err) => {
+    if (err) {
+      const status = err.code === "LIMIT_FILE_SIZE" ? 400 : (err.statusCode || 400);
+      const msg = err.code === "LIMIT_FILE_SIZE" ? "Image exceeds 10MB limit." : err.message;
+      return res.status(status).json({ error: msg });
+    }
+    if (req.files) {
+      req.file = (req.files["file"] && req.files["file"][0]) ||
+                 (req.files["image"] && req.files["image"][0]) ||
+                 null;
+    }
+    next();
+  });
+};
+
 /* ============ Session & Profile ============ */
 
 // GET /api/me — current session user
@@ -35,7 +59,7 @@ router.get("/session.js", (req, res) => {
   res.send(`window.CC_USER=${JSON.stringify(sessionUser(req))};`);
 });
 
-// POST /api/profile/avatar — upload/update profile avatar via Cloudinary & MongoDB Atlas
+// POST /api/profile/avatar — upload/update profile avatar
 router.post("/profile/avatar", async (req, res) => {
   let { avatar } = req.body || {};
   if (!avatar) {
@@ -59,7 +83,6 @@ router.post("/profile/avatar", async (req, res) => {
     req.session.user.avatar = avatar;
     if (req.session.user.id) {
       fileStore.updateUserAvatar(req.session.user.id, avatar);
-      const mongoose = require("mongoose");
       if (mongoose.connection.readyState === 1) {
         try {
           await User.findOneAndUpdate(
@@ -82,7 +105,6 @@ router.delete("/profile/avatar", async (req, res) => {
     req.session.user.avatar = null;
     if (req.session.user.id) {
       fileStore.updateUserAvatar(req.session.user.id, null);
-      const mongoose = require("mongoose");
       if (mongoose.connection.readyState === 1) {
         try {
           await User.findOneAndUpdate(
@@ -100,6 +122,15 @@ router.delete("/profile/avatar", async (req, res) => {
 
 /* ============ Sync & Orders ============ */
 
+// GET /api/orders — retrieve artisan orders with status filter & counts
+router.get("/orders", orderController.getOrders);
+
+// POST /api/orders — create new order
+router.post("/orders", orderController.createOrder);
+
+// POST /api/orders/:id/dispatch — dispatch an order
+router.post("/orders/:id/dispatch", orderController.dispatchOrder);
+
 // POST /api/sync — sync catalog / offline queue
 router.post("/sync", requireAuth, (req, res) => {
   const items = Array.isArray(req.body?.queue) ? req.body.queue : [];
@@ -110,23 +141,9 @@ router.post("/sync", requireAuth, (req, res) => {
   });
 });
 
-// POST /api/orders/:id/dispatch — dispatch an order
-router.post("/orders/:id/dispatch", requireAuth, async (req, res) => {
-  try {
-    res.json({
-      ok: true,
-      status: "dispatched",
-      id: req.params.id,
-      dispatchedBy: sessionUser(req).name,
-    });
-  } catch (e) {
-    res.status(500).json({ error: "Failed to update order status" });
-  }
-});
-
 /* ============ Weather ============ */
 
-// GET /api/weather — mock weather data
+// GET /api/weather — weather forecast data
 router.get("/weather", async (req, res) => {
   const { city } = req.query;
   if (!city) return res.status(400).json({ error: "City required" });
@@ -141,7 +158,7 @@ router.get("/weather", async (req, res) => {
 
 /* ============ Expenses ============ */
 
-// GET /api/expenses — list expenses (guest-friendly with demo fallback)
+// GET /api/expenses — list expenses
 router.get("/expenses", (req, res) => {
   const user = sessionUser(req);
   const userId = user ? user.id : "usr_1790788468698";
@@ -180,63 +197,43 @@ router.delete("/expenses/:id", requireAuth, (req, res) => {
 
 /* ============ AI Scan & Pricing ============ */
 
-const { analyzeProductImage } = require("../services/geminiVisionService");
-
 // POST /api/ai/scan — AI product analysis using Gemini Vision (auth required)
-router.post(
-  "/ai/scan",
-  requireAuth,
-  (req, res, next) => {
-    scanUpload.single("file")(req, res, (err) => {
-      if (err) {
-        const status = err.code === "LIMIT_FILE_SIZE" ? 400 : (err.statusCode || 400);
-        const msg = err.code === "LIMIT_FILE_SIZE" ? "Image exceeds 10MB limit." : err.message;
-        return res.status(status).json({ error: msg });
-      }
-      next();
-    });
-  },
-  async (req, res) => {
-    try {
-      // Validate that an image file was actually uploaded
-      if (!req.file || !req.file.buffer || req.file.buffer.length === 0) {
-        return res.status(400).json({
-          error: "No image file uploaded. Please select or capture a product photo.",
-        });
-      }
-
-      const mimeType = req.file.mimetype || "image/jpeg";
-      const imageBuffer = req.file.buffer;
-
-      // Send the actual uploaded image to Gemini Vision for analysis
-      const analysis = await analyzeProductImage(imageBuffer, mimeType);
-
-      // Return the image-specific analysis (no hardcoded fallback)
-      res.json({
-        category: analysis.category,
-        craftType: analysis.craftType,
-        title: analysis.title,
-        description: analysis.description,
-        features: analysis.features,
-        materials: analysis.materials,
-        tags: analysis.tags,
-        targetMarket: analysis.targetMarket,
-        priceRange: analysis.priceRange,
-        recommendedPrice: analysis.recommendedPrice,
-        suggestedPriceMin: analysis.suggestedPriceMin,
-        suggestedPriceMax: analysis.suggestedPriceMax,
-        confidence: analysis.confidence,
-      });
-    } catch (err) {
-      console.error("AI scan error:", err.message);
-
-      const statusCode = err.statusCode || (err.message.includes("GEMINI_API_KEY") ? 503 : 500);
-      res.status(statusCode).json({
-        error: err.message || "AI scan processing failed. Please try again.",
+router.post("/ai/scan", requireAuth, uploadSingleScan, async (req, res) => {
+  try {
+    if (!req.file || !req.file.buffer || req.file.buffer.length === 0) {
+      return res.status(400).json({
+        error: "No image file uploaded. Please select or capture a product photo.",
       });
     }
+
+    const mimeType = req.file.mimetype || "image/jpeg";
+    const imageBuffer = req.file.buffer;
+
+    const analysis = await analyzeProductImage(imageBuffer, mimeType);
+
+    res.json({
+      category: analysis.category,
+      craftType: analysis.craftType,
+      title: analysis.title,
+      description: analysis.description,
+      features: analysis.features,
+      materials: analysis.materials,
+      tags: analysis.tags,
+      targetMarket: analysis.targetMarket,
+      priceRange: analysis.priceRange,
+      recommendedPrice: analysis.recommendedPrice,
+      suggestedPriceMin: analysis.suggestedPriceMin,
+      suggestedPriceMax: analysis.suggestedPriceMax,
+      confidence: analysis.confidence,
+    });
+  } catch (err) {
+    console.error("AI scan error:", err.message);
+    const statusCode = err.statusCode || (err.message.includes("GEMINI_API_KEY") ? 503 : 500);
+    res.status(statusCode).json({
+      error: err.message || "AI scan processing failed. Please try again.",
+    });
   }
-);
+});
 
 /* ============ Insights ============ */
 

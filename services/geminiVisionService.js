@@ -6,14 +6,29 @@
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const dns = require("dns");
 
-// Lazy-initialised client (created on first call so env is loaded)
+// Optimize DNS lookup on Windows to avoid IPv6 timeouts
+try {
+  if (typeof dns.setDefaultResultOrder === "function") {
+    dns.setDefaultResultOrder("ipv4first");
+  }
+} catch (_) {}
+
+// Lazy-initialised client & model cache
 let genAI = null;
-let model = null;
+let cachedKey = null;
+let cachedModel = null;
+let cachedModelName = null;
 
-function getModel() {
-  if (model) return model;
+const SUPPORTED_MODELS = [
+  process.env.GEMINI_MODEL || "gemini-3-flash-preview",
+  "gemini-3-flash-preview",
+  "gemini-3.5-flash",
+  "gemini-3.8-flash",
+];
 
+function getModel(specificModel) {
   const apiKey = (process.env.GEMINI_API_KEY || "").trim();
   if (!apiKey || apiKey === "your_gemini_api_key_here") {
     const err = new Error(
@@ -24,9 +39,17 @@ function getModel() {
     throw err;
   }
 
+  const targetModel = specificModel || process.env.GEMINI_MODEL || "gemini-3-flash-preview";
+
+  if (cachedModel && genAI && cachedKey === apiKey && cachedModelName === targetModel) {
+    return cachedModel;
+  }
+
   genAI = new GoogleGenerativeAI(apiKey);
-  model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-  return model;
+  cachedKey = apiKey;
+  cachedModelName = targetModel;
+  cachedModel = genAI.getGenerativeModel({ model: targetModel });
+  return cachedModel;
 }
 
 // ── Supported category codes used by the frontend dropdown ──
@@ -90,13 +113,23 @@ function normalizeGeminiError(err) {
     return error;
   }
   if (msg.includes("GEMINI_API_KEY is not configured") || msg.includes("GEMINI_API_KEY is not set")) {
-    const error = new Error("Gemini API key is not configured. Please add a valid GEMINI_API_KEY to your .env file.");
+    const error = new Error("GEMINI_API_KEY is not configured in .env. Please add a valid Google Gemini API key to enable live AI vision analysis.");
     error.statusCode = 503;
     return error;
   }
   if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("quota") || msg.includes("Quota exceeded")) {
     const error = new Error("Gemini Vision AI quota or rate limit exceeded. Please wait a moment and try again.");
     error.statusCode = 429;
+    return error;
+  }
+  if (msg.includes("503") || msg.includes("UNAVAILABLE") || msg.includes("high demand") || msg.includes("overloaded")) {
+    const error = new Error("Gemini Vision AI is temporarily experiencing high demand. Please try again in a few moments.");
+    error.statusCode = 503;
+    return error;
+  }
+  if (msg.includes("404") || msg.includes("NOT_FOUND") || msg.includes("no longer available")) {
+    const error = new Error("The requested Gemini model is currently unavailable or deprecated.");
+    error.statusCode = 502;
     return error;
   }
   if (msg.includes("fetch failed") || msg.includes("ENOTFOUND") || msg.includes("ETIMEDOUT") || msg.includes("ECONNREFUSED")) {
@@ -140,7 +173,11 @@ function parseAndValidateAnalysis(parsed) {
     recommendedPrice: sanitizePrice(parsed.optimalSellingPrice, parsed.suggestedPriceMin, parsed.suggestedPriceMax),
     suggestedPriceMin: sanitizePositive(parsed.suggestedPriceMin),
     suggestedPriceMax: sanitizePositive(parsed.suggestedPriceMax),
-    confidence: Math.min(100, Math.max(0, Number(parsed.confidence) || 75)),
+    confidence: (() => {
+      let c = Number(parsed.confidence);
+      if (c > 0 && c <= 1) c = Math.round(c * 100);
+      return Math.min(100, Math.max(0, c || 75));
+    })(),
   };
 
   // Ensure min ≤ max
@@ -178,8 +215,6 @@ async function analyzeProductImage(imageBuffer, mimeType) {
     throw err;
   }
 
-  const visionModel = getModel();
-
   // Convert buffer to base64 for the Gemini inline_data format
   const base64Data = imageBuffer.toString("base64");
 
@@ -190,15 +225,38 @@ async function analyzeProductImage(imageBuffer, mimeType) {
     },
   };
 
-  let result;
-  try {
-    result = await visionModel.generateContent([ANALYSIS_PROMPT, imagePart]);
-  } catch (apiErr) {
-    throw normalizeGeminiError(apiErr);
+  const modelsToTry = Array.from(new Set([
+    process.env.GEMINI_MODEL || "gemini-3-flash-preview",
+    "gemini-3-flash-preview",
+    "gemini-3.5-flash",
+    "gemini-3.8-flash",
+  ])).filter(Boolean);
+
+  let lastError = null;
+  let text = null;
+
+  for (const modelCandidate of modelsToTry) {
+    try {
+      const visionModel = getModel(modelCandidate);
+      const result = await visionModel.generateContent([ANALYSIS_PROMPT, imagePart]);
+      const response = result.response;
+      text = response.text();
+      if (text) break;
+    } catch (apiErr) {
+      lastError = apiErr;
+      const errMsg = String(apiErr?.message || "");
+      // If 404 or 503, try next candidate
+      if (errMsg.includes("404") || errMsg.includes("503") || errMsg.includes("UNAVAILABLE") || errMsg.includes("NOT_FOUND")) {
+        console.warn(`[GeminiVision] Model ${modelCandidate} returned retryable error (${errMsg.substring(0, 100)}). Trying fallback...`);
+        continue;
+      }
+      throw normalizeGeminiError(apiErr);
+    }
   }
 
-  const response = result.response;
-  const text = response.text();
+  if (!text) {
+    throw normalizeGeminiError(lastError || new Error("Failed to receive response from Gemini Vision."));
+  }
 
   // Parse JSON — strip markdown fences if the model wraps them
   let cleanText = text.trim();

@@ -1,0 +1,388 @@
+/**
+ * CraftConnect — Products & Market Trends
+ * File 3 of 10: market-trends.css
+ * Product catalog display cards, ML pricing recommendation cards, mandis / physical market cards, digital marketplace buttons, and market trend tags.
+ */
+
+/* PRODUCT CATALOG DISPLAY */
+.product-card {
+    background: white;
+    border: 1px solid #e7efe9;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+}
+
+.product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #eef2ef;
+}
+
+.product-content {
+    padding: 18px;
+}
+
+.meta-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.category-chip, .craft-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.category-chip {
+    background: #eef7f3;
+    color: #17665a;
+}
+
+.craft-chip {
+    background: #fdf3e7;
+    color: #d9741d;
+}
+
+.feature-box, .target-market-box {
+    background: #f8faf8;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #444;
+}
+
+.feature-box ul {
+    margin-left: 18px;
+    margin-top: 4px;
+}
+
+.tags-container {
+    margin-top: 12px;
+}
+
+.tag {
+    display: inline-block;
+    background: #eef7f3;
+    color: #17665a;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+/* ML PRICE RECOMMENDATION CARD */
+.price-recommendation-card {
+    background: linear-gradient(135deg, #fffcf6, #fffaee);
+    border: 1.5px solid #fbe6c6;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba(239, 139, 53, 0.08);
+}
+
+.price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.price-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c9691d;
+}
+
+.price-sub {
+    font-size: 11px;
+    color: #777;
+}
+
+.tier-badge {
+    background: #ef8b35;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 14px;
+}
+
+.price-val-container {
+    text-align: center;
+    margin: 16px 0;
+}
+
+.price-display {
+    font-size: 34px;
+    font-weight: 800;
+    color: #b5570d;
+}
+
+.rec-price-tag {
+    font-size: 13px;
+    color: #333;
+    margin-top: 4px;
+}
+
+.confidence-container {
+    margin: 14px 0 10px;
+}
+
+.confidence-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.confidence-bar {
+    width: 100%;
+    height: 8px;
+    background: #ebd8c0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef8b35, #17665a);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.price-reasoning {
+    font-size: 11px;
+    color: #666;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+/* MARKET CARDS */
+.market-card {
+    background: white;
+    border: 1px solid #e7efe9;
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.market-image {
+    width: 85px;
+    height: 85px;
+    border-radius: 14px;
+    object-fit: cover;
+}
+
+.market-info {
+    flex: 1;
+}
+
+.market-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.market-info h3 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.market-info p {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.buyer-info {
+    font-size: 11px;
+    color: #17665a;
+    margin-top: 4px;
+}
+
+.market-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.match {
+    background: #eef7f3;
+    color: #17665a;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 14px;
+}
+
+.link-btn, .mini-btn {
+    background: #0F5147;
+    color: #FFFFFF;
+    border: none;
+    padding: 4px 7px;
+    border-radius: 10px;
+    font-size: 8px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 250ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+} 
+
+ 
+
+.link-btn:hover, .mini-btn:hover {
+    background: #197565;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 81, 71, 0.25);
+}
+
+.link-btn:focus-visible, .mini-btn:focus-visible, .btn-digital:focus-visible {
+    outline: 2px solid #E99436;
+    outline-offset: 2px;
+}
+
+/* DIGITAL MARKETPLACE BUTTONS & CARDS */
+.market-card.digital, .digital-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E7EEEA !important;
+    border-left: 4px solid #0F5147 !important;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+.market-card.digital:hover, .digital-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 81, 71, 0.1);
+}
+
+.btn-digital, .btn-deep-teal {
+    background-color: #0F5147 !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    padding: 10px 18px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 250ms ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    width: 100% !important;
+    box-shadow: 0 2px 6px rgba(15, 81, 71, 0.15) !important;
+}
+
+.btn-digital:hover, .btn-deep-teal:hover {
+    background-color: #197565 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(15, 81, 71, 0.25) !important;
+}
+
+.btn-digital:focus-visible, .btn-deep-teal:focus-visible {
+    outline: 2px solid #E99436 !important;
+    outline-offset: 2px !important;
+}
+
+.badge-craft-orange {
+    background: #FDF4E7 !important;
+    color: #D97E1E !important;
+    border: 1px solid #FCDAA8 !important;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+
+/* TREND CARDS */
+.trend-card {
+    background: white;
+    border: 1px solid #e7efe9;
+    padding: 16px;
+    border-radius: 18px;
+    margin-bottom: 14px;
+}
+
+.trend-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.up {
+    color: #17665a;
+}
+
+.progress {
+    width: 100%;
+    height: 8px;
+    background: #ebf2ee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress div {
+    height: 100%;
+    background: linear-gradient(90deg, #17665a, #ef8b35);
+    border-radius: 10px;
+}
+
+.trend-sub {
+    font-size: 11px;
+    color: #777;
+    margin-top: 8px;
+}
+
+.advice-card {
+    background: #fdf3e7;
+    border: 1px solid #fae1c5;
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.advice-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: #d9741d;
+    margin-bottom: 6px;
+}
+
+.advice-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.advice-card p {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
